@@ -1,12 +1,12 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Authform = ({ type }) => {
+const Authform = ({ type, hendleSubmit, setFormData }) => {
 
   const jeetu = useNavigate()
   return (
     <>
-      <form className="space-y-5">
+      <form className="space-y-5" onSubmit={hendleSubmit}>
         {type === "register" && (
           <>
             <div>
@@ -15,7 +15,9 @@ const Authform = ({ type }) => {
               </label>
               <input
                 type="text"
+                name="name"
                 placeholder="Enter your name"
+                onChange={(e) => setFormData({...pre, ['name']:e.target.value})}
                 className="w-full px-4 py-3 border rounded-xl outline-none border-gray-300 focus:border-blue-500"
               />
             </div>
@@ -26,6 +28,9 @@ const Authform = ({ type }) => {
               </label>
               <input
                 type="number"
+                name="mobile"
+                
+                onChange={(e) => setFormData({...pre, [e.target.name]:e.target.value})}
                 placeholder="Enter your Mobile NO"
                 className="w-full px-4 py-3 border rounded-xl outline-none border-gray-300 focus:border-blue-500"
               />
@@ -57,7 +62,6 @@ const Authform = ({ type }) => {
         <button
           type="submit"
           className="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl"
-          onClick={()=>jeetu("/")}
         >
           {type === "register" ? "register" : "Login"}
         </button>
