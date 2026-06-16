@@ -1,12 +1,14 @@
-const mongoose = require("mongoos")
-function connectbd(){
-mongoose.connect("")
-    .then(()=> {
-        console.log("mongoose ");
-    })
-    .catch(()=>(
-        console.log("erro")
-        
-    ))
+const dotenv=require("dotenv")
+dotenv.config();
+const mongoose = require("mongoose")
+
+const connectbd = async ()=>{
+try{
+   await mongoose.connect(process.env.MONGO_URI)
+    console.log("mongoose are connect")
+}catch(err){
+    console.log("mongoose are failed",err);
+    
 }
-module.exports=connectbd();
+}
+module.exports=connectbd;

@@ -1,20 +1,16 @@
 const express=require("express")
+const dotenv=require("dotenv")
 const app=express();
-const port=2000;
-
-app.get((req,res)=>{
-    console.log("hdbb");
-    res.send('heelo')
+const port=3000;
+const mongoosedb=require("./config/db");
+mongoosedb();
+app.use(express.json());
+const auth=require("./routes/userRoutes")
+const card=require("./routes/cardRoute")
     
-});
-
-// app.post((req,res)=>{
-//     const {name,password}= res.app
-//     console.log(name,password);
-    
-// })
-
+app.use("/user",auth)
+app.use("/card",card)
 app.listen(port,()=>{
-    console.log(`server is runing http://localhost${port}`);
+    console.log(`server is runing http://localhost:${port}`);
     
 });
