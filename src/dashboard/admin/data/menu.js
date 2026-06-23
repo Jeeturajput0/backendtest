@@ -1,58 +1,42 @@
-import {
-  LayoutDashboard,
-  CreditCard,
-  Folder,
-  Settings,
-  User,
-  LogOut,
-} from "lucide-react";
-
-export const menu = [
+export const menuItems = [
   {
-    title: "Overview",
-    icon: LayoutDashboard,
+    id: 1,
+    label: "Dashboard",
     path: "/admin",
   },
-
   {
-    title: "Card Form",
-    icon: CreditCard,
-    path: "/admin/card-form",
+    id: 2,
+    label: "Overview",
+    path: "/admin/overview",
   },
-
   {
-    title: "Card List",
-    icon: CreditCard,
-    path: "/admin/card-list",
-  },
-
-  {
-    title: "Category Form",
-    icon: Folder,
+    id: 3,
+    label: "Category Form",
     path: "/admin/category-form",
   },
-
   {
-    title: "Category List",
-    icon: Folder,
+    id: 4,
+    label: "Category List",
     path: "/admin/category-list",
   },
-
   {
-    title: "Settings",
-    icon: Settings,
-    path: "/admin/settings",
+    id: 5,
+    label: "Card Form",
+    path: "/admin/card-form",
   },
-
   {
-    title: "Profile",
-    icon: User,
+    id: 6,
+    label: "Card List",
+    path: "/admin/card-list",
+  },
+  {
+    id: 7,
+    label: "Profile",
     path: "/admin/profile",
   },
-
   {
-    title: "Logout",
-    icon: LogOut,
-    path: "/logout",
+    id: 8,
+    label: "Settings",
+    path: "/admin/settings",
   },
 ];

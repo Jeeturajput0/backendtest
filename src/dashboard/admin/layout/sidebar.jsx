@@ -1,111 +1,43 @@
-import {
-  LayoutDashboard,
-  CreditCard,
-  List,
-  Folder,
-  Settings,
-  User,
-  LogOut,
-} from "lucide-react";
-
 import { NavLink } from "react-router-dom";
+import { menuItems } from "../data/menu";
 
-function Sidebar() {
-  const linkClass = ({ isActive }) =>
-    `flex items-center gap-2 px-2 py-2 rounded ${
-      isActive
-        ? "bg-blue-500 text-white"
-        : "text-white hover:bg-gray-700"
-    }`;
-
+const Sidebar = () => {
   return (
-    <div className="w-64 h-screen bg-gray-800 text-white p-4">
-      <h2 className="text-2xl font-bold mb-8">Admin</h2>
+    <aside className="w-64 bg-slate-900 text-white flex flex-col h-screen">
+      
+      <div className="p-5 border-b border-slate-700">
+        <h1 className="text-xl font-bold">
+          Admin Panel
+        </h1>
+      </div>
 
-      <ul className="space-y-3">
-        <li>
-          <NavLink to="/admin" end className={linkClass}>
-            <LayoutDashboard size={18} />
-            Overview
-          </NavLink>
-        </li>
-
-        <li className="font-semibold mt-4">Card</li>
-
-        <li>
+      <nav className="flex-1 p-4">
+        {menuItems.map((item) => (
           <NavLink
-            to="/admin/card-form"
-            className={linkClass}
+            key={item.id}
+            to={item.path}
+            end={item.path === "/admin"}
+            className={({ isActive }) =>
+              `block w-full p-3 rounded-lg mb-2 transition ${
+                isActive
+                  ? "bg-blue-600 text-white"
+                  : "hover:bg-slate-800"
+              }`
+            }
           >
-            <CreditCard size={18} />
-            Card Form
+            {item.label}
           </NavLink>
-        </li>
+        ))}
+      </nav>
 
-        <li>
-          <NavLink
-            to="/admin/card-list"
-            className={linkClass}
-          >
-            <List size={18} />
-            Card List
-          </NavLink>
-        </li>
+      <div className="p-4 border-t border-slate-700">
+        <button className="w-full bg-red-500 hover:bg-red-600 py-3 rounded-lg">
+          Logout
+        </button>
+      </div>
 
-        <li className="font-semibold mt-4">Category</li>
-
-        <li>
-          <NavLink
-            to="/admin/category-form"
-            className={linkClass}
-          >
-            <Folder size={18} />
-            Category Form
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/admin/category-list"
-            className={linkClass}
-          >
-            <List size={18} />
-            Category List
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/admin/settings"
-            className={linkClass}
-          >
-            <Settings size={18} />
-            Settings
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/admin/profile"
-            className={linkClass}
-          >
-            <User size={18} />
-            Profile
-          </NavLink>
-        </li>
-
-        <li>
-          <NavLink
-            to="/logout"
-            className="flex items-center gap-2 px-2 py-2 rounded text-red-400 hover:bg-gray-700"
-          >
-            <LogOut size={18} />
-            Logout
-          </NavLink>
-        </li>
-      </ul>
-    </div>
+    </aside>
   );
-}
+};
 
 export default Sidebar;
