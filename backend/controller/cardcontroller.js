@@ -33,5 +33,19 @@ const createcard = async (req, res) => {
     });
   }
 };
+const updatecard = async (req, res) => {
+  try {
+  
 
-module.exports={getcard,createcard}
+    const newCard = await card.findByIdAndUpdate(id.params.category_Id,
+      res.body,)
+
+    res.status(201).json(newCard);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+module.exports={getcard,createcard,updatecard }
