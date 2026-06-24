@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const Navigate =useNavigate();
+  const navigate =useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,19 +25,35 @@ const Login = () => {
     try {
       const res = await axios.post(
         "http://localhost:3000/user/login",
-        formData
+        {method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },body: JSON.stringify(formData)
+        }
       );
 
-      localStorage.setItem(
-        "userdetails",
-        JSON.stringify(res.data)
-      );
+    const data =await res.json()
+    console.log(data)
 
+    if(res.ok){
+      localStorage.setItem("token",data.token)
+      localStorage.setItem("userdeatils",JSON.stringify(data.user))
       Swal.fire({
         title: "SUCCESS",
         text: "Login Successfully",
         icon: "success",
       });
+      navigate("/admin")
+    }else{
+      Swal.fire({
+        title: "ERROR",
+        text: "Invalid Credentials",
+        icon: "error",
+      });
+    }
+
+
+      
     } catch (error) {
       Swal.fire({
         title: "ERROR",
