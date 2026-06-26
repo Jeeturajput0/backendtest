@@ -1,38 +1,38 @@
 const category = require("../model/categorymodel");
-const shop = async (req, res) => {
+const create = async (req, res) => {
   try {
     const { title, activeIs } = req.body;
-    const categorys = category.create({
-      title: "",
-      activeIs: "",
+    const categorys = await category.create({
+      title,
+      activeIs,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: "the category is successfuly is create",
-      categorys,
+      data: categorys,
     });
   } catch (error) {
-    res.status(404).json({
+    res.status(500).json({
       success: false,
-      message: "category is failed".error,
+      message: "category is failed",
+      error: error.message,
     });
   }
 };
 const list = async (req, res) => {
   try {
-    const body = res.body;
-    console.log(body);
     const categorys = await category.find();
-    res.status(500).json({
+    res.status(200).json({
       success: true,
       message: "category list is showing",
-      categorys,
+      data: categorys,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "categorys is faild".error.message,
+      message: "categorys is faild",
+      error: error.message,
     });
   }
 };
@@ -40,20 +40,38 @@ const list = async (req, res) => {
 const update = async (req, res) => {
   try {
     const categorys = await category.findByIdAndUpdate(
-      id.params.category_Id,
-      res.body,
+      req.params.category_id,
+      req.body,
       { new: true },
     );
-    res.status(500).json({
+    res.status(200).json({
       success: true,
       message: "category update succefully ",
+      data: categorys,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "categorys is faild".error.message,
+      message: "categorys is faild",
+      error: error.message,
     });
   }
 };
 
-module.exports = { shop, list, update };
+const destroy = async (req, res) => {
+  try {
+    const categorys = await category.findByIdAndDelete(req.params.category_id);
+    res.status(200).json({
+      success: true,
+      message: "category deleted succefully ",
+      data: error.message,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "categorys is deleted faild",
+      error: error.message,
+    });
+  }
+};
+module.exports = { create, list, update, destroy };

@@ -1,43 +1,164 @@
-import { NavLink } from "react-router-dom";
-import { menuItems } from "../data/menu";
+import { useState } from "react";
+import {
+  LayoutGrid,
+  Package,
+  ShoppingCart,
+  CreditCard,
+  User,
+  Users,
+  Store,
+  Settings,
+  Boxes,
+  Tag,
+  Star,
+  TicketPercent,
+  FileText,
+  Palette,
+  Ruler,
+  Image,
+  ChevronDown,
+} from "lucide-react";
 
-const Sidebar = () => {
+export default function Sidebar() {
+  const [open, setOpen] = useState(true);
+
   return (
-    <aside className="w-64 bg-slate-900 text-white flex flex-col h-screen">
-      
-      <div className="p-5 border-b border-slate-700">
-        <h1 className="text-xl font-bold">
-          Admin Panel
+    <aside className="w-72 min-h-screen bg-white border-r">
+      <div className="p-6">
+        <h1 className="text-4xl font-bold text-slate-800">
+          E-Commerces
         </h1>
+
+        <p className="text-sm text-slate-400">
+          ADMIN PANEL
+        </p>
       </div>
 
-      <nav className="flex-1 p-4">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.id}
-            to={item.path}
-            end={item.path === "/admin"}
-            className={({ isActive }) =>
-              `block w-full p-3 rounded-lg mb-2 transition ${
-                isActive
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-slate-800"
-              }`
-            }
-          >
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
+      <div className="px-3">
+        <MenuItem
+          active
+          icon={<LayoutGrid size={20} />}
+          title="Overview"
+        />
 
-      <div className="p-4 border-t border-slate-700">
-        <button className="w-full bg-red-500 hover:bg-red-600 py-3 rounded-lg">
-          Logout
+        <MenuItem
+          icon={<Package size={20} />}
+          title="Products"
+        />
+
+        <MenuItem
+          icon={<ShoppingCart size={20} />}
+          title="Orders"
+        />
+
+        <MenuItem
+          icon={<CreditCard size={20} />}
+          title="Payments"
+        />
+
+        <MenuItem
+          icon={<User size={20} />}
+          title="Profile"
+        />
+
+        <MenuItem
+          icon={<Users size={20} />}
+          title="Users"
+        />
+
+        <MenuItem
+          icon={<Store size={20} />}
+          title="Vendors"
+        />
+
+        <MenuItem
+          icon={<Settings size={20} />}
+          title="Settings"
+        />
+
+        <button
+          onClick={() => setOpen(!open)}
+          className="w-full flex justify-between items-center px-4 py-4 rounded-xl hover:bg-gray-100"
+        >
+          <div className="flex gap-3 items-center">
+            <Boxes size={20} />
+            <span>Master Data</span>
+          </div>
+
+          <ChevronDown
+            size={18}
+            className={`transition ${
+              open ? "rotate-180" : ""
+            }`}
+          />
         </button>
-      </div>
 
+        {open && (
+          <div className="ml-8 border-l pl-5 mt-2 space-y-2">
+           <Link>
+           <SubMenu
+              icon={<Tag size={18} />}
+              title="Categories"
+              
+            /></Link> 
+
+            <SubMenu
+              icon={<Star size={18} />}
+              title="Reviews"
+            />
+
+            <SubMenu
+              icon={<TicketPercent size={18} />}
+              title="Coupons"
+            />
+
+            <SubMenu
+              icon={<FileText size={18} />}
+              title="Offers"
+            />
+
+            <SubMenu
+              icon={<Palette size={18} />}
+              title="Colors"
+            />
+
+            <SubMenu
+              icon={<Ruler size={18} />}
+              title="Sizes"
+            />
+
+            <SubMenu
+              icon={<Image size={18} />}
+              title="Banners"
+            />
+          </div>
+        )}
+      </div>
     </aside>
   );
-};
+}
 
-export default Sidebar;
+function MenuItem({ icon, title, active }) {
+  return (
+    <button
+      className={`w-full flex items-center gap-3 px-4 py-4 rounded-2xl mb-2
+      ${
+        active
+          ? "bg-blue-600 text-white"
+          : "hover:bg-gray-100 text-slate-700"
+      }`}
+    >
+      {icon}
+      {title}
+    </button>
+  );
+}
+
+function SubMenu({ icon, title }) {
+  return (
+    <button className="flex items-center gap-3 py-3 text-slate-500 hover:text-blue-600">
+      {icon}
+      {title}
+    </button>
+  );
+}

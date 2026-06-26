@@ -1,24 +1,27 @@
+export default function Dashboard() {
+  const cards = [
+    { title: "Products", value: "1,250" },
+    { title: "Orders", value: "856" },
+    { title: "Revenue", value: "$25,400" },
+    { title: "Users", value: "3,120" },
+  ];
 
-const Dashboard = () => {
   return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-        <div className="bg-white p-5 rounded-xl shadow">
-          Categories
-        </div>
+    <div className="grid grid-cols-4 gap-6">
+      {cards.map((item) => (
+        <div
+          key={item.title}
+          className="bg-white p-6 rounded-2xl shadow-sm"
+        >
+          <p className="text-gray-500">
+            {item.title}
+          </p>
 
-        <div className="bg-white p-5 rounded-xl shadow">
-          Cards
+          <h3 className="text-3xl font-bold mt-2">
+            {item.value}
+          </h3>
         </div>
-
-        <div className="bg-white p-5 rounded-xl shadow">
-          Users
-        </div>
-
-        <div className="bg-white p-5 rounded-xl shadow">
-          Revenue
-        </div>
-      </div>
+      ))}
+    </div>
   );
-};
-
-export default Dashboard;
+}
