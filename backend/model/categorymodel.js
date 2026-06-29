@@ -6,7 +6,7 @@ title:{
     required:true,
 
 },
-ActiveIs:{
+isActive:{
     type:Boolean,
     default:true
 }

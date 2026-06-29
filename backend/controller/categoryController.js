@@ -1,21 +1,21 @@
 const category = require("../model/categorymodel");
 const create = async (req, res) => {
   try {
-    const { title, activeIs } = req.body;
+    const { title, isActive } = req.body;
     const categorys = await category.create({
       title,
-      activeIs,
+      isActive,
     });
 
     res.status(201).json({
       success: true,
-      message: "the category is successfuly is create",
+      message: "category created is successfuly ",
       data: categorys,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "category is failed",
+      message: "category created is failed",
       error: error.message,
     });
   }
@@ -31,7 +31,7 @@ const list = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "categorys is faild",
+      message: "categorys list is faild",
       error: error.message,
     });
   }
@@ -52,7 +52,7 @@ const update = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "categorys is faild",
+      message: "categorys update is faild",
       error: error.message,
     });
   }
