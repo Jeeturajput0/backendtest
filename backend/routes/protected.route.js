@@ -3,11 +3,12 @@ const router = express.Router();
 const {protect}= require("../middleware/auth.middleware")
 const categoryController  = require("../controller/categoryController");
 const productController  =require("../controller/productController")
+const sizeController =require("../controller/sizeController");
 
 // category
 
-router.get("/category", protect,categoryController.list);
 router.post("/category", protect,categoryController .create);
+router.get("/category", protect,categoryController.list);
 router.put("/category/:category_id", protect,categoryController .update);
 router.delete("/category/:category_id", protect,categoryController .destroy);
 // router.get("/category/:category_id", categoryController.details);
@@ -16,9 +17,16 @@ router.delete("/category/:category_id", protect,categoryController .destroy);
 
 //product routes
 
-router.get("/product", protect,productController.list);
 router.post("/product", protect,productController .create);
+router.get("/product", protect,productController.list);
 router.put("/product/:product_id", protect,productController .update);
 router.delete("/product/:product_id", protect,productController .destroy);
+
+// size
+router.post("/size",protect,sizeController.create);
+router.get("/size",protect,sizeController.list);
+router.put("/size/:size_id",protect,sizeController.update);
+router.delete("/size/:size_id",protect,sizeController.destory);
+
 
 module.exports = router;
