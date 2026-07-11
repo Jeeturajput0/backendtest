@@ -1,12 +1,12 @@
 const mongoose =require("mongoose")
 const brandSchema=new mongoose.Schema({
     name:{
-        type:Stirng,
+        type:String,
         required:true,
         unique:true,
         uppercase:true
     },description:{
-        type:Stirng,
+        type:String,
         maxlength:500
     },
     isActive:{
