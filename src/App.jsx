@@ -26,18 +26,21 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Singup />} />
       </Route>
-
-      {/* Admin Layout */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="/admin/overview" element={<Overview />} />
-        <Route path="/admin/category-form" element={<CategoryForm />} />
-        <Route path="/admin/categories" element={<CategoryList />} />
-        <Route path="/admin/card-form" element={<CardForm />} />
-        <Route path="/admin/card-list" element={<CardList />} />
-        <Route path="/admin/profile" element={<Profile />} />
-        <Route path="/admin/settings" element={<Settings />} />
-      </Route>
+<Route
+  path="/admin"
+  element={
+      <AdminLayout />
+  }
+>
+  <Route index element={<Dashboard />} />
+  <Route path="overview" element={<Overview />} />
+  <Route path="category-form" element={<CategoryForm />} />
+  <Route path="categories" element={<CategoryList />} />
+  <Route path="card-form" element={<CardForm />} />
+  <Route path="card-list" element={<CardList />} />
+  <Route path="profile" element={<Profile />} />
+  <Route path="settings" element={<Settings />} />
+</Route>
 
     </Routes>
   );
