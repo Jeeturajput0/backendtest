@@ -8,8 +8,6 @@ import Mainhome from "./pages/home/Mainhome";
 
 import AdminLayout from "./dashboard/admin/layout/AdminLayout";
 import Dashboard from "./dashboard/admin/pages/Dashboard";
-import CardForm from "./dashboard/admin/pages/CardFrom";
-import CardList from "./dashboard/admin/pages/CardList";
 import CategoryList from "./dashboard/admin/pages/CategoryList";
 import Profile from "./dashboard/admin/pages/Profile";
 import Settings from "./dashboard/admin/pages/Settings";

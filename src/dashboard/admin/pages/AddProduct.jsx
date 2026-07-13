@@ -2,7 +2,7 @@ import { Save, Upload } from "lucide-react";
 
 const AddProduct = () => {
   return (
-    <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-8">
+    <div className="max-w-6xl mx-auto space-y-6 bg-white rounded-2xl shadow-md p-8">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-800">Add New Product</h2>
         <p className="text-gray-500 mt-1">
