@@ -1,11 +1,19 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Authform from "./Authform";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    navigate("/admin");
+  }
+}, [navigate]);
+
   const navigate =useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -19,49 +27,36 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const res = await axios.post(
-        "http://localhost:3000/user/login",
-        {method:"POST",
-          headers:{
-            "Content-Type":"application/json"
-          },body: JSON.stringify(formData)
-        }
-      );
+  try {
+    const res = await axios.post(
+      "http://localhost:3000/user/login",
+      formData
+    );
 
-    const data =await res.json()
-    console.log(data)
+    console.log(res.data);
 
-    if(res.ok){
-      localStorage.setItem("token",data.token)
-      localStorage.setItem("userdeatils",JSON.stringify(data.user))
-      Swal.fire({
-        title: "SUCCESS",
-        text: "Login Successfully",
-        icon: "success",
-      });
-      navigate("/admin")
-    }else{
-      Swal.fire({
-        title: "ERROR",
-        text: "Invalid Credentials",
-        icon: "error",
-      });
-    }
+    // Token Save
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("userdetails", JSON.stringify(res.data.user));
 
+    Swal.fire({
+      title: "SUCCESS",
+      text: "Login Successfully",
+      icon: "success",
+    });
 
-      
-    } catch (error) {
-      Swal.fire({
-        title: "ERROR",
-        text: "Invalid Credentials",
-        icon: "error",
-      });
-    }
-  };
+    navigate("/admin");
+  } catch (error) {
+    Swal.fire({
+      title: "ERROR",
+      text: error.response?.data?.message || "Invalid Credentials",
+      icon: "error",
+    });
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
