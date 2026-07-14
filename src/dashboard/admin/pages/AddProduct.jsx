@@ -1,6 +1,46 @@
 import { Save, Upload } from "lucide-react";
+import { API_URI, AUTH_TOKEN } from "../../../config";
+import { useEffect, useState } from "react";
 
 const AddProduct = () => {
+  const [categories, setCategories] = useState([]);
+  const [size, setSize] = useSatate([]);
+
+  const getCategories = async () => {
+    try {
+      const res = await fetch(`${API_URI}/category`, {
+        headers: {
+          Authorization: `Bearer ${AUTH_TOKEN}`,
+        },
+      });
+      const resData = await res.json();
+      setCategories(resData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const getSize = async () => {
+    try {
+      const res = await fetch(`${API_URI}/size`, {
+        headers: {
+          Authorization: `Bearer ${AUTH_TOKEN} `,
+        },
+      });
+      const resData = await res.json();
+      getSize(resData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getSize();
+  });
+
   return (
     <div className="max-w-6xl mx-auto space-y-6 bg-white rounded-2xl shadow-md p-8">
       <div className="mb-8">
@@ -30,10 +70,12 @@ const AddProduct = () => {
             </label>
             <select className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
               <option>Select Category</option>
-              <option>Electronics</option>
-              <option>Fashion</option>
-              <option>Footwear</option>
-              <option>Accessories</option>
+              {categories.length > 0 &&
+                categories.map((item, i) => (
+                  <option key={i} value={item._id}>
+                    {item.title}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
@@ -50,16 +92,18 @@ const AddProduct = () => {
               className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
             />
           </div>
-
+          {/* size */}
           <div>
-            <label className="block mb-2 font-medium text-gray-700">
-              Size
-            </label>
-            <input
-              type="text"
-              placeholder="Sizes"
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-            />
+            <label className="block mb-2 font-medium text-gray-700">Size</label>
+            <select className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
+              <option>Select Size</option>
+              {size.length > 0 &&
+                size.map((item, i) => (
+                  <option key={i} value="item._Id">
+                    {item._id}
+                  </option>
+                ))}
+            </select>
           </div>
         </div>
 
@@ -96,9 +140,7 @@ const AddProduct = () => {
 
           <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-44 cursor-pointer hover:border-blue-500 transition">
             <Upload size={40} className="text-gray-400 mb-2" />
-            <span className="text-gray-500">
-              Click to Upload Image
-            </span>
+            <span className="text-gray-500">Click to Upload Image</span>
 
             <input type="file" className="hidden" />
           </label>
@@ -119,13 +161,14 @@ const AddProduct = () => {
 
         {/* Status */}
         <div>
-          <label className="block mb-2 font-medium text-gray-700">
-            Status
-          </label>
+          <label className="block mb-2 font-medium text-gray-700">Status</label>
 
           <select className="w-full md:w-60 border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none">
             <option>Active</option>
             <option>Inactive</option>
+            {/* if(){
+            IsActive === true ? Is_Active : InActive
+           } */}
           </select>
         </div>
 

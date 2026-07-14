@@ -6,11 +6,8 @@ const sizeSchema=new mongoose.Schema({
         unique:true,
         uppercase:true,
         trim:true
-    },description:{
-        type:String,
-        maxlenght:10
     }
 })
-const size= mongoose.model("size",sizeSchema)
-module.exports=size
+const Size= mongoose.model("Size",sizeSchema)
+module.exports=Size
 

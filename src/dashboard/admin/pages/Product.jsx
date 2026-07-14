@@ -1,7 +1,9 @@
 import { Search, Plus } from "lucide-react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { API_URI, AUTH_TOKEN } from "../../../config";
+import { useEffect, useState } from "react";
 
-const products = [
+const defaultProducts = [
   {
     id: 1,
     name: "Nike Shoes",
@@ -30,24 +32,42 @@ const products = [
 
 const Products = () => {
   const navigate = useNavigate();
-    return (
+  const [products, setProducts] = useState(defaultProducts);
+
+  const getProducts = async () => {
+    try {
+      const res = await fetch(`${API_URI}/product`, {
+        headers: {
+          Authorization: `Bearer ${AUTH_TOKEN}`,
+        },
+      });
+      const resData = await res.json();
+      setProducts(resData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Products</h1>
-          <p className="text-gray-500">
-            Manage all your products here.
-          </p>
+          <p className="text-gray-500">Manage all your products here.</p>
         </div>
 
         <button
-      onClick={() => Navigate("/admin/products/add")}
-      className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-    >
-      <Plus size={18} />
-      Add Product
-    </button>
+          onClick={() => Navigate("/admin/products/add")}
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          <Plus size={18} />
+          Add Product
+        </button>
       </div>
 
       {/* Stats */}
@@ -91,7 +111,7 @@ const Products = () => {
               <th className="text-left p-4">Product</th>
               <th className="text-left p-4">Category</th>
               <th className="text-left p-4">Price</th>
-              <th className="text-left p-4">Stock</th>
+              <th className="text-left p-4">MRP</th>
               <th className="text-left p-4">Status</th>
               <th className="text-center p-4">Action</th>
             </tr>
@@ -99,24 +119,21 @@ const Products = () => {
 
           <tbody>
             {products.map((item) => (
-              <tr
-                key={item.id}
-                className="border-t hover:bg-gray-50"
-              >
+              <tr key={item.id} className="border-t hover:bg-gray-50">
                 <td className="p-4 font-medium">{item.name}</td>
-                <td className="p-4">{item.category}</td>
-                <td className="p-4">{item.price}</td>
-                <td className="p-4">{item.stock}</td>
+                <td className="p-4">{item?.category?.title}</td>
+                <td className="p-4">{item.saleprice}</td>
+                <td className="p-4">{item.mrp}</td>
 
                 <td className="p-4">
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${
-                      item.status === "In Stock"
+                      item.isActive === true
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"
                     }`}
                   >
-                    {item.status}
+                    {item.isActive === true ? "Active" : "In-Active"}
                   </span>
                 </td>
 

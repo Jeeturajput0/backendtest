@@ -1,17 +1,19 @@
-const express=require("express")
-const dotenv=require("dotenv")
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require('cors');
 dotenv.config();
-const app=express();
-const port=3000;
-const mongoosedb=require("./config/db");
+const app = express();
+const port = 3000;
+const mongoosedb = require("./config/db");
 mongoosedb();
 app.use(express.json());
-const auth=require("./routes/auth.routes")
-const category =require("./routes/protected.route")
+app.use(cors())
+const auth = require("./routes/auth.routes");
+const protectedRoute = require("./routes/protected.route");
 
-app.use("/api/user",auth)
-app.use("/api/category",category)
-app.listen(port,()=>{
-    console.log(`server is runing http://localhost:${port}`);
-    
+app.use("/api/user", auth);
+app.use("/api", protectedRoute);
+
+app.listen(port, () => {
+  console.log(`server is runing http://localhost:${port}`);
 });
