@@ -7,6 +7,7 @@ const port = 3000;
 const mongoosedb = require("./config/db");
 mongoosedb();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 const auth = require("./routes/auth.routes");
 const protectedRoute = require("./routes/protected.route");

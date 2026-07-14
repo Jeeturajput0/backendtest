@@ -16,6 +16,7 @@ router.delete("/category/:category_id", protect,categoryController .destroy);
 //product routes
 router.post("/product", protect,productController .create);
 router.get("/product", protect,productController.list);
+router.get("/product/:product_id", protect,productController .details);
 router.put("/product/:product_id", protect,productController .update);
 router.delete("/product/:product_id", protect,productController .destroy);
 

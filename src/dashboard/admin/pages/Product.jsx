@@ -1,5 +1,5 @@
 import { Search, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URI, AUTH_TOKEN } from "../../../config";
 import { useEffect, useState } from "react";
 
@@ -33,16 +33,38 @@ const defaultProducts = [
 const Products = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState(defaultProducts);
+  const [formData, setFormData] = useState({
+    isActive: "",
+    search: "",
+  });
 
   const getProducts = async () => {
     try {
-      const res = await fetch(`${API_URI}/product`, {
+      const res = await fetch(
+        `${API_URI}/product?is_active=${formData.isActive}&search=${formData.search}`,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH_TOKEN}`,
+          },
+        },
+      );
+      const resData = await res.json();
+      setProducts(resData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteProduct = async (product_id) => {
+    try {
+      const res = await fetch(`${API_URI}/product/${product_id}`, {
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
       });
-      const resData = await res.json();
-      setProducts(resData.data);
+      getProducts();
+      alert("product deleted successfully");
     } catch (error) {
       console.log(error);
     }
@@ -62,7 +84,7 @@ const Products = () => {
         </div>
 
         <button
-          onClick={() => Navigate("/admin/products/add")}
+          onClick={() => navigate("/admin/products/add")}
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
         >
           <Plus size={18} />
@@ -89,18 +111,42 @@ const Products = () => {
       </div>
 
       {/* Search */}
-      <div className="bg-white rounded-xl shadow p-4">
-        <div className="relative w-full md:w-80">
+      <div className="bg-white rounded-xl shadow p-4 flex gap-3">
+        <div className="relative w-full md:w-80 ">
           <Search
             size={18}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
           />
           <input
+            onChange={(e) =>
+              setFormData({ ...formData, ["search"]: e.target.value })
+            }
             type="text"
             placeholder="Search Product..."
             className="w-full border rounded-lg pl-10 pr-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
+        <div>
+          <select
+            value={formData.isActive}
+            onChange={(e) =>
+              setFormData({ ...formData, ["isActive"]: e.target.value })
+            }
+            className="w-full md:w-60 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+          >
+
+            <option value="">Select</option>
+            <option value={true}>Active</option>
+            <option value={false}>Inactive</option>
+          </select>
+        </div>
+        <button
+          className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          onClick={() => getProducts()}
+        >
+          <Search size={18} />
+          Search
+        </button>
       </div>
 
       {/* Table */}
@@ -128,21 +174,27 @@ const Products = () => {
                 <td className="p-4">
                   <span
                     className={`px-3 py-1 rounded-full text-sm ${
-                      item.isActive === true
+                      item.isActive
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"
                     }`}
                   >
-                    {item.isActive === true ? "Active" : "In-Active"}
+                    {item.isActive ? "Active" : "In-Active"}
                   </span>
                 </td>
 
                 <td className="p-4 text-center space-x-2">
-                  <button className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                  <Link
+                    to={`/admin/products/edit/${item._id}`}
+                    className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                  >
                     Edit
-                  </button>
+                  </Link>
 
-                  <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                  <button
+                    onClick={() => deleteProduct(item._id)}
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                  >
                     Delete
                   </button>
                 </td>

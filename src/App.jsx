@@ -13,9 +13,9 @@ import Profile from "./dashboard/admin/pages/Profile";
 import Settings from "./dashboard/admin/pages/Settings";
 import Product from "./dashboard/admin/pages/Product";
 import Orders from "./dashboard/admin/pages/Order";
-import AddProduct from "./dashboard/admin/pages/AddProduct";
 import Products from "./dashboard/admin/pages/Product";
 import AddCategory from "./dashboard/admin/pages/AddCategory";
+import AddProduct from "./dashboard/admin/pages/AddProduct";
 
 function App() {
   return (
@@ -42,6 +42,7 @@ function App() {
         <Route path="/admin/products" element={<Products />} />
         <Route path="/admin/settings" element={<Settings />} />
         <Route path="/admin/products/add" element={<AddProduct />} />
+        <Route path="/admin/products/edit/:product_id" element={<AddProduct />} />
       </Route>
 
     </Routes>

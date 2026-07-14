@@ -1,5 +1,5 @@
 import { Save, Upload } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { API_URI, AUTH_TOKEN } from "../../../config";
 
 const AddCategory = () => {
