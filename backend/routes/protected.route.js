@@ -5,18 +5,15 @@ const categoryController  = require("../controller/categoryController");
 const productController  =require("../controller/productController")
 const sizeController =require("../controller/sizeController");
 const brandController= require("../controller/brandControllers")
-// category
 
+// category
 router.post("/category", protect,categoryController .create);
 router.get("/category", protect,categoryController.list);
 router.put("/category/:category_id", protect,categoryController .update);
 router.delete("/category/:category_id", protect,categoryController .destroy);
 // router.get("/category/:category_id", categoryController.details);
 
-
-
 //product routes
-
 router.post("/product", protect,productController .create);
 router.get("/product", protect,productController.list);
 router.put("/product/:product_id", protect,productController .update);

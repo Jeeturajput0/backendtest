@@ -10,5 +10,5 @@ const colorSchema=new mongoose.Schema({
         required:true
     }
 })
-const color= mongoose.model("color",colorSchema)
-module.exports=color
+const Color= mongoose.model("Color",colorSchema)
+module.exports=Color

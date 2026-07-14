@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, X, Save } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { API_URI, AUTH_TOKEN } from "../../../config";
 
 const categories = [
   {
@@ -27,27 +28,42 @@ const categories = [
 ];
 
 const CategoryList = () => {
-const Navigate = useNavigate()
+  const Navigate = useNavigate();
+
+  const [category, setcategory] = useState();
+  const getcategory = async () => {
+    try {
+      const res = await fetch(`${API_URI}/category`, {
+        headers: {
+          Authorization: `barber ${AUTH_TOKEN}`,
+        },
+      });
+      const resData = await res.json();
+      setcategory(resData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getcategory();
+  }, []);
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">
-            Categories
-          </h1>
-          <p className="text-gray-500">
-            Manage your product categories.
-          </p>
+          <h1 className="text-3xl font-bold text-gray-800">Categories</h1>
+          <p className="text-gray-500">Manage your product categories.</p>
         </div>
 
-         <button
-      onClick={() => Navigate("/admin/categories/add")}
-      className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-    >
-      <Plus size={18} />
-      Add Product
-    </button>
+        <button
+          onClick={() => Navigate("/admin/categories/add")}
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          <Plus size={18} />
+          Add Product
+        </button>
       </div>
 
       {/* Table */}
@@ -98,7 +114,6 @@ const Navigate = useNavigate()
           </tbody>
         </table>
       </div>
-
     </div>
   );
 };

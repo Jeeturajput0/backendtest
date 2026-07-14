@@ -1,8 +1,8 @@
-const brand = require("../model/brandmodel")
+const Brand = require("../model/brandmodel")
 const create = async (req, res) => {
   try {
     const { name, description, isActive } = req.body;
-    const brands = await brand.create({
+    const brands = await Brand.create({
       name,
       description,
       isActive,
@@ -23,10 +23,11 @@ const create = async (req, res) => {
 
 const list = async (req, res) => {
   try {
-    const brands =await  brand.find();
+    const brands =await  Brand.find();
     res.stauts(200).json({
       success: true,
       message: "brand listed successfull",
+      data:brand
     });
   } catch (err) {
     res.stauts(400).json({
@@ -38,10 +39,11 @@ const list = async (req, res) => {
 
 const update = async (rea,res) => {
     try {
-        const barnds = await brand.FindByIdAndUpdate()
+        const barnds = await Brand.FindByIdAndUpdate()
         res.stauts(200).json({
       success: true,
       message: "brand update successfull",
+      data:brand
     });
     } catch (err) {
         res.stauts(400).json({
@@ -52,10 +54,12 @@ const update = async (rea,res) => {
 }
 const destory = async (rea,res) => {
     try {
-        const barnds = await brand.FindByIdAndDelete()
+        const barnds = await Brand.FindByIdAndDelete()
         res.stauts(200).json({
       success: true,
       message: "brand deleted successfull",
+      data:brand
+      
     });
     } catch (err) {
         res.stauts(400).json({

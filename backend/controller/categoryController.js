@@ -1,8 +1,8 @@
-const category = require("../model/categorymodel");
+const Category = require("../model/categorymodel");
 const create = async (req, res) => {
   try {
     const { title, isActive } = req.body;
-    const categorys = await category.create({
+    const categorys = await Category.create({
       title,
       isActive,
     });
@@ -22,7 +22,7 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    const categorys = await category.find();
+    const categorys = await Category.find();
     res.status(200).json({
       success: true,
       message: "category list is showing",
@@ -39,7 +39,7 @@ const list = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const categorys = await category.findByIdAndUpdate(
+    const categorys = await Category.findByIdAndUpdate(
       req.params.category_id,
       req.body,
       { new: true },
@@ -60,7 +60,7 @@ const update = async (req, res) => {
 
 const destroy = async (req, res) => {
   try {
-    const categorys = await category.findByIdAndDelete(req.params.category_id);
+    const categorys = await Category.findByIdAndDelete(req.params.category_id);
     res.status(200).json({
       success: true,
       message: "category deleted succefully ",
