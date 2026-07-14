@@ -6,13 +6,7 @@ import Swal from "sweetalert2";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const Login = () => {
-  useEffect(() => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    navigate("/admin");
-  }
-}, [navigate]);
+ 
 
   const navigate =useNavigate();
   const [formData, setFormData] = useState({
@@ -27,9 +21,17 @@ const Login = () => {
     });
   };
 
+  
+useEffect(()=>{
+  const token = localStorage.getItem('token');
+
+  if(token){
+    navigate("/admin")
+  }
+},[navigate])
+
 const handleSubmit = async (e) => {
   e.preventDefault();
-
   try {
     const res = await axios.post(
       "http://localhost:3000/user/login",

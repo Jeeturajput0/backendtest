@@ -1,7 +1,8 @@
 const Product = require("../model/productmodel");
 const create = async (req, res) => {
   try {
-    const { name, details, mrp, saleprice, color, size, brand,category } = req.body;
+    const { name, details, mrp, saleprice, color, size, brand, category } =
+      req.body;
     const Products = await Product.create({
       name,
       details,
@@ -10,7 +11,7 @@ const create = async (req, res) => {
       color,
       size,
       brand,
-      category
+      category,
     });
     res.status(201).json({
       success: true,
@@ -28,7 +29,12 @@ const create = async (req, res) => {
 
 const list = async (req, res) => {
   try {
-    const products = await Product.find().populate('category');
+    let query = {};
+    if (req.query?.is_active || req.body?.is_active) {
+      query.isActive = req.query?.is_active;
+    }
+
+    const products = await Product.find(query).populate("category");
     res.status(200).json({
       success: true,
       message: "prodcut lists successfull",
@@ -42,6 +48,25 @@ const list = async (req, res) => {
     });
   }
 };
+
+const details = async (req, res) => {
+  try {
+    const { product_id } = req.params;
+    const product = await Product.findById(product_id);
+    res.status(200).json({
+      success: true,
+      message: "prodcut detail fetched successful",
+      data: product,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "product details failed",
+      error: error.message,
+    });
+  }
+};
+
 const update = async (req, res) => {
   try {
     const Products = await Product.findByIdAndUpdate(
@@ -85,4 +110,4 @@ const destroy = async (req, res) => {
     });
   }
 };
-module.exports = { create, list, update, destroy };
+module.exports = { create, list, update, destroy, details };
