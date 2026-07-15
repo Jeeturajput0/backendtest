@@ -16,6 +16,11 @@ import Orders from "./dashboard/admin/pages/Order";
 import Products from "./dashboard/admin/pages/Product";
 import AddCategory from "./dashboard/admin/pages/AddCategory";
 import AddProduct from "./dashboard/admin/pages/AddProduct";
+import Coupon from "./dashboard/admin/pages/Coupon";
+import AddCoupon from "./dashboard/admin/pages/AddCoupon";
+import Offer from "./dashboard/admin/pages/Offer";
+import AddOffer from "./dashboard/admin/pages/AddOffers";
+import Shop from "./pages/home/Shop";
 
 function App() {
   return (
@@ -24,6 +29,7 @@ function App() {
       {/* User Layout */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Mainhome />} />
+        <Route path="/shop" element={<Shop />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Singup />} />
       </Route>
@@ -41,8 +47,14 @@ function App() {
         <Route path="/admin/orders" element={<Orders />} />
         <Route path="/admin/products" element={<Products />} />
         <Route path="/admin/settings" element={<Settings />} />
+        <Route path="/admin/coupons" element={<Coupon />} />
+        <Route path="/admin/offers" element={<Offer />} />
+        <Route path="/admin/offers/add" element={<AddOffer />} />
+        <Route path="/admin/coupons/add" element={<AddCoupon />} />
         <Route path="/admin/products/add" element={<AddProduct />} />
         <Route path="/admin/products/edit/:product_id" element={<AddProduct />} />
+        <Route path="/admin/offers/edit/:offer_id" element={<AddOffer />} />
+        <Route path="/admin/coupons/edit/:coupon_id" element={<AddCoupon />} />
       </Route>
 
     </Routes>

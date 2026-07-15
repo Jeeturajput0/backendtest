@@ -5,6 +5,8 @@ const categoryController  = require("../controller/categoryController");
 const productController  =require("../controller/productController")
 const sizeController =require("../controller/sizeController");
 const brandController= require("../controller/brandControllers")
+const couponsController =require("../controller/couponsControlles")
+const offesController =require("../controller/offerControlle")
 
 // category
 router.post("/category", protect,categoryController .create);
@@ -31,5 +33,20 @@ router.get("/brand",protect,brandController.list);
 router.post("/brand",protect,brandController.create)
 router.put("/brand/:brand_id",protect,brandController.update);
 router.delete("/brand/:brand_id",protect,brandController.destory);
+// Coupons
+router.get("/coupon",protect,couponsController.list);
+router.post("/coupon",protect,couponsController.create)
+router.put("/coupon/:coupon_id",protect,couponsController.update);
+router.delete("/coupon/:coupon_id",protect,couponsController.destory);
+router.get("/product/:coupon", protect,couponsController .details);
+
+
+// offers
+router.get("/offer",protect,offesController.list);
+router.post("/offer",protect,offesController.create)
+router.put("/offer/:offer_id",protect,offesController.update);
+router.delete("/offer/:offer_id",protect,offesController.destory);
+router.get("/product/:offer", protect,offesController .details);
+
 
 module.exports = router;

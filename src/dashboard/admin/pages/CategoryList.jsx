@@ -33,7 +33,7 @@ const CategoryList = () => {
   const [category, setcategory] = useState();
   const getcategory = async () => {
     try {
-      const res = await fetch(`${API_URI}/category`, {
+      const res = await fetch(`${API_URI}/admin/category`, {
         headers: {
           Authorization: `barber ${AUTH_TOKEN}`,
         },

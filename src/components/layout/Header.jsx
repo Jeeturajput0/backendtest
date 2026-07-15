@@ -11,7 +11,7 @@ function Header() {
           <li className="flex gap-14 ">
             <a href="/">HOME</a>
             <a href="/About">ABOUT</a>
-            <a href="/Shops">SHOPS</a>
+            <a href="/shop">SHOPS</a>
             <a href="/Contact">CONTACT</a>
             <a href="/Blog">BLOG</a>
           </li>
