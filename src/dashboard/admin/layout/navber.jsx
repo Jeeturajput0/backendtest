@@ -1,94 +1,55 @@
-// import { FaShoppingCart, FaUser, FaBars } from "react-icons/fa";
-// import { Link, NavLink } from "react-router-dom";
-// import { useState } from "react";
+import { Search, Bell, User, Menu } from "lucide-react";
 
-// const Navbar = () => {
-//   const [menuOpen, setMenuOpen] = useState(false);
+const Navbar = () => {
+  return (
+    <header className="h-16 bg-white border-b shadow-sm flex items-center justify-between px-6 sticky top-0 z-40">
+      {/* Left */}
+      <div className="flex items-center gap-4">
+        <button className="lg:hidden p-2 rounded-lg hover:bg-gray-100">
+          <Menu size={22} />
+        </button>
 
-//   const navClass = ({ isActive }) =>
-//     isActive
-//       ? "text-blue-600 font-semibold"
-//       : "text-gray-700 hover:text-blue-600";
+        <h1 className="text-2xl font-bold text-gray-800">
+          Dashboard
+        </h1>
+      </div>
 
-//   return (
-//     <header className="sticky top-0 z-50 bg-white shadow">
-//       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-//         {/* Logo */}
-//         <Link to="/" className="text-2xl font-bold text-blue-600">
-//           PrimeHut
-//         </Link>
+      {/* Center - Search */}
+      <div className="hidden md:flex items-center bg-gray-100 rounded-lg px-3 py-2 w-96">
+        <Search size={18} className="text-gray-500" />
+        <input
+          type="text"
+          placeholder="Search..."
+          className="bg-transparent outline-none ml-2 w-full text-sm"
+        />
+      </div>
 
-//         {/* Desktop Menu */}
-//         <nav className="hidden items-center gap-6 md:flex">
-//           <NavLink to="/" className={navClass}>
-//             Home
-//           </NavLink>
+      {/* Right */}
+      <div className="flex items-center gap-4">
+        <button className="relative p-2 rounded-lg hover:bg-gray-100">
+          <Bell size={22} className="text-gray-600" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
 
-//           <NavLink to="/shop" className={navClass}>
-//             Shop
-//           </NavLink>
+        <div className="flex items-center gap-3 cursor-pointer">
+          <img
+            src="https://i.pravatar.cc/40"
+            alt="profile"
+            className="w-10 h-10 rounded-full border"
+          />
 
-//           <NavLink to="/about" className={navClass}>
-//             About
-//           </NavLink>
+          <div className="hidden sm:block">
+            <p className="text-sm font-semibold text-gray-800">
+              Admin
+            </p>
+            <p className="text-xs text-gray-500">
+              admin@example.com
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
 
-//           <NavLink to="/contact" className={navClass}>
-//             Contact
-//           </NavLink>
-//         </nav>
-
-//         {/* Right Icons */}
-//         <div className="hidden items-center gap-5 md:flex">
-//           <Link to="/cart">
-//             <FaShoppingCart size={20} />
-//           </Link>
-
-//           <Link to="/profile">
-//             <FaUser size={20} />
-//           </Link>
-//         </div>
-
-//         {/* Mobile Button */}
-//         <button
-//           onClick={() => setMenuOpen(!menuOpen)}
-//           className="md:hidden"
-//         >
-//           <FaBars size={22} />
-//         </button>
-//       </div>
-
-//       {/* Mobile Menu */}
-//       {menuOpen && (
-//         <div className="border-t bg-white md:hidden">
-//           <nav className="flex flex-col p-4 space-y-3">
-//             <NavLink to="/" className={navClass}>
-//               Home
-//             </NavLink>
-
-//             <NavLink to="/shop" className={navClass}>
-//               Shop
-//             </NavLink>
-
-//             <NavLink to="/about" className={navClass}>
-//               About
-//             </NavLink>
-
-//             <NavLink to="/contact" className={navClass}>
-//               Contact
-//             </NavLink>
-
-//             <NavLink to="/cart" className={navClass}>
-//               Cart
-//             </NavLink>
-
-//             <NavLink to="/profile" className={navClass}>
-//               Profile
-//             </NavLink>
-//           </nav>
-//         </div>
-//       )}
-//     </header>
-//   );
-// };
-
-// export default Navbar;
+export default Navbar;

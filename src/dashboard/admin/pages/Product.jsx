@@ -41,7 +41,7 @@ const Products = () => {
   const getProducts = async () => {
     try {
       const res = await fetch(
-        `${API_URI}/product?is_active=${formData.isActive}&search=${formData.search}`,
+        `${API_URI}/admin/product?is_active=${formData.isActive}&search=${formData.search}`,
         {
           headers: {
             Authorization: `Bearer ${AUTH_TOKEN}`,
@@ -57,7 +57,7 @@ const Products = () => {
 
   const deleteProduct = async (product_id) => {
     try {
-      const res = await fetch(`${API_URI}/product/${product_id}`, {
+      const res = await fetch(`${API_URI}/admin/product/${product_id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,

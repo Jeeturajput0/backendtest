@@ -23,7 +23,7 @@ const AddProduct = () => {
 
   const getProductDetail = async () => {
     try {
-      const res = await fetch(`${API_URI}/product/${product_id}`, {
+      const res = await fetch(`${API_URI}/admin/product/${product_id}`, {
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
@@ -55,7 +55,7 @@ const AddProduct = () => {
 
   const getCategories = async () => {
     try {
-      const res = await fetch(`${API_URI}/category`, {
+      const res = await fetch(`${API_URI}/admin/category`, {
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
@@ -69,7 +69,7 @@ const AddProduct = () => {
 
   const getSize = async () => {
     try {
-      const res = await fetch(`${API_URI}/size`, {
+      const res = await fetch(`${API_URI}/admin/size`, {
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
@@ -92,7 +92,7 @@ const AddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const api = product_id ? `${API_URI}/product/${product_id}` : `${API_URI}/product`;
+      const api = product_id ? `${API_URI}/admin/product/${product_id}` : `${API_URI}/admin/product`;
       const method = product_id ? "PUT" : "POST"
       const res = await fetch(api, {
         method,
