@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Save } from "lucide-react";
 import { API_URI, AUTH_TOKEN } from "../../../config";
 
-const AddCategory = () => {
+const AddColor = () => {
   const [form, setForm] = useState({
-    title: "",
-    slug: "",
+    name: "",
+    code: "#000000",
     isActive: true,
   });
 
@@ -29,7 +29,7 @@ const AddCategory = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${API_URI}/admin/category`, {
+      const res = await fetch(`${API_URI}/admin/color`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,17 +40,14 @@ const AddCategory = () => {
 
       const data = await res.json();
 
-      if (res.ok) {
-        alert(data.message || "Category Added Successfully");
-
+      
         setForm({
-          title: "",
-          slug: "",
+          name: "",
+          code: "#000000",
           isActive: true,
         });
-      } else {
-        alert(data.message);
-      }
+  
+      
     } catch (error) {
       console.log(error);
       alert("Something went wrong");
@@ -59,59 +56,55 @@ const AddCategory = () => {
 
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6 mt-8">
-      <h1 className="text-3xl font-bold mb-6">
-        Add Category
-      </h1>
+      <h1 className="text-3xl font-bold mb-6">Add Color</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-6">
 
-        {/* Category Title */}
+        {/* Color Name */}
         <div>
           <label className="block mb-2 font-medium">
-            Category Title
+            Color Name
           </label>
 
           <input
             type="text"
-            name="title"
-            value={form.title}
+            name="name"
+            value={form.name}
             onChange={handleChange}
-            placeholder="Enter Category Title"
+            placeholder="Red"
             className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
             required
           />
         </div>
 
-        {/* Slug */}
+        {/* Color Picker */}
         <div>
           <label className="block mb-2 font-medium">
-            Slug
+            Color Code
           </label>
 
-          <input
-            type="text"
-            name="slug"
-            value={form.slug}
-            onChange={handleChange}
-            placeholder="electronics"
-            className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-            required
-          />
-        </div>
+          <div className="flex items-center gap-4">
+            <input
+              type="color"
+              name="code"
+              value={form.code}
+              onChange={handleChange}
+              className="w-20 h-12 cursor-pointer border rounded-lg"
+            />
 
-        <div>
-          <label className="block mb-2 font-medium">
-            Image
-          </label>
+            <input
+              type="text"
+              name="code"
+              value={form.code}
+              onChange={handleChange}
+              className="flex-1 border rounded-lg px-4 py-3"
+            />
 
-          <input
-            type="file"
-            name="image"
-            onChange={handleFileChange}
-            placeholder="electronics"
-            className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-            required
-          />
+            <div
+              className="w-12 h-12 rounded-lg border"
+              style={{ backgroundColor: form.code }}
+            />
+          </div>
         </div>
 
         {/* Status */}
@@ -137,7 +130,7 @@ const AddCategory = () => {
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
         >
           <Save size={18} />
-          Save Category
+          Save Color
         </button>
 
       </form>
@@ -145,4 +138,4 @@ const AddCategory = () => {
   );
 };
 
-export default AddCategory;
+export default AddColor;
