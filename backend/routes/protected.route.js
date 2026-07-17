@@ -7,6 +7,7 @@ const sizeController =require("../controller/sizeController");
 const brandController= require("../controller/brandControllers")
 const couponsController =require("../controller/couponsControlles")
 const offesController =require("../controller/offerControlle")
+const colorController =require("../controller/colorsControllers")
 
 // category
 router.post("/category", protect,categoryController .create);
@@ -47,6 +48,13 @@ router.post("/offer",protect,offesController.create)
 router.put("/offer/:offer_id",protect,offesController.update);
 router.delete("/offer/:offer_id",protect,offesController.destory);
 router.get("/product/:offer", protect,offesController .details);
+
+// colors
+router.get("/color",protect,colorController.list);
+router.post("/color",protect,colorController.create)
+router.put("/color/:color_id",protect,colorController.update);
+router.delete("/color/:color_id",protect,colorController.destory);
+router.get("/product/:color", protect,colorController .details);
 
 
 module.exports = router;

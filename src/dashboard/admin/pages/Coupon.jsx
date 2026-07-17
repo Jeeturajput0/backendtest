@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { API_URI, AUTH_TOKEN } from "../../../config";
 import { useEffect, useState } from "react";
 
@@ -14,13 +14,8 @@ const Coupon = () => {
         },
       });
 
-      const data = await res.json();
-
-      console.log(data);
-
-      if (data.success) {
-        setCoupons(data.data);
-      }
+      const resData = await res.json();
+      setCoupons(resData.data);
     } catch (error) {
       console.log(error);
     }
@@ -28,7 +23,7 @@ const Coupon = () => {
 
   const deleteCoupon = async (coupon_id) => {
     try {
-      const res = await fetch(`${API_URI}/admin/coupon/${coupon_id}`, {
+      const res = await fetch(`${API_URI}\/admin/coupon/${coupon_id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
@@ -36,13 +31,12 @@ const Coupon = () => {
       });
 
       const data = await res.json();
+      console.log('====================================');
+      console.log(data);
+      console.log('====================================');
 
-      if (data.success) {
-        alert("Coupon deleted successfully");
-        getCoupons();
-      } else {
-        alert(data.message);
-      }
+      getCoupons();
+      alert("Coupon deleted successfully");
     } catch (error) {
       console.log(error);
     }

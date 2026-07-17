@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Plus, X, Save } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URI, AUTH_TOKEN } from "../../../config";
 
-const categories = [
+const defualtcategory = [
   {
     id: 1,
     name: "Electronics",
@@ -27,19 +27,38 @@ const categories = [
   },
 ];
 
-const CategoryList = () => {
+const Category = () => {
   const Navigate = useNavigate();
 
-  const [category, setcategory] = useState();
+  const [categories, setCategories] = useState(defualtcategory);
+
   const getcategory = async () => {
     try {
       const res = await fetch(`${API_URI}/admin/category`, {
         headers: {
-          Authorization: `barber ${AUTH_TOKEN}`,
+         Authorization: `Bearer ${AUTH_TOKEN}`,
         },
       });
       const resData = await res.json();
-      setcategory(resData.data);
+      setCategories(resData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const categoryDelete = async (category_id) => {
+    try {
+      const res = await fetch(`${API_URI}/admin/category/${category_id}`, {
+        method: "DELETE",
+        headers: {
+        Authorization: `Bearer ${AUTH_TOKEN}`,
+        },
+      });
+
+      const resData = await res.json();
+
+      alert(resData.message);
+      getcategory();
     } catch (error) {
       console.log(error);
     }
@@ -74,48 +93,59 @@ const CategoryList = () => {
               <th className="text-left p-4">#</th>
               <th className="text-left p-4">Category</th>
               <th className="text-left p-4">Slug</th>
-              <th className="text-left p-4">Products</th>
               <th className="text-left p-4">Status</th>
               <th className="text-center p-4">Action</th>
             </tr>
           </thead>
 
-          <tbody>
-            {categories.map((item) => (
-              <tr key={item.id} className="border-t hover:bg-gray-50">
-                <td className="p-4">{item.id}</td>
-                <td className="p-4 font-medium">{item.name}</td>
-                <td className="p-4">{item.slug}</td>
-                <td className="p-4">{item.products}</td>
+         <tbody>
+  {categories.map((item, index) => (
+    <tr key={item._id} className="border-t hover:bg-gray-50">
 
-                <td className="p-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      item.status === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
-                    {item.status}
-                  </span>
-                </td>
+      <td className="p-4">{index + 1}</td>
 
-                <td className="p-4 text-center space-x-2">
-                  <button className="bg-yellow-500 text-white px-3 py-1 rounded">
-                    Edit
-                  </button>
+      <td className="p-4 font-medium">
+        {item.title}
+      </td>
 
-                  <button className="bg-red-600 text-white px-3 py-1 rounded">
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+      <td className="p-4">
+        {item.slug}
+      </td>
+
+      <td className="p-4">
+        <span
+          className={`px-3 py-1 rounded-full text-sm ${
+            item.isActive
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {item.isActive ? "Active" : "Inactive"}
+        </span>
+      </td>
+
+      <td className="p-4 text-center space-x-2">
+        <Link to={`/admin/categories/edit/${item._id}`}>
+          <button className="bg-yellow-500 text-white px-3 py-1 rounded">
+            Edit
+          </button>
+        </Link>
+
+        <button
+          onClick={() => categoryDelete(item._id)}
+          className="bg-red-600 text-white px-3 py-1 rounded"
+        >
+          Delete
+        </button>
+      </td>
+
+    </tr>
+  ))}
+</tbody>
         </table>
       </div>
     </div>
   );
 };
 
-export default CategoryList;
+export default Category;

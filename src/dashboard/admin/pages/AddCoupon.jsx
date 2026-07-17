@@ -27,7 +27,6 @@ const AddCoupon = () => {
 
       const resData = await res.json();
 
-      if (resData.success) {
         const data = resData.data;
 
         setFormData({
@@ -38,16 +37,15 @@ const AddCoupon = () => {
           isActive: data.isActive,
           usageLimit: data.usageLimit,
         });
-      }
     } catch (error) {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    getCouponDetail();
-  }, [coupon_id]);
-
+ useEffect(() => {
+    setTimeout(() => {
+    coupon_id ? getProductDetail() : '';
+    }, 200);
+  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -92,7 +90,7 @@ const AddCoupon = () => {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                code: e.target.value,
+                ["code"]: e.target.value,
               })
             }
             className="w-full border rounded-lg p-3"
@@ -109,7 +107,7 @@ const AddCoupon = () => {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                discount: e.target.value,
+                ["discount"]: e.target.value,
               })
             }
             className="w-full border rounded-lg p-3"
@@ -126,7 +124,7 @@ const AddCoupon = () => {
             onChange={(e) =>
               setFormData({
                 ...formData,
-                usageLimit: e.target.value,
+                ["usageLimit"]: e.target.value,
               })
             }
             className="w-full border rounded-lg p-3"
@@ -169,11 +167,11 @@ const AddCoupon = () => {
           <label className="block mb-2 font-medium">Status</label>
 
           <select
-            value={formData.isActive.toString()}
+            value={formData.isActive}
             onChange={(e) =>
               setFormData({
                 ...formData,
-                isActive: e.target.value === "true",
+                ["isActive"]: e.target.value === "true",
               })
             }
             className="w-full border rounded-lg p-3"

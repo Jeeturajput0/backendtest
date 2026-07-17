@@ -134,7 +134,6 @@ const Products = () => {
             }
             className="w-full md:w-60 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
           >
-
             <option value="">Select</option>
             <option value={true}>Active</option>
             <option value={false}>Inactive</option>

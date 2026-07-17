@@ -1,10 +1,10 @@
 const Category = require("../model/categorymodel");
 const create = async (req, res) => {
   try {
-    const { title, isActive } = req.body;
+    const { title, isActive ,slug } = req.body;
     const categorys = await Category.create({
       title,
-      isActive,
+      isActive,slug
     });
 
     res.status(201).json({

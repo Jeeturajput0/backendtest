@@ -1,12 +1,17 @@
 const mongoose =require("mongoose")
 const colorSchema=new mongoose.Schema({
     name:{
-        type:Stirng,
+        type:String,
         required:true,
         unique:true,
         uppercase:true
     },code:{
-        type:Stirng,
+        type:String,
+        required:true
+    }
+    ,
+    isActive:{
+        type:Boolean,
         required:true
     }
 })

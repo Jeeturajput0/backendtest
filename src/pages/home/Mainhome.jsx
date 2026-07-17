@@ -43,27 +43,7 @@ const Mainhome = () => {
 
   return (
     <div className="bg-slate-50 min-h-screen">
-      {/* Navbar */}
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-blue-600">ShopEase</h1>
-
-          <div className="hidden md:flex gap-8 font-medium">
-            <a href="/">Home</a>
-            <a href="/">Shop</a>
-            <a href="/">Categories</a>
-            <a href="/">Deals</a>
-            <a href="/">Contact</a>
-          </div>
-
-          <div className="flex gap-4">
-            <Search className="cursor-pointer" />
-            <Heart className="cursor-pointer" />
-            <ShoppingCart className="cursor-pointer" />
-            <User className="cursor-pointer" />
-          </div>
-        </div>
-      </nav>
+   
 
       {/* Hero */}
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
