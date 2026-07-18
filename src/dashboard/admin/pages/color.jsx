@@ -104,7 +104,7 @@ const Color = () => {
                 <td className="p-4">{index + 1}</td>
 
                 <td className="p-4 font-medium">
-                  {item.title}
+                  {item.name}
                 </td>
 
                 <td className="p-4">

@@ -1,5 +1,5 @@
 import { Save, Upload } from "lucide-react";
-import { API_URI, AUTH_TOKEN } from "../../../config";
+import { API_URI, AUTH_TOKEN, setImageURL, uploadImage } from "../../../config";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -18,8 +18,19 @@ const AddProduct = () => {
     category: null,
     mrp: 0,
     saleprice: 0,
+    image: null,
     isActive: true,
   });
+
+  const [variations, setVariations] = useState([
+    {
+      color: "",
+      size: "",
+      price: "",
+      stock: "",
+      sku: "",
+    },
+  ]);
 
   const getProductDetail = async () => {
     try {
@@ -29,9 +40,8 @@ const AddProduct = () => {
         },
       });
       const resData = await res.json();
-      console.log(resData);
       const data = resData.data;
-      
+
       setFormData({
         name: data.name,
         details: data.details,
@@ -41,7 +51,9 @@ const AddProduct = () => {
         mrp: data.mrp,
         saleprice: data.saleprice,
         isActive: data.isActive,
+        image:data.image
       });
+      setVariations(data.variations);
     } catch (error) {
       console.log(error);
     }
@@ -49,7 +61,7 @@ const AddProduct = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      product_id ? getProductDetail() : '';
+      product_id ? getProductDetail() : "";
     }, 200);
   }, []);
 
@@ -91,9 +103,12 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    formData.variations = variations;
     try {
-      const api = product_id ? `${API_URI}/admin/product/${product_id}` : `${API_URI}/admin/product`;
-      const method = product_id ? "PUT" : "POST"
+      const api = product_id
+        ? `${API_URI}/admin/product/${product_id}`
+        : `${API_URI}/admin/product`;
+      const method = product_id ? "PUT" : "POST";
       const res = await fetch(api, {
         method,
         headers: {
@@ -106,6 +121,43 @@ const AddProduct = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleVariationChange = (index, e) => {
+    const { name, value } = e.target;
+
+    const updated = [...variations];
+    updated[index][name] = value;
+
+    setVariations(updated);
+  };
+
+  const addVariation = () => {
+    setVariations([
+      ...variations,
+      {
+        color: "",
+        size: "",
+        price: "",
+        stock: "",
+        sku: "",
+      },
+    ]);
+  };
+
+  const removeVariation = (index) => {
+    const updated = variations.filter((_, i) => i !== index);
+    setVariations(updated);
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const imgname = await uploadImage(file);
+    setFormData((prev) => ({
+      ...prev,
+      image: imgname
+    }));
   };
 
   return (
@@ -262,20 +314,102 @@ const AddProduct = () => {
         </div>
 
         {/* Status */}
-        <div>
-          <label className="block mb-2 font-medium text-gray-700">Status</label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block mb-2 font-medium">Image</label>
+            <input
+              type="file"
+              name="image"
+              onChange={handleFileChange}
+              placeholder="choose category image"
+              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              required
+            />
+            <img src={setImageURL(formData.image)} width="100px" height="auto" />
+          </div>
+          <div>
+            <label className="block mb-2 font-medium text-gray-700">
+              Status
+            </label>
 
-          <select
-            value={formData.isActive}
-            onChange={(e) =>
-              setFormData({ ...formData, ["isActive"]: e.target.value })
-            }
-            className="w-full md:w-60 border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-          >
-            <option value={true}>Active</option>
-            <option value={false}>Inactive</option>
-          </select>
+            <select
+              value={formData.isActive}
+              onChange={(e) =>
+                setFormData({ ...formData, ["isActive"]: e.target.value })
+              }
+              className="w-full md:w-60 border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              <option value={true}>Active</option>
+              <option value={false}>Inactive</option>
+            </select>
+          </div>
         </div>
+
+        <h4>Product Variation</h4>
+        {variations.map((item, index) => (
+          <div key={index} className="grid grid-cols-6 gap-3 mb-3">
+            <input
+              type="text"
+              name="color"
+              placeholder="Color"
+              value={item.color}
+              onChange={(e) => handleVariationChange(index, e)}
+              className="border p-2 rounded"
+            />
+
+            <input
+              type="text"
+              name="size"
+              placeholder="Size"
+              value={item.size}
+              onChange={(e) => handleVariationChange(index, e)}
+              className="border p-2 rounded"
+            />
+
+            <input
+              type="number"
+              name="price"
+              placeholder="Price"
+              value={item.price}
+              onChange={(e) => handleVariationChange(index, e)}
+              className="border p-2 rounded"
+            />
+
+            <input
+              type="number"
+              name="stock"
+              placeholder="Stock"
+              value={item.stock}
+              onChange={(e) => handleVariationChange(index, e)}
+              className="border p-2 rounded"
+            />
+
+            <input
+              type="text"
+              name="sku"
+              placeholder="SKU"
+              value={item.sku}
+              onChange={(e) => handleVariationChange(index, e)}
+              className="border p-2 rounded"
+            />
+
+            <button
+              type="button"
+              onClick={() => removeVariation(index)}
+              className="bg-red-500 text-white rounded px-3"
+            >
+              Remove
+            </button>
+          </div>
+        ))}
+
+        <button
+          type="button"
+          onClick={addVariation}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          + Add Variation
+        </button>
 
         {/* Buttons */}
         <div className="flex justify-end gap-4 pt-6">

@@ -31,6 +31,7 @@ router.post("/image", upload.single("image"), (req, res) => {
     });
 });
 
+
 /* router.post("/mutiple/image", upload.single("image"), (req, res) => {
 
     if (!req.file) {

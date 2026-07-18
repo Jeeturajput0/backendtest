@@ -8,8 +8,6 @@ import Mainhome from "./pages/home/Mainhome";
 
 import AdminLayout from "./dashboard/admin/layout/AdminLayout";
 import Dashboard from "./dashboard/admin/pages/Dashboard";
-import Profile from "./dashboard/admin/pages/Profile";
-import Settings from "./dashboard/admin/pages/Settings";
 import Product from "./dashboard/admin/pages/Product";
 import Orders from "./dashboard/admin/pages/Order";
 import Products from "./dashboard/admin/pages/Product";
@@ -25,6 +23,15 @@ import AddBrand from "./dashboard/admin/pages/AddBrand";
 import Category from "./dashboard/admin/pages/Category";
 import Color from "./dashboard/admin/pages/color";
 import AddColor from "./dashboard/admin/pages/AddColors";
+import AddSize from "./dashboard/admin/pages/Sizes/AddSizes";
+import Sizes from "./dashboard/admin/pages/Sizes/Size";
+import Settings from "./dashboard/admin/pages/settings/Setting";
+import Users from "./dashboard/admin/pages/users/Users";
+import Profile from "./dashboard/admin/pages/profile/Profile";
+import Payments from "./dashboard/admin/pages/Payments/Payments";
+import AddPayment from "./dashboard/admin/pages/Payments/Addpayments";
+import Vendors from "./dashboard/admin/pages/vendor/Vendor";
+import Reviews from "./dashboard/admin/pages/reviews/Reviews";
 
 function App() {
   return (
@@ -47,7 +54,6 @@ function App() {
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/categories" element={<Category/>} />
         <Route path="/admin/categories/add" element={<AddCategory />} />
-        <Route path="/admin/profile" element={<Profile />} />
         <Route path="/admin/orders" element={<Orders />} />
         <Route path="/admin/products" element={<Products />} />
         <Route path="/admin/settings" element={<Settings />} />
@@ -56,6 +62,7 @@ function App() {
         <Route path="/admin/brand" element={<Brand />} />
         <Route path="/admin/colors" element={<Color />} />
         <Route path="/admin/colors/add" element={<AddColor />} />
+        
         <Route path="/admin/brand/add" element={<AddBrand />} />
         <Route path="/admin/offers/add" element={<AddOffer />} />
         <Route path="/admin/coupons/add" element={<AddCoupon />} />
@@ -64,6 +71,17 @@ function App() {
         <Route path="/admin/brand/edit/:brand_id" element={<AddBrand />} />
         <Route path="/admin/offers/edit/:offer_id" element={<AddOffer />} />
         <Route path="/admin/coupons/edit/:coupon_id" element={<AddCoupon />} />
+        <Route path="/admin/sizes/edit/:sizes_id" element={<AddSize />} />
+        <Route path="/admin/sizes" element={<Sizes />} />
+        <Route path="/admin/users" element={<Users />} />
+        <Route path="/admin/profile" element={<Profile />} />
+        <Route path="/admin/sizes/add" element={<AddSize />} />
+        <Route path="/admin/payments" element={<Payments />} />
+        <Route path="/admin/vendors" element={<Vendors />} />
+        <Route path="/admin/reviews" element={<Reviews />} />
+
+        <Route path="/admin/payments/add" element={<AddPayment />} />
+
       </Route>
 
     </Routes>
