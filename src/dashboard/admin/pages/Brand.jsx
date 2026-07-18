@@ -1,151 +1,153 @@
-import { Link, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URI, AUTH_TOKEN } from "../../../config";
-
-const defaultbrand = [
-  {
-    id: 1,
-    name: "Nike",
-    logo: "https://cdn.simpleicons.org/nike/000000",
-  },
-  {
-    id: 2,
-    name: "Adidas",
-    logo: "https://cdn.simpleicons.org/adidas/000000",
-  },
-  {
-    id: 3,
-    name: "Puma",
-    logo: "https://cdn.simpleicons.org/puma/000000",
-  },
-  {
-    id: 4,
-    name: "Apple",
-    logo: "https://cdn.simpleicons.org/apple/000000",
-  },
-];
 
 const Brand = () => {
   const navigate = useNavigate();
-  const [brands, setBransds] = useState([defaultbrand]);
 
-  const getbrand = async () => {
+  const [brands, setBrands] = useState([]);
+
+  const getBrand = async () => {
     try {
-      const res = await fetch(`${API_URI}`, {
+      const res = await fetch(`${API_URI}/brand`, {
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
       });
-      const resData = await res.json();
-      setBransds(resData.data);
+
+      const data = await res.json();
+
+      if (data.success) {
+        setBrands(data.data);
+      }
     } catch (error) {
       console.log(error);
     }
   };
-  const deletebrand = async (req, res) => {
+
+  const deleteBrand = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this brand?",
+    );
+
+    if (!confirmDelete) return;
+
     try {
-      const res = await fetch(`${API_URI}`, {
+      const res = await fetch(`${API_URI}/brand/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
       });
-      getbrand();
-      alert("brand deleted successfully");
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert("Brand deleted successfully");
+        getBrand();
+      } else {
+        alert(data.message);
+      }
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
-    getbrand();
-  });
+    getBrand();
+  }, []);
+
   return (
-    // <section className="py-16 bg-gray-50">
-    //   <div className="max-w-7xl mx-auto px-4">
-        <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800"> Trusted Brands</h1>
-          <p className="text-gray-500">Explore products from the world's most trusted brands.</p>
+          <h1 className="text-2xl font-bold text-gray-800">Trusted Brands</h1>
+
+          <p className="text-gray-500">
+            Explore products from the world's most trusted brands.
+          </p>
         </div>
 
         <button
-          onClick={() => navigate("/admin/products/add")}
+          onClick={() => navigate("/admin/brand/add")}
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
         >
           <Plus size={18} />
-          Add Product
+          Add Brand
         </button>
       </div>
-        {/* <div className="text-center mb-12">
-      
 
-          <h2 className="text-4xl font-bold text-gray-900 mt-2">
-            Shop By Brand
-          </h2>
+      {/* Table */}
 
-          <p className="text-gray-500 mt-3">
-            Explore products from the world's most trusted brands.
-          </p>
-          <button
-            onClick={() => navigate("/admin/brand/add")}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
-            <Plus size={18} />
-            Add Product
-          </button>
-        </div> */}
+      <div className="bg-white rounded-xl shadow overflow-hidden">
+        <table className="w-full border border-gray-300 border-collapse">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border border-gray-300 p-3 text-left">
+                Brand Name
+              </th>
 
-        <div className="bg-white rounded-xl shadow overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="text-left p-4">Brand</th>
-                <th className="text-left p-4">Status</th>
-              </tr>
-            </thead>
+              <th className="border border-gray-300 p-3 text-left">Status</th>
 
-            <tbody>
-              {brands.map((item) => (
-                <tr key={item.id} className="border-t hover:bg-gray-50">
-                  <td className="p-4 font-medium">{item.name}</td>
-                  {/* <td className="p-4">{item.isActive}</td> */}
+              <th className="border border-gray-300 p-3 text-center">Action</th>
+            </tr>
+          </thead>
 
-                  <td className="p-4">
+          <tbody>
+            {brands.length > 0 ? (
+              brands.map((item) => (
+                <tr key={item._id} className="hover:bg-gray-50">
+                  <td className="border border-gray-300 p-3 font-medium">
+                    {item.name}
+                  </td>
+
+                  <td className="border border-gray-300 p-3">
                     <span
-                      className={`px-3 py-1 rounded-full text-sm ${
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
                         item.isActive
                           ? "bg-green-100 text-green-700"
                           : "bg-red-100 text-red-700"
                       }`}
                     >
-                      {item.isActive ? "Active" : "In-Active"}
+                      {item.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
 
-                  <td className="p-4 text-center space-x-2">
-                    <Link
-                      to={`/admin/products/edit/${item._id}`}
-                      className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                    >
-                      Edit
-                    </Link>
+                  <td className="border border-gray-300 p-3">
+                    <div className="flex justify-center gap-2">
+                      <Link
+                        to={`/admin/brand/edit/${item._id}`}
+                        className="px-4 py-0 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                      >
+                        Edit
+                      </Link>
 
-                    <button
-                      onClick={() => deletebrand(item._id)}
-                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                    >
-                      Delete
-                    </button>
+                      <button
+                        onClick={() => deleteBrand(item._id)}
+                        className="px-4 py-0 bg-red-600 text-white rounded hover:bg-red-700"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={3}
+                  className="border border-gray-300 p-6 text-center text-gray-500"
+                >
+                  No Brands Found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
+    </div>
   );
 };
 
