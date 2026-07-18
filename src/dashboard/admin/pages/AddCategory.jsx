@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Save } from "lucide-react";
-import { API_URI, AUTH_TOKEN } from "../../../config";
+import { API_URI, AUTH_TOKEN, uploadImage } from "../../../config";
+import axios from "axios";
 
 const AddCategory = () => {
   const [form, setForm] = useState({
     title: "",
     slug: "",
+    image: "",
     isActive: true,
   });
 
@@ -23,6 +25,15 @@ const AddCategory = () => {
         [name]: value,
       });
     }
+  };
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const imgname = await uploadImage(file);
+    setForm((prev) => ({
+      ...prev,
+      image: imgname,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -59,17 +70,12 @@ const AddCategory = () => {
 
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6 mt-8">
-      <h1 className="text-3xl font-bold mb-6">
-        Add Category
-      </h1>
+      <h1 className="text-3xl font-bold mb-6">Add Category</h1>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-
         {/* Category Title */}
         <div>
-          <label className="block mb-2 font-medium">
-            Category Title
-          </label>
+          <label className="block mb-2 font-medium">Category Title</label>
 
           <input
             type="text"
@@ -84,9 +90,7 @@ const AddCategory = () => {
 
         {/* Slug */}
         <div>
-          <label className="block mb-2 font-medium">
-            Slug
-          </label>
+          <label className="block mb-2 font-medium">Slug</label>
 
           <input
             type="text"
@@ -100,15 +104,13 @@ const AddCategory = () => {
         </div>
 
         <div>
-          <label className="block mb-2 font-medium">
-            Image
-          </label>
+          <label className="block mb-2 font-medium">Image</label>
 
           <input
             type="file"
             name="image"
             onChange={handleFileChange}
-            placeholder="electronics"
+            placeholder="choose category image"
             className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
             required
           />
@@ -116,9 +118,7 @@ const AddCategory = () => {
 
         {/* Status */}
         <div>
-          <label className="block mb-2 font-medium">
-            Status
-          </label>
+          <label className="block mb-2 font-medium">Status</label>
 
           <select
             name="isActive"
@@ -139,7 +139,6 @@ const AddCategory = () => {
           <Save size={18} />
           Save Category
         </button>
-
       </form>
     </div>
   );

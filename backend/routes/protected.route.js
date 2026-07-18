@@ -56,5 +56,4 @@ router.put("/color/:color_id",protect,colorController.update);
 router.delete("/color/:color_id",protect,colorController.destory);
 router.get("/product/:color", protect,colorController .details);
 
-
 module.exports = router;
