@@ -14,10 +14,12 @@ app.use(cors());
 const auth = require("./routes/auth.routes");
 const protectedRoute = require("./routes/protected.route");
 const website = require("./routes/website.route");
+const uploadImage = require("./routes/uploadImage.route");
 
 app.use("/api/user", auth);
 app.use("/api/admin", protectedRoute);
 app.use("/api", website);
+app.use("/api/upload", uploadImage);
 
 app.listen(port, () => {
   console.log(`server is runing http://localhost:${port}`);

@@ -1,27 +1,27 @@
-const bcrypt =require("bcrypt")
-const User=require("../model/usermodel")
-const jwt =require("jsonwebtoken")
+const bcrypt = require("bcrypt");
+const User = require("../model/usermodel");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const register =async (req,res) =>{
-  try{
-    console.log(req.body)
-  const {email,password,name,mobile}=req.body;
-    const userExists = await User.findOne({email})
-    if(userExists){
+const register = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { email, password, name, mobile } = req.body;
+    const userExists = await User.findOne({ email });
+    if (userExists) {
       return res.status(400).json({
-        success:false,
-        message:"user are already exists"
+        success: false,
+        message: "user are already exists",
       });
     }
 
-    const hashedPassword =await bcrypt.hash(password,4)
-    const user =await User.create({
+    const hashedPassword = await bcrypt.hash(password, 4);
+    const user = await User.create({
       name,
       email,
       mobile,
-      password:hashedPassword
-    })
+      password: hashedPassword,
+    });
 
     const token = jwt.sign(
       {
@@ -31,29 +31,29 @@ const register =async (req,res) =>{
       process.env.JWT_SECRET,
       {
         expiresIn: "7d",
-      }
+      },
     );
-    console.log("token",token);
-    
-  res.status(200).json({
-  success: true,
-  message: "user register successfully",
-  user,
-  token,
-});
+    console.log("token", token);
 
-  }catch(error){
+    res.status(200).json({
+      success: true,
+      message: "user register successfully",
+      user,
+      token,
+    });
+  } catch (error) {
     res.status(500).json({
-      success:false,
-      message:error.message
-       })
+      success: false,
+      message: error.message,
+    });
   }
-
-}
+};
 const login = async (req, res) => {
   try {
     console.log(req.body);
     const { email, password } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 4);
 
     const user = await User.findOne({ email });
 
@@ -64,10 +64,7 @@ const login = async (req, res) => {
       });
     }
 
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(400).json({
@@ -83,14 +80,16 @@ const login = async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: "4d",
-      }
+      },
     );
+
+    delete user.password;
     res.status(200).json({
       success: true,
       message: "Login successful",
+      data: user,
       token,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -99,14 +98,7 @@ const login = async (req, res) => {
   }
 };
 
-module.exports={register,login,};
-
-
-
-
-
-
-
+module.exports = { register, login };
 
 // const User = require("../model/user.model");
 // const bcrypt = require("bcrypt");

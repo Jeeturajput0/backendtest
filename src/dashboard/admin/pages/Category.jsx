@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Plus, X, Save } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URI, AUTH_TOKEN } from "../../../config";
+import { API_URI, AUTH_TOKEN, setImageURL } from "../../../config";
 
 const defualtcategory = [
   {
@@ -36,7 +36,7 @@ const Category = () => {
     try {
       const res = await fetch(`${API_URI}/admin/category`, {
         headers: {
-         Authorization: `Bearer ${AUTH_TOKEN}`,
+          Authorization: `Bearer ${AUTH_TOKEN}`,
         },
       });
       const resData = await res.json();
@@ -51,7 +51,7 @@ const Category = () => {
       const res = await fetch(`${API_URI}/admin/category/${category_id}`, {
         method: "DELETE",
         headers: {
-        Authorization: `Bearer ${AUTH_TOKEN}`,
+          Authorization: `Bearer ${AUTH_TOKEN}`,
         },
       });
 
@@ -98,50 +98,45 @@ const Category = () => {
             </tr>
           </thead>
 
-         <tbody>
-  {categories.map((item, index) => (
-    <tr key={item._id} className="border-t hover:bg-gray-50">
+          <tbody>
+            {categories.map((item, index) => (
+              <tr key={item._id} className="border-t hover:bg-gray-50">
+                <td className="p-4">{index + 1}</td>
 
-      <td className="p-4">{index + 1}</td>
+                <td className="p-4 font-medium"><img src={setImageURL(item.image)} width="50px" /></td>
+                <td className="p-4 font-medium">{item.title}</td>
 
-      <td className="p-4 font-medium">
-        {item.title}
-      </td>
+                <td className="p-4">{item.slug}</td>
 
-      <td className="p-4">
-        {item.slug}
-      </td>
+                <td className="p-4">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm ${
+                      item.isActive
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {item.isActive ? "Active" : "Inactive"}
+                  </span>
+                </td>
 
-      <td className="p-4">
-        <span
-          className={`px-3 py-1 rounded-full text-sm ${
-            item.isActive
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
-        >
-          {item.isActive ? "Active" : "Inactive"}
-        </span>
-      </td>
+                <td className="p-4 text-center space-x-2">
+                  <Link to={`/admin/categories/edit/${item._id}`}>
+                    <button className="bg-yellow-500 text-white px-3 py-1 rounded">
+                      Edit
+                    </button>
+                  </Link>
 
-      <td className="p-4 text-center space-x-2">
-        <Link to={`/admin/categories/edit/${item._id}`}>
-          <button className="bg-yellow-500 text-white px-3 py-1 rounded">
-            Edit
-          </button>
-        </Link>
-
-        <button
-          onClick={() => categoryDelete(item._id)}
-          className="bg-red-600 text-white px-3 py-1 rounded"
-        >
-          Delete
-        </button>
-      </td>
-
-    </tr>
-  ))}
-</tbody>
+                  <button
+                    onClick={() => categoryDelete(item._id)}
+                    className="bg-red-600 text-white px-3 py-1 rounded"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
     </div>
