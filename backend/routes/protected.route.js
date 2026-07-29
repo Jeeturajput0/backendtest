@@ -8,6 +8,14 @@ const brandController= require("../controller/brandControllers")
 const couponsController =require("../controller/couponsControlles")
 const offesController =require("../controller/offerControlle")
 const colorController =require("../controller/colorsControllers")
+const orderController = require("../controller/orderController");
+const paymentController = require("../controller/paymentController");
+const reviewController = require("../controller/reviewController");
+const bannerController = require("../controller/bannerController");
+const profileController = require("../controller/profileController");
+
+router.get("/profile", protect, profileController.getProfile);
+router.put("/profile", protect, profileController.updateProfile);
 
 // category
 router.post("/category", protect,categoryController .create);
@@ -39,7 +47,7 @@ router.get("/coupon",protect,couponsController.list);
 router.post("/coupon",protect,couponsController.create)
 router.put("/coupon/:coupon_id",protect,couponsController.update);
 router.delete("/coupon/:coupon_id",protect,couponsController.destory);
-router.get("/product/:coupon", protect,couponsController .details);
+router.get("/coupon/:coupon_id", protect,couponsController.details);
 
 
 // offers
@@ -47,7 +55,7 @@ router.get("/offer",protect,offesController.list);
 router.post("/offer",protect,offesController.create)
 router.put("/offer/:offer_id",protect,offesController.update);
 router.delete("/offer/:offer_id",protect,offesController.destory);
-router.get("/product/:offer", protect,offesController .details);
+router.get("/offer/:offer_id", protect,offesController.details);
 
 // colors
 router.get("/color",protect,colorController.list);
@@ -55,5 +63,33 @@ router.post("/color",protect,colorController.create)
 router.put("/color/:color_id",protect,colorController.update);
 router.delete("/color/:color_id",protect,colorController.destory);
 router.get("/product/:color", protect,colorController .details);
+
+// orders
+router.post("/order", protect, orderController.create);
+router.get("/order", protect, orderController.list);
+router.get("/order/:order_id", protect, orderController.details);
+router.put("/order/:order_id", protect, orderController.update);
+router.delete("/order/:order_id", protect, orderController.destroy);
+
+// payments
+router.post("/payment", protect, paymentController.create);
+router.get("/payment", protect, paymentController.list);
+router.get("/payment/:payment_id", protect, paymentController.details);
+router.put("/payment/:payment_id", protect, paymentController.update);
+router.delete("/payment/:payment_id", protect, paymentController.destroy);
+
+// reviews
+router.post("/review", protect, reviewController.create);
+router.get("/review", protect, reviewController.list);
+router.get("/review/:review_id", protect, reviewController.details);
+router.put("/review/:review_id", protect, reviewController.update);
+router.delete("/review/:review_id", protect, reviewController.destroy);
+
+// banners
+router.post("/banner", protect, bannerController.create);
+router.get("/banner", protect, bannerController.list);
+router.get("/banner/:banner_id", protect, bannerController.details);
+router.put("/banner/:banner_id", protect, bannerController.update);
+router.delete("/banner/:banner_id", protect, bannerController.destroy);
 
 module.exports = router;

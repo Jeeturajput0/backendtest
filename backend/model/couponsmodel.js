@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const couponSchema = new mongoose.Schema({
   code: {
     type: String,
-    requried: true,
+    required: true,
     unique: true,
     trim: true,
   },
   discount: {
     type: Number,
-    requried: true,
+    required: true,
   },
   expiry: {
     type: Date,

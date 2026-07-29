@@ -84,58 +84,58 @@ const Authform = ({
       {type === "register" && (
         <>
           <div>
-            <label>Full Name</label>
+            <label className="ui-label">Full Name</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter your name"
-              className="w-full px-4 py-3 border rounded-xl"
+              className="ui-input"
             />
           </div>
 
           <div>
-            <label>Contact</label>
+            <label className="ui-label">Contact</label>
             <input
               type="number"
               name="mobile"
               value={formData.mobile}
               onChange={handleChange}
               placeholder="Enter Mobile Number"
-              className="w-full px-4 py-3 border rounded-xl"
+              className="ui-input"
             />
           </div>
         </>
       )}
 
       <div>
-        <label>Email</label>
+        <label className="ui-label">Email address</label>
         <input
           type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
           placeholder="Enter Email"
-          className="w-full px-4 py-3 border rounded-xl"
+          className="ui-input"
         />
       </div>
 
       <div>
-        <label>Password</label>
+        <label className="ui-label">Password</label>
         <input
           type="password"
           name="password"
           value={formData.password}
           onChange={handleChange}
           placeholder="Enter Password"
-          className="w-full px-4 py-3 border rounded-xl"
+          className="ui-input"
         />
       </div>
 
       <button
         type="submit"
-        className="w-full py-3 bg-blue-600 text-white rounded-xl"
+        className="ui-button w-full py-3"
       >
         {type === "register" ? "Register" : "Login"}
       </button>

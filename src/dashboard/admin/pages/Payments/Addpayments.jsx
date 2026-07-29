@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Save, CreditCard } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { API_URI } from "../../../../config";
 
 const AddPayment = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     customer: "",
     orderId: "",
@@ -19,10 +22,21 @@ const AddPayment = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
-    alert("Payment Added Successfully!");
+    try {
+      const res = await fetch(`${API_URI}/admin/payment`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Payment could not be saved");
+      alert("Payment Added Successfully!");
+      navigate("/admin/payments");
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (

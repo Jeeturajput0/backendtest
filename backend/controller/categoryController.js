@@ -66,7 +66,7 @@ const destroy = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "category deleted succefully ",
-      data: error.message,
+      data: categorys,
     });
   } catch (error) {
     res.status(500).json({

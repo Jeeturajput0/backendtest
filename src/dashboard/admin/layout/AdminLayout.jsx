@@ -5,23 +5,23 @@ import Navbar from "./navber";
 
 const AdminLayout = () => {
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100">
+    <div className="flex min-h-screen bg-slate-50">
 
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r z-50 overflow-y-auto">
+      <aside className="fixed left-0 top-0 z-50 hidden h-screen w-72 overflow-y-auto border-r border-slate-200 bg-white lg:block">
   <Sidebar />
 </aside>
 
 
       {/* Right Area */}
-      <div className="flex flex-col flex-1 ml-64">
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-72">
 
         {/* Navbar */}
        
 <Navbar/>
       
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
 
           <Outlet />
 

@@ -1,16 +1,6 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-function Footer(){
-    return(
-     <>
-     <div className='flex h-5'>
-        <div><h1>colume</h1></div>
-        <div><h1>colume</h1></div>
-        <div><h1>colume</h1></div>
-        <div><h1>colume</h1></div>
-       <Link to="/admin">go to admin dashboard </Link>
-     </div>
-     </>   
-    )
+import { ArrowUpRight, AtSign, Mail, Send } from "lucide-react";
+import { Link } from "react-router-dom";
+function Footer() {
+  return <footer className="mt-auto bg-slate-950 text-slate-300"><div className="mx-auto max-w-7xl px-6 py-14 lg:px-8"><div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4"><div><h2 className="text-xl font-extrabold text-white">ShopEase<span className="text-indigo-400">.</span></h2><p className="mt-4 max-w-xs text-sm leading-6 text-slate-400">Thoughtfully selected products for a life well lived.</p></div><div><h3 className="text-sm font-semibold text-white">Shop</h3><div className="mt-4 space-y-3 text-sm"><Link to="/shop" className="block hover:text-white">All products</Link><Link to="/" className="block hover:text-white">New arrivals</Link></div></div><div><h3 className="text-sm font-semibold text-white">Support</h3><div className="mt-4 space-y-3 text-sm"><a href="mailto:support@shopease.com" className="flex items-center gap-2 hover:text-white"><Mail size={15}/>support@shopease.com</a><Link to="/admin" className="flex items-center gap-2 hover:text-white">Store administration <ArrowUpRight size={15}/></Link></div></div><div><h3 className="text-sm font-semibold text-white">Stay in touch</h3><div className="mt-4 flex gap-2"><a href="#" className="rounded-lg bg-white/10 p-2.5 transition hover:bg-white/20"><AtSign size={17}/></a><a href="#" className="rounded-lg bg-white/10 p-2.5 transition hover:bg-white/20"><Send size={17}/></a></div></div></div><div className="mt-12 border-t border-white/10 pt-6 text-xs text-slate-500">© 2026 ShopEase. Crafted for better shopping.</div></div></footer>;
 }
-export default Footer
+export default Footer;

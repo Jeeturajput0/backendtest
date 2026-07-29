@@ -1,4 +1,4 @@
-const Offer = require("../model/offerModel");
+const Offer = require("../model/offermodel");
 
 const create = async (req, res) => {
   try {

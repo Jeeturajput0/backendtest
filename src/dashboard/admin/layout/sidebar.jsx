@@ -24,24 +24,23 @@ const Sidebar = () => {
   const [masterOpen, setMasterOpen] = useState(true);
 
   const navClass = ({ isActive }) =>
-    `flex items-center gap-3 rounded-r-full px-5 py-3 text-lg transition ${
-      isActive ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-100"
+    `flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
+      isActive ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/20" : "text-slate-600 hover:bg-slate-50 hover:text-slate-950"
     }`;
 
   const subClass = ({ isActive }) =>
-    `flex items-center gap-3 rounded-lg px-4 py-2 transition ${
-      isActive ? "bg-blue-100 text-blue-600" : "text-gray-500 hover:bg-gray-100"
+    `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
+      isActive ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-500 hover:bg-slate-50"
     }`;
 
   return (
-    <aside className="w-72 min-h-screen bg-gray-100 border-r">
+    <aside className="min-h-screen w-72 bg-white px-4 py-5">
       {/* Logo */}
-      <div className="p-6">
-        <h2 className="text-3xl font-bold">E-Commerces</h2>
-        <p className="text-sm uppercase text-gray-500">Admin Panel</p>
+      <div className="px-3 pb-8 pt-2">
+        <div className="flex items-center gap-3"><div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 font-bold text-white">S</div><div><h2 className="text-lg font-extrabold tracking-tight text-slate-900">ShopEase</h2><p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Admin workspace</p></div></div>
       </div>
 
-      <nav className="space-y-2">
+      <nav className="space-y-1">
         <NavLink to="/admin/dashboard" className={navClass}>
           <Grid2X2Check />
           Overview
@@ -86,7 +85,7 @@ const Sidebar = () => {
 
         <button
           onClick={() => setMasterOpen(!masterOpen)}
-          className="flex w-full items-center justify-between px-5 py-3 text-lg text-gray-700 hover:bg-gray-100"
+          className="mt-4 flex w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50"
         >
           <span className="flex items-center gap-3">
             <Grid />
@@ -97,10 +96,15 @@ const Sidebar = () => {
         </button>
 
         {masterOpen && (
-          <div className="ml-8 border-l pl-4 space-y-2">
+          <div className="ml-5 mt-1 space-y-1 border-l border-slate-200 pl-3">
             <NavLink to="/admin/categories" className={subClass}>
               <Tags />
               Categories
+            </NavLink>
+
+            <NavLink to="/admin/brand" className={subClass}>
+              <Book />
+              Brands
             </NavLink>
 
             <NavLink to="/admin/reviews" className={subClass}>

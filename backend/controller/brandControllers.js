@@ -9,13 +9,13 @@ const create = async (req, res) => {
       logo,
       slug,
     });
-    res.stauts(200).json({
+    res.status(201).json({
       success: true,
       message: "brand creteded successfull",
-      data: brand,
+      data: brands,
     });
   } catch (err) {
-    res.stauts(500).json({
+    res.status(500).json({
       success: false,
       message: "brand is failed",
       err: err.message,
@@ -26,44 +26,44 @@ const create = async (req, res) => {
 const list = async (req, res) => {
   try {
     const brands = await Brand.find();
-    res.stauts(200).json({
+    res.status(200).json({
       success: true,
       message: "brand listed successfull",
-      data: brand,
+      data: brands,
     });
   } catch (err) {
-    res.stauts(400).json({
+    res.status(400).json({
       success: false,
       message: "brand listed failed",
     });
   }
 };
 
-const update = async (rea, res) => {
+const update = async (req, res) => {
   try {
-    const barnds = await Brand.FindByIdAndUpdate();
-    res.stauts(200).json({
+    const brand = await Brand.findByIdAndUpdate(req.params.brand_id, req.body, { new: true });
+    res.status(200).json({
       success: true,
       message: "brand update successfull",
       data: brand,
     });
   } catch (err) {
-    res.stauts(400).json({
+    res.status(400).json({
       success: false,
       message: "brand updated failed",
     });
   }
 };
-const destory = async (rea, res) => {
+const destory = async (req, res) => {
   try {
-    const barnds = await Brand.FindByIdAndDelete();
-    res.stauts(200).json({
+    const brand = await Brand.findByIdAndDelete(req.params.brand_id);
+    res.status(200).json({
       success: true,
       message: "brand deleted successfull",
       data: brand,
     });
   } catch (err) {
-    res.stauts(400).json({
+    res.status(400).json({
       success: false,
       message: "brand deleted  failed",
     });

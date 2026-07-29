@@ -53,8 +53,6 @@ const login = async (req, res) => {
     console.log(req.body);
     const { email, password } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 4);
-
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -83,11 +81,12 @@ const login = async (req, res) => {
       },
     );
 
-    delete user.password;
+    const userData = user.toObject();
+    delete userData.password;
     res.status(200).json({
       success: true,
       message: "Login successful",
-      data: user,
+      data: userData,
       token,
     });
   } catch (error) {

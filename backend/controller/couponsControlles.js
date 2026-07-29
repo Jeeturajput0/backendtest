@@ -18,10 +18,10 @@ const create = async (req, res) => {
       data: coupon,
     });
   } catch (err) {
-    res.status(200).json({
-      success: true,
-      message: "coupon update successfull",
-      err:err.message ,
+    res.status(400).json({
+      success: false,
+      message: "coupon creation failed",
+      error: err.message,
     });
   }
 };
@@ -43,9 +43,9 @@ const list = async (req, res) => {
   }
 };
 
-const update = async (rea, res) => {
+const update = async (req, res) => {
   try {
-    const coupon = await Coupons.findByIdAndUpdate();
+    const coupon = await Coupons.findByIdAndUpdate(req.params.coupon_id, req.body, { new: true });
     res.status(200).json({
       success: true,
       message: "coupon update successfull",
@@ -58,9 +58,9 @@ const update = async (rea, res) => {
     });
   }
 };
-const destory = async (rea, res) => {
+const destory = async (req, res) => {
   try {
-    const coupon = await Coupons.findByIdAndDelete();
+    const coupon = await Coupons.findByIdAndDelete(req.params.coupon_id);
     res.status(200).json({
       success: true,
       message: "coupon deleted successfull",

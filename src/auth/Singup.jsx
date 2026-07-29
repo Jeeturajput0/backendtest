@@ -1,65 +1,13 @@
-// import React, { useEffect, useState } from "react";
-// import Authform from "./Authform";
-// import { useNavigate } from "react-router-dom";
-// import Swal from "sweetalert2";
 
-// const Singup = () => {
-//   const navigate = useNavigate();
-//   const [formData, setFormData] = useState({
-//     name: "",
-//     mobile: "",
-//     email: "",
-//     password: "",
-//   });
-
-//   const handlesubmit = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//       if (resizeBy.success == true) {
-//         Swal.fire({
-//           title: "SUCCESS",
-//           text: "Your Are Register Successfully.",
-//           icon: "success",
-//         });
-//       }
-//     } catch (error) {
-//       Swal.fire({
-//         title: "ERROR",
-//         text: error.message(),
-//         icon: "error",
-//       });
-//     }
-//   };
-
-//   return (
-//     <>
-//       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-//         <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
-//           <Authform
-//             type="register"
-//             setFormData={setFormData}
-//             handlesubmit={handlesubmit}
-//           />
-//           <p>
-//             Do You Have Account{" "}
-//             <button onClick={() => navigate("/login")} className="text-blue-300">
-//               Click Me!
-//             </button>
-//           </p>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Singup;
 
 import React, { useState } from "react";
 import Authform from "./Authform";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { API_URI } from "../config";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -83,7 +31,7 @@ const Signup = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/user/register",
+        `${API_URI}/user/register`,
         formData
       );
 
@@ -109,19 +57,16 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
+    <div className="relative flex min-h-[calc(100vh-72px)] items-center justify-center overflow-hidden bg-slate-950 px-4 py-12">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(139,92,246,.35),transparent_28%),radial-gradient(circle_at_15%_80%,rgba(16,185,129,.2),transparent_28%)]" />
+      <div className="relative w-full max-w-md rounded-3xl border border-white/15 bg-white p-7 shadow-2xl sm:p-9"><div className="mb-8"><div className="mb-5 inline-flex rounded-2xl bg-violet-600 p-3 text-white"><Sparkles size={23}/></div><p className="text-sm font-bold uppercase tracking-[.18em] text-violet-600">Create your account</p><h1 className="mt-2 text-3xl font-extrabold tracking-tight">Start something good.</h1><p className="mt-2 text-sm text-slate-500">Join ShopEase and make every purchase feel effortless.</p></div>
         <Authform
           type="register"
           formData={formData}
           handleChange={handleChange}
           handlesubmit={handlesubmit}
         />
-           <p> Do You Have Account
-             <button onClick={() => navigate("/login")} className="text-blue-300">
-               Click Me!
-             </button>
-           </p>
+           <p className="mt-6 text-center text-sm text-slate-500">Already have an account? <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-800">Sign in <ArrowRight className="inline" size={14}/></Link></p>
       </div>
    
     </div>

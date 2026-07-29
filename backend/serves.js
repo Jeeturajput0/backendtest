@@ -4,7 +4,7 @@ const cors = require("cors");
 const path = require("path");
 dotenv.config();
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 2000;
 const mongoosedb = require("./config/db");
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 mongoosedb();
