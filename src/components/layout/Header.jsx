@@ -43,7 +43,7 @@ function Header() {
         </div>
         <div className="flex items-center gap-1 sm:gap-2">
           <Link
-            to="/shop"
+            to="/cart"
             className="rounded-xl p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-indigo-600"
             aria-label="Shop"
           >

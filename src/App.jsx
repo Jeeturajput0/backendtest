@@ -5,7 +5,6 @@ import Layout from "./components/layout/Layout";
 import Login from "./auth/Login";
 import Singup from "./auth/Singup";
 import Mainhome from "./pages/home/Mainhome";
-
 import AdminLayout from "./dashboard/admin/layout/AdminLayout";
 import Dashboard from "./dashboard/admin/pages/dashboard/Dashboard";
 import Product from "./dashboard/admin/pages/products/Product";
@@ -17,7 +16,6 @@ import Coupon from "./dashboard/admin/pages/coupons/Coupon";
 import AddCoupon from "./dashboard/admin/pages/coupons/AddCoupon";
 import Offer from "./dashboard/admin/pages/offers/Offer";
 import AddOffer from "./dashboard/admin/pages/offers/AddOffers";
-import Shop from "./pages/home/Shop";
 import Brand from "./dashboard/admin/pages/brands/Brand";
 import AddBrand from "./dashboard/admin/pages/brands/AddBrand";
 import Category from "./dashboard/admin/pages/categories/Category";
@@ -36,6 +34,9 @@ import AddReview from "./dashboard/admin/pages/reviews/AddReview";
 import Banners from "./dashboard/admin/pages/banners/Banners";
 import AddBanner from "./dashboard/admin/pages/banners/AddBanner";
 import AddOrders from "./dashboard/admin/pages/orders/Addoders";
+import Shop from "./pages/shop/Shop";
+import Cart from "./pages/home/Cart";
+import ProductDetails from "./pages/home/Productdetails";
 
 function App() {
   return (
@@ -46,6 +47,8 @@ function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Singup />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/product/:product_id" element={<ProductDetails />} />
       </Route>
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<Navigate to="dashboard" replace />} />
