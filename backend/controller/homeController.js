@@ -7,13 +7,14 @@ const NewsletterSubscription = require("../model/newslettersubscriptionmodel");
 
 const list = async (req, res) => {
   try {
-    const [heroBanners, categories, products, offers, reviews] = await Promise.all([
-      Banner.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 }),
-      Category.find({ isActive: true }),
-      Product.find({ isActive: true }).populate("category"),
-      Offer.find({ status: true }).sort({ createdAt: -1 }),
-      Review.find({ status: "Approved" }).sort({ createdAt: -1 }),
-    ]);
+    const [heroBanners, categories, products, offers, reviews] =
+      await Promise.all([
+        Banner.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 }),
+        Category.find({ isActive: true }),
+        Product.find({ isActive: true }).populate("category"),
+        Offer.find({ status: true }).sort({ createdAt: -1 }),
+        Review.find({ status: "Approved" }).sort({ createdAt: -1 }),
+      ]);
 
     const newestProducts = [...products].reverse();
     res.json({
@@ -31,19 +32,43 @@ const list = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Home data could not be loaded", error: error.message });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Home data could not be loaded",
+        error: error.message,
+      });
   }
 };
 
 const subscribe = async (req, res) => {
   try {
     const email = req.body.email?.trim().toLowerCase();
-    if (!email || !/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ success: false, message: "Please enter a valid email address" });
+    if (!email || !/^\S+@\S+\.\S+$/.test(email))
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Please enter a valid email address",
+        });
 
-    await NewsletterSubscription.updateOne({ email }, { $setOnInsert: { email } }, { upsert: true });
-    res.status(201).json({ success: true, message: "You are subscribed to the newsletter" });
+    await NewsletterSubscription.updateOne(
+      { email },
+      { $setOnInsert: { email } },
+      { upsert: true },
+    );
+    res
+      .status(201)
+      .json({ success: true, message: "You are subscribed to the newsletter" });
   } catch (error) {
-    res.status(400).json({ success: false, message: "Newsletter subscription failed", error: error.message });
+    res
+      .status(400)
+      .json({
+        success: false,
+        message: "Newsletter subscription failed",
+        error: error.message,
+      });
   }
 };
 

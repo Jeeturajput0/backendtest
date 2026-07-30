@@ -7,7 +7,7 @@ import {
   Sparkles,
   Star,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URI, setImageURL } from "../../config";
 import TopSlider from "./TopSlider";
 
@@ -17,12 +17,14 @@ const productImage = (product) =>
     : "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800";
 
 function ProductGrid({ products, sale = false }) {
+    const navigate = useNavigate();
   return (
     <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {products.map((item) => (
         <article
           key={item._id}
-          className="group overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+          onClick={() => navigate(`/product/${item._id}`)}
+          className="group cursor-pointer overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
         >
           <div className="relative aspect-square overflow-hidden bg-slate-100">
             <img
@@ -58,6 +60,7 @@ function ProductGrid({ products, sale = false }) {
               <button className="rounded-xl bg-slate-900 p-2.5 text-white">
                 <ShoppingBag size={16} />
               </button>
+             
             </div>
           </div>
         </article>

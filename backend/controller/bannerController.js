@@ -1,8 +1,91 @@
 const Banner = require("../model/bannermodel");
 
-const create = async (req, res) => { try { const data = await Banner.create(req.body); res.status(201).json({ success: true, message: "Banner created successfully", data }); } catch (error) { res.status(400).json({ success: false, message: "Banner creation failed", error: error.message }); } };
-const list = async (req, res) => { try { const data = await Banner.find().sort({ sortOrder: 1, createdAt: -1 }); res.json({ success: true, data }); } catch (error) { res.status(400).json({ success: false, message: "Banner list failed", error: error.message }); } };
-const details = async (req, res) => { try { const data = await Banner.findById(req.params.banner_id); if (!data) return res.status(404).json({ success: false, message: "Banner not found" }); res.json({ success: true, data }); } catch (error) { res.status(400).json({ success: false, message: "Banner details failed", error: error.message }); } };
-const update = async (req, res) => { try { const data = await Banner.findByIdAndUpdate(req.params.banner_id, req.body, { new: true, runValidators: true }); if (!data) return res.status(404).json({ success: false, message: "Banner not found" }); res.json({ success: true, message: "Banner updated successfully", data }); } catch (error) { res.status(400).json({ success: false, message: "Banner update failed", error: error.message }); } };
-const destroy = async (req, res) => { try { const data = await Banner.findByIdAndDelete(req.params.banner_id); if (!data) return res.status(404).json({ success: false, message: "Banner not found" }); res.json({ success: true, message: "Banner deleted successfully" }); } catch (error) { res.status(400).json({ success: false, message: "Banner delete failed", error: error.message }); } };
+const create = async (req, res) => {
+  try {
+    const data = await Banner.create(req.body);
+    res
+      .status(201)
+      .json({ success: true, message: "Banner created successfully", data });
+  } catch (error) {
+    res
+      .status(400)
+      .json({
+        success: false,
+        message: "Banner creation failed",
+        error: error.message,
+      });
+  }
+};
+const list = async (req, res) => {
+  try {
+    const data = await Banner.find().sort({ sortOrder: 1, createdAt: -1 });
+    res.json({ success: true, data });
+  } catch (error) {
+    res
+      .status(400)
+      .json({
+        success: false,
+        message: "Banner list failed",
+        error: error.message,
+      });
+  }
+};
+const details = async (req, res) => {
+  try {
+    const data = await Banner.findById(req.params.banner_id);
+    if (!data)
+      return res
+        .status(404)
+        .json({ success: false, message: "Banner not found" });
+    res.json({ success: true, data });
+  } catch (error) {
+    res
+      .status(400)
+      .json({
+        success: false,
+        message: "Banner details failed",
+        error: error.message,
+      });
+  }
+};
+const update = async (req, res) => {
+  try {
+    const data = await Banner.findByIdAndUpdate(
+      req.params.banner_id,
+      req.body,
+      { new: true, runValidators: true },
+    );
+    if (!data)
+      return res
+        .status(404)
+        .json({ success: false, message: "Banner not found" });
+    res.json({ success: true, message: "Banner updated successfully", data });
+  } catch (error) {
+    res
+      .status(400)
+      .json({
+        success: false,
+        message: "Banner update failed",
+        error: error.message,
+      });
+  }
+};
+const destroy = async (req, res) => {
+  try {
+    const data = await Banner.findByIdAndDelete(req.params.banner_id);
+    if (!data)
+      return res
+        .status(404)
+        .json({ success: false, message: "Banner not found" });
+    res.json({ success: true, message: "Banner deleted successfully" });
+  } catch (error) {
+    res
+      .status(400)
+      .json({
+        success: false,
+        message: "Banner delete failed",
+        error: error.message,
+      });
+  }
+};
 module.exports = { create, list, details, update, destroy };
