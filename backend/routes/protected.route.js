@@ -13,6 +13,7 @@ const paymentController = require("../controller/paymentController");
 const reviewController = require("../controller/reviewController");
 const bannerController = require("../controller/bannerController");
 const profileController = require("../controller/profileController");
+const cartController = require("../controller/cartController");
 
 router.get("/profile", protect, profileController.getProfile);
 router.put("/profile", protect, profileController.updateProfile);
@@ -91,5 +92,10 @@ router.get("/banner", protect, bannerController.list);
 router.get("/banner/:banner_id", protect, bannerController.details);
 router.put("/banner/:banner_id", protect, bannerController.update);
 router.delete("/banner/:banner_id", protect, bannerController.destroy);
+//cart
+router.post("/cart", protect, cartController.create);
+router.get("/cart", protect, cartController.getCart);
+router.put("/cart/:cartId", protect, cartController.updateCart);
+router.delete("/cart/:cartId", protect, cartController.deleteCart);
 
 module.exports = router;

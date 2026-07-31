@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Heart, Search, ShoppingBag, SlidersHorizontal, X } from "lucide-react";
 import { API_URI, setImageURL } from "../../config";
-import { useSearchParams } from "react-router-dom";
+import axios from "axios";
+import { useNavigate, useSearchParams } from "react-router-dom";
 const Shop = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category") || "";
   const [filter, setFilter] = useState({ category, search: "" });
@@ -40,6 +42,28 @@ const Shop = () => {
     return matchesSearch && (!filter.category || id === filter.category);
   });
   const clear = () => setFilter({ category: "", search: "" });
+
+  const addToCart = async (product) => {
+    const token = localStorage.getItem("token");
+    if (!token)
+      return navigate("/login", { state: { from: `/product/${product._id}` } });
+
+    try {
+      await axios.post(
+        `${API_URI}/admin/cart`,
+        {
+          product: product._id,
+          quantity: 1,
+          color: product.color,
+          size: product.size,
+        },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      navigate("/cart");
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to add product to cart");
+    }
+  };
   return (
     <div className="min-h-screen bg-slate-50">
       <section className="border-b border-slate-200 bg-white">
@@ -178,7 +202,11 @@ const Shop = () => {
                         <p className="text-lg font-bold">
                           ₹{product.saleprice}
                         </p>
-                        <button className="rounded-xl bg-slate-900 p-2.5 text-white transition hover:bg-indigo-600">
+                        <button
+                          onClick={() => addToCart(product)}
+                          className="rounded-xl bg-slate-900 p-2.5 text-white transition hover:bg-indigo-600"
+                          aria-label={`Add ${product.name} to cart`}
+                        >
                           <ShoppingBag size={17} />
                         </button>
                       </div>

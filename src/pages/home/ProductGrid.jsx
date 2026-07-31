@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { API_URI, setImageURL } from "../../config";
 import { Heart, ShoppingBag } from "lucide-react";
+import axios from "axios";
 const productImage = (product) =>
   product?.image
     ? setImageURL(product.image)
@@ -8,6 +9,23 @@ const productImage = (product) =>
 
 function ProductGrid({ products, sale = false }) {
   const navigate = useNavigate();
+
+  const addToCart = async (item) => {
+    const token = localStorage.getItem("token");
+    if (!token)
+      return navigate(`/login`, { state: { from: `/product/${item._id}` } });
+
+    try {
+      await axios.post(
+        `${API_URI}/admin/cart`,
+        { product: item._id, quantity: 1, color: item.color, size: item.size },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      navigate("/cart");
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to add product to cart");
+    }
+  };
   return (
     <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {products.map((item) => (
@@ -56,7 +74,7 @@ function ProductGrid({ products, sale = false }) {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  navigate("/cart");
+                  addToCart(item);
                 }}
                 className="rounded-xl bg-slate-900 p-2.5 text-white"
               >

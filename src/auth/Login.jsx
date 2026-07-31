@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Authform from "./Authform";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ArrowRight, LockKeyhole, ShoppingBag } from "lucide-react";
 import { API_URI } from "../config";
 
@@ -11,6 +11,7 @@ const Login = () => {
  
 
   const navigate =useNavigate();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,7 +29,7 @@ useEffect(()=>{
   const token = localStorage.getItem('token');
 
   if(token){
-    navigate("/admin")
+    navigate(location.state?.from || "/admin")
   }
 },[navigate])
 
@@ -52,7 +53,7 @@ const handleSubmit = async (e) => {
       icon: "success",
     });
 
-    navigate("/admin");
+    navigate(location.state?.from || "/admin");
   } catch (error) {
     Swal.fire({
       title: "ERROR",

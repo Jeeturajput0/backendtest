@@ -64,7 +64,8 @@ const list = async (req, res) => {
 const details = async (req, res) => {
   try {
     const { product_id } = req.params;
-    const product = await Product.findById(product_id);
+    const product = await Product.findById(product_id).populate("category");
+;
     res.status(200).json({
       success: true,
       message: "prodcut detail fetched successful",

@@ -15,5 +15,7 @@ router.get("/category", categoryController.list);
 //product routes
 router.get("/product", productController.list);
 router.get("/product/:product_id", productController .details);
+//cart routes
+
 
 module.exports = router;
