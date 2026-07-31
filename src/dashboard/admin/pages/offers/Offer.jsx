@@ -52,22 +52,21 @@ const Offer = () => {
   }, []);
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Offers</h1>
+    <div className="mx-auto max-w-7xl space-y-7">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Marketing</p><h1 className="mt-1 text-3xl font-extrabold tracking-tight">Offers</h1><p className="mt-2 text-slate-500">Create timely incentives for your customers.</p></div>
 
         <Link
           to="/admin/offers/add"
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          className="ui-button"
         >
           <Plus size={18} />
           Add Offer
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-100">
+      <div className="ui-table-wrap">
+        <table className="ui-table">
+          <thead>
             <tr>
               <th className="p-3 text-left">Name</th>
               <th className="p-3 text-left">Discount</th>
@@ -78,7 +77,7 @@ const Offer = () => {
 
           <tbody>
             {offers.map((item) => (
-              <tr key={item._id} className="border-t">
+              <tr key={item._id}>
                 <td className="p-3">{item.name}</td>
 
                 <td className="p-3">{item.discount}%</td>
@@ -90,14 +89,14 @@ const Offer = () => {
                 <td className="p-3">
                   <Link
                     to={`/admin/offers/edit/${item._id}`}
-                    className="text-blue-600 mr-4"
+                    className="mr-2 inline-flex rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
                   >
                     Edit
                   </Link>
 
                   <button
                     onClick={() => deleteOffer(item._id)}
-                    className="text-red-600"
+                    className="inline-flex rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
                   >
                     Delete
                   </button>

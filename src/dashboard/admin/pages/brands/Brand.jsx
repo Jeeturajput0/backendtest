@@ -59,11 +59,11 @@ const Brand = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 p-6">
+    <div className="mx-auto max-w-7xl space-y-7">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Trusted Brands</h1>
+          <p className="eyebrow">Catalog</p><h1 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-950">Trusted Brands</h1>
 
           <p className="text-gray-500">
             Explore products from the world's most trusted brands.
@@ -72,7 +72,7 @@ const Brand = () => {
 
         <button
           onClick={() => navigate("/admin/brand/add")}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          className="ui-button"
         >
           <Plus size={18} />
           Add Brand
@@ -81,29 +81,29 @@ const Brand = () => {
 
       {/* Table */}
 
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full border border-gray-300 border-collapse">
-          <thead className="bg-gray-100">
+      <div className="ui-table-wrap">
+        <table className="ui-table">
+          <thead>
             <tr>
-              <th className="border border-gray-300 p-3 text-left">
+              <th>
                 Brand Name
               </th>
 
-              <th className="border border-gray-300 p-3 text-left">Status</th>
+              <th>Status</th>
 
-              <th className="border border-gray-300 p-3 text-center">Action</th>
+              <th className="text-center">Action</th>
             </tr>
           </thead>
 
           <tbody>
             {brands.length > 0 ? (
               brands.map((item) => (
-                <tr key={item._id} className="hover:bg-gray-50">
-                  <td className="border border-gray-300 p-3 font-medium">
+                <tr key={item._id}>
+                  <td className="font-medium">
                     {item.name}
                   </td>
 
-                  <td className="border border-gray-300 p-3">
+                  <td>
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
                         item.isActive
@@ -115,18 +115,18 @@ const Brand = () => {
                     </span>
                   </td>
 
-                  <td className="border border-gray-300 p-3">
+                  <td>
                     <div className="flex justify-center gap-2">
                       <Link
                         to={`/admin/brand/edit/${item._id}`}
-                        className="px-4 py-0 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                        className="inline-flex rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
                       >
                         Edit
                       </Link>
 
                       <button
                         onClick={() => deleteBrand(item._id)}
-                        className="px-4 py-0 bg-red-600 text-white rounded hover:bg-red-700"
+                        className="inline-flex rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
                       >
                         Delete
                       </button>

@@ -47,21 +47,20 @@ const Coupon = () => {
   }, []);
 
   return (
-    <div className="bg-white rounded-xl shadow p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Coupons</h2>
+    <div className="mx-auto max-w-7xl space-y-7">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Marketing</p><h2 className="mt-1 text-3xl font-extrabold tracking-tight">Coupons</h2><p className="mt-2 text-slate-500">Manage promotional codes and redemptions.</p></div>
 
         <Link
           to="/admin/coupons/add"
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          className="ui-button"
         >
           <Plus size={18} />
           Add Coupon
         </Link>
       </div>
 
-      <table className="w-full border">
-        <thead className="bg-gray-100">
+      <div className="ui-table-wrap"><table className="ui-table">
+        <thead>
           <tr>
             <th className="p-3 text-left">Code</th>
 
@@ -77,7 +76,7 @@ const Coupon = () => {
 
         <tbody>
           {coupons.map((item) => (
-            <tr key={item._id} className="border-t">
+            <tr key={item._id}>
               <td className="p-3">{item.code}</td>
 
               <td className="p-3 text-center">{item.discount}</td>
@@ -99,14 +98,14 @@ const Coupon = () => {
               <td className="p-3 text-center flex justify-center gap-4">
                 <Link
                   to={`/admin/coupons/edit/${item._id}`}
-                  className="text-blue-600 hover:underline"
+                  className="inline-flex rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
                 >
                   Edit
                 </Link>
 
                 <button
                   onClick={() => deleteCoupon(item._id)}
-                  className="text-red-600 hover:underline"
+                  className="inline-flex rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
                 >
                   Delete
                 </button>
@@ -122,7 +121,7 @@ const Coupon = () => {
             </tr>
           )}
         </tbody>
-      </table>
+      </table></div>
     </div>
   );
 };

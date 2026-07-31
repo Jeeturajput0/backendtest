@@ -65,11 +65,11 @@ const Color = () => {
   }, []);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="mx-auto max-w-7xl space-y-7">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Colors</h1>
+          <p className="eyebrow">Catalog</p><h1 className="mt-1 text-3xl font-extrabold tracking-tight">Colors</h1>
           <p className="text-gray-500">
             Manage Product Colors
           </p>
@@ -77,7 +77,7 @@ const Color = () => {
 
         <button
           onClick={() => navigate("/admin/colors/add")}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg"
+          className="ui-button"
         >
           <Plus size={18} />
           Add Color
@@ -85,9 +85,9 @@ const Color = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-100">
+      <div className="ui-table-wrap">
+        <table className="ui-table">
+          <thead>
             <tr>
               <th className="p-4 text-left">#</th>
               <th className="p-4 text-left">Color</th>
@@ -100,7 +100,7 @@ const Color = () => {
 
           <tbody>
             {colors.map((item, index) => (
-              <tr key={item._id} className="border-t">
+              <tr key={item._id}>
                 <td className="p-4">{index + 1}</td>
 
                 <td className="p-4 font-medium">
@@ -132,14 +132,14 @@ const Color = () => {
 
                 <td className="p-4 text-center space-x-2">
                   <Link to={`/admin/colors/edit/${item._id}`}>
-                    <button className="bg-yellow-500 text-white px-3 py-1 rounded">
+                    <button className="inline-flex rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100">
                       Edit
                     </button>
                   </Link>
 
                   <button
                     onClick={() => deleteColor(item._id)}
-                    className="bg-red-600 text-white px-3 py-1 rounded"
+                    className="inline-flex rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
                   >
                     Delete
                   </button>

@@ -23,20 +23,19 @@ const Banners = () => {
     getBanners();
   };
   return (
-    <div className="p-6">
-      <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">Banners</h1>
+    <div className="mx-auto max-w-7xl space-y-7">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="eyebrow">Storefront</p><h1 className="mt-1 text-3xl font-extrabold tracking-tight">Banners</h1><p className="mt-2 text-slate-500">Shape the first impression of your storefront.</p></div>
         <Link
           to="/admin/banners/add"
-          className="flex gap-2 bg-blue-600 text-white px-4 py-2 rounded"
+          className="ui-button"
         >
           <Plus size={18} />
           Add Banner
         </Link>
       </div>
-      <div className="bg-white rounded shadow overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-100">
+      <div className="ui-table-wrap">
+        <table className="ui-table">
+          <thead>
             <tr>
               <th className="p-3">Image</th>
               <th>Title</th>
@@ -48,7 +47,7 @@ const Banners = () => {
           </thead>
           <tbody>
             {banners.map((item) => (
-              <tr className="border-t" key={item._id}>
+              <tr key={item._id}>
                 <td className="p-3">
                   <img
                     className="w-24 h-12 object-cover rounded"
@@ -64,7 +63,7 @@ const Banners = () => {
   <div className="flex items-center gap-2">
     <Link
       to={`/admin/banners/edit/${item._id}`}
-      className="flex items-center gap-1 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+      className="inline-flex rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
     >
       <Pencil size={16} />
       Edit
@@ -72,7 +71,7 @@ const Banners = () => {
 
     <button
       onClick={() => remove(item._id)}
-      className="flex items-center gap-1 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+      className="inline-flex rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
     >
       <Trash2 size={16} />
       Delete
