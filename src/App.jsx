@@ -37,6 +37,7 @@ import AddOrders from "./dashboard/admin/pages/orders/Addoders";
 import Shop from "./pages/shop/Shop";
 import Cart from "./pages/home/Cart";
 import ProductDetails from "./pages/home/Productdetails";
+import About from "./pages/about/About";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Mainhome />} />
         <Route path="/shop" element={<Shop />} />
+        <Route path="/about" element={<About />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Singup />} />
         <Route path="/cart" element={<Cart />} />

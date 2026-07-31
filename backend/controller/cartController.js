@@ -38,7 +38,6 @@ const create = async (req, res) => {
       size,
     });
 
-    console.log("Cart Saved =>", cart);
 
     res.status(201).json({
       success: true,
