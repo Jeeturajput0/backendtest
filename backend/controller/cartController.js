@@ -92,7 +92,7 @@ const updateCart = async (req, res) => {
         size,
       },
       {
-        new: true,
+         returnDocument: "after"
       },
     );
 
