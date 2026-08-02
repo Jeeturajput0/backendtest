@@ -20,47 +20,8 @@ const UsersPage = () => {
       status: "Active",
       joined: "10 Jul 2026",
       image: "https://i.pravatar.cc/150?img=1",
-    },
-    {
-      id: 2,
-      name: "Rahul Sharma",
-      email: "rahul@gmail.com",
-      phone: "9876543211",
-      role: "Customer",
-      status: "Active",
-      joined: "09 Jul 2026",
-      image: "https://i.pravatar.cc/150?img=2",
-    },
-    {
-      id: 3,
-      name: "Aman Singh",
-      email: "aman@gmail.com",
-      phone: "9876543212",
-      role: "Vendor",
-      status: "Inactive",
-      joined: "05 Jul 2026",
-      image: "https://i.pravatar.cc/150?img=3",
-    },
-    {
-      id: 4,
-      name: "Priya Verma",
-      email: "priya@gmail.com",
-      phone: "9876543213",
-      role: "Customer",
-      status: "Active",
-      joined: "02 Jul 2026",
-      image: "https://i.pravatar.cc/150?img=4",
-    },
-    {
-      id: 5,
-      name: "Rohit Kumar",
-      email: "rohit@gmail.com",
-      phone: "9876543214",
-      role: "Vendor",
-      status: "Blocked",
-      joined: "30 Jun 2026",
-      image: "https://i.pravatar.cc/150?img=5",
-    },
+    }
+    
   ];
 
   const filteredUsers = users.filter((user) =>

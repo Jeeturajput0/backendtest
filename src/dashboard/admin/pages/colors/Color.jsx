@@ -3,25 +3,12 @@ import { Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URI, AUTH_TOKEN } from "../../../../config";
 
-const defaultColors = [
-  {
-    _id: "1",
-    title: "Red",
-    code: "#EF4444",
-    isActive: true,
-  },
-  {
-    _id: "2",
-    title: "Blue",
-    code: "#3B82F6",
-    isActive: true,
-  },
-];
+
 
 const Color = () => {
   const navigate = useNavigate();
 
-  const [colors, setColors] = useState(defaultColors);
+  const [colors, setColors] = useState([]);
 
   const getColors = async () => {
     try {
