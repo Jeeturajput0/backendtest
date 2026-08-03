@@ -47,11 +47,8 @@ function App() {
   return (
     <Routes>
       {/* User Layout */}
-        <Route path="login" element={<Login />} />
-        <Route
-   path="/google-success"
-   element={<GoogleSuccess />}
-/>
+      <Route path="login" element={<Login />} />
+      <Route path="/google-success" element={<GoogleSuccess />} />
 
       <Route path="/" element={<Layout />}>
         <Route index element={<Mainhome />} />
@@ -61,7 +58,14 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/product/:product_id" element={<ProductDetails />} />
       </Route>
-      <Route path="/admin" element={<RequireRole roles={["admin"]}><AdminLayout /></RequireRole>}>
+      <Route
+        path="/admin"
+        element={
+          <RequireRole roles={["admin"]}>
+            <AdminLayout />
+          </RequireRole>
+        }
+      >
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/categories" element={<Category />} />
@@ -105,7 +109,14 @@ function App() {
         <Route path="/admin/banners/edit/:id" element={<AddBanner />} />
         <Route path="/admin/payments/add" element={<AddPayment />} />
       </Route>
-      <Route path="/vendor" element={<RequireRole roles={["vendor"]}><VendorLayout /></RequireRole>}>
+      <Route
+        path="/vendor"
+        element={
+          <RequireRole roles={["vendor"]}>
+            <VendorLayout />
+          </RequireRole>
+        }
+      >
         <Route index element={<VendorDashboard />} />
         <Route path="products" element={<Products />} />
         <Route path="products/add" element={<AddProduct />} />

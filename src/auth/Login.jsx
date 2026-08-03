@@ -4,7 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ArrowRight, LockKeyhole, ShoppingBag } from "lucide-react";
-import { API_URI } from "../config";
+import { API_URI, BACK_URL } from "../config";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -94,6 +94,7 @@ const Login = () => {
           formData={formData}
           handleChange={handleChange}
           handlesubmit={handleSubmit}
+      
         />
         <p className="mt-6 text-center text-sm text-slate-500">
           New here?{" "}
@@ -105,13 +106,6 @@ const Login = () => {
           </Link>
         </p>
       </div>
-      <button
-        onClick={() => {
-          window.location.href = "http://localhost:2000/api/user/google";
-        }}
-      >
-        Continue with Google
-      </button>
     </div>
   );
 };

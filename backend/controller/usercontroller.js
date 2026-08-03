@@ -18,7 +18,6 @@ const sanitizeUser = (user) => {
 
 const register = async (req, res) => {
   try {
-    console.log(req.body);
     const { password, name, mobile, role = "customer" } = req.body;
     const email = String(req.body.email || "").trim().toLowerCase();
     if (!email || !password || !name || !mobile) {
@@ -33,7 +32,7 @@ const register = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 4);
+    const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_ROUNDS || 12));
     const user = await User.create({
       name,
       email,
@@ -54,8 +53,6 @@ const register = async (req, res) => {
         expiresIn: "7d",
       },
     );
-    console.log("token", token);
-
     const userData = sanitizeUser(user);
 
     res.status(200).json({
@@ -74,16 +71,15 @@ const register = async (req, res) => {
 };
 const login = async (req, res) => {
   try {
-    console.log(req.body);
    const { password } = req.body;
    const email = String(req.body.email || "").trim().toLowerCase();
    if (!email || !password) {
      return res.status(400).json({ success: false, message: "Email and password are required" });
    }
 
-const user = await User.findOne({ email });
+const user = await User.findOne({ email }).select("+password");
 
-if (!user) {
+if (!user || !user.password) {
  return res.status(401).json({
     success:false,
     message:"Invalid email or password"

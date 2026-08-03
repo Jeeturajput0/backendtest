@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-   defualt: "",
+    select: false,
   },
   email: {
     type: String,
@@ -15,8 +15,14 @@ const userSchema = new mongoose.Schema({
   },
   mobile: {
     type: String,
-    required: true,
     unique: true,
+    sparse: true,
+    trim: true,
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
   },
   address: { type: String, default: "" },
   city: { type: String, default: "" },
@@ -29,6 +35,6 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "vendor", "customer"],
     default: "customer",
   },
-});
+}, { timestamps: true });
 const User = mongoose.model("User", userSchema);
 module.exports = User;

@@ -80,6 +80,7 @@ const Signup = () => {
           handleChange={handleChange}
           handlesubmit={handlesubmit}
         />
+        
         <p className="mt-6 text-center text-sm text-slate-500">
           Already have an account?{" "}
           <Link
