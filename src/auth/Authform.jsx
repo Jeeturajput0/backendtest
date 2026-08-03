@@ -132,6 +132,22 @@ const Authform = ({
           className="ui-input"
         />
       </div>
+      <div className="mb-5">
+  <label className="mb-2 block text-sm font-semibold text-slate-700">
+    select your role
+  </label>
+
+  <select
+    name="role"
+    value={formData.role}
+    onChange={handleChange}
+    className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+  >
+    <option value="customer">Customer</option>
+    <option value="vendor">Vendor</option>
+    <option value="admin">Admin</option>
+  </select>
+</div>
 
       <button
         type="submit"

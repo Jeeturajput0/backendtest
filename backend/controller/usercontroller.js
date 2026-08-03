@@ -6,7 +6,7 @@ require("dotenv").config();
 const register = async (req, res) => {
   try {
     console.log(req.body);
-    const { email, password, name, mobile } = req.body;
+    const { email, password, name, mobile,role } = req.body;
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({
@@ -21,12 +21,15 @@ const register = async (req, res) => {
       email,
       mobile,
       password: hashedPassword,
+      role,
     });
+
 
     const token = jwt.sign(
       {
         userId: user._id,
         email: user.email,
+        role:user.role
       },
       process.env.JWT_SECRET,
       {
@@ -51,35 +54,40 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     console.log(req.body);
-    const { email, password } = req.body;
+   const { email, password, role } = req.body;
 
-    const user = await User.findOne({ email });
+const user = await User.findOne({
+  email,
+  role,
+});
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+if (!user) {
+ return res.status(401).json({
+    success:false,
+    message:"Invalid email, password or role"
+});
+}
 
-    const isMatch = await bcrypt.compare(password, user.password);
+const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid password",
-      });
-    }
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        email: user.email,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "4d",
-      },
-    );
+if (!isMatch) {
+  return res.status(400).json({
+    success: false,
+    message: "Invalid password",
+  });
+}
+
+const token = jwt.sign(
+  {
+    userId: user._id,
+    email: user.email,
+    role: user.role,
+  },
+  process.env.JWT_SECRET,
+  {
+    expiresIn: "4d",
+  }
+);
 
     const userData = user.toObject();
     delete userData.password;

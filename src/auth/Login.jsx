@@ -15,6 +15,7 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    role:"customer"
   });
 
   const handleChange = (e) => {
@@ -24,14 +25,22 @@ const Login = () => {
     });
   };
 
-  
-useEffect(()=>{
-  const token = localStorage.getItem('token');
+ useEffect(() => {
 
-  if(token){
-    navigate(location.state?.from || "/admin")
-  }
-},[navigate])
+   const token = localStorage.getItem("token");
+   const role = localStorage.getItem("role");
+
+   if (!token) return;
+
+   if (role === "admin") {
+      navigate("/admin");
+   } else if (role === "vendor") {
+      navigate("/vendor");
+   } else {
+      navigate("/");
+   }
+
+}, [navigate]);
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -46,6 +55,7 @@ const handleSubmit = async (e) => {
     // Token Save
     localStorage.setItem("token", res.data.token);
     localStorage.setItem("userdetails", JSON.stringify(res.data.data));
+    localStorage.setItem("role", res.data.data.role);
 
     Swal.fire({
       title: "SUCCESS",
@@ -53,7 +63,15 @@ const handleSubmit = async (e) => {
       icon: "success",
     });
 
-    navigate(location.state?.from || "/admin");
+    const role= res.data.data.role;
+
+    if(role=== "admin" ){
+      navigate("/admin")
+      }else if(role === "vendor"){
+        navigate("/vendor")
+      }else{
+        navigate("/")
+      }
   } catch (error) {
     Swal.fire({
       title: "ERROR",

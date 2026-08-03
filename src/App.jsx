@@ -43,11 +43,12 @@ function App() {
   return (
     <Routes>
       {/* User Layout */}
+        <Route path="login" element={<Login />} />
+
       <Route path="/" element={<Layout />}>
         <Route index element={<Mainhome />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/about" element={<About />} />
-        <Route path="login" element={<Login />} />
         <Route path="signup" element={<Singup />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/product/:product_id" element={<ProductDetails />} />
