@@ -7,6 +7,8 @@ const AddProduct = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const basePath = pathname.startsWith("/vendor") ? "/vendor/products" : "/admin/products";
+  const isVendor = pathname.startsWith("/vendor");
+  const productApi = isVendor ? `${API_URI}/vendor/products` : `${API_URI}/admin/product`;
   const { product_id } = useParams();
   const [categories, setCategories] = useState([]);
   const [size, setSize] = useState([]);
@@ -36,7 +38,7 @@ const AddProduct = () => {
 
   const getProductDetail = async () => {
     try {
-      const res = await fetch(`${API_URI}/admin/product/${product_id}`, {
+      const res = await fetch(`${productApi}/${product_id}`, {
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
@@ -69,7 +71,7 @@ const AddProduct = () => {
 
   const getCategories = async () => {
     try {
-      const res = await fetch(`${API_URI}/admin/category`, {
+      const res = await fetch(isVendor ? `${API_URI}/vendor/categories` : `${API_URI}/admin/category`, {
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
@@ -83,7 +85,7 @@ const AddProduct = () => {
 
   const getSize = async () => {
     try {
-      const res = await fetch(`${API_URI}/admin/size`, {
+      const res = await fetch(isVendor ? `${API_URI}/vendor/sizes` : `${API_URI}/admin/size`, {
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
@@ -108,8 +110,8 @@ const AddProduct = () => {
     formData.variations = variations;
     try {
       const api = product_id
-        ? `${API_URI}/admin/product/${product_id}`
-        : `${API_URI}/admin/product`;
+        ? `${productApi}/${product_id}`
+        : productApi;
       const method = product_id ? "PUT" : "POST";
       const res = await fetch(api, {
         method,

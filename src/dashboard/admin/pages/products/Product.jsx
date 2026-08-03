@@ -34,6 +34,7 @@ const Products = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const basePath = pathname.startsWith("/vendor") ? "/vendor/products" : "/admin/products";
+  const productApi = pathname.startsWith("/vendor") ? `${API_URI}/vendor/products` : `${API_URI}/admin/product`;
   const [products, setProducts] = useState(defaultProducts);
   const [formData, setFormData] = useState({
     isActive: "",
@@ -43,7 +44,7 @@ const Products = () => {
   const getProducts = async () => {
     try {
       const res = await fetch(
-        `${API_URI}/admin/product?is_active=${formData.isActive}&search=${formData.search}`,
+        `${productApi}?is_active=${formData.isActive}&search=${encodeURIComponent(formData.search)}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -62,7 +63,7 @@ const Products = () => {
 
   const deleteProduct = async (product_id) => {
     try {
-      const res = await fetch(`${API_URI}/admin/product/${product_id}`, {
+      const res = await fetch(`${productApi}/${product_id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

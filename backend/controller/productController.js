@@ -44,8 +44,11 @@ const list = async (req, res) => {
   try {
     let query = {};
     if (req.user?.role === "vendor") query.vendor = req.user.userId;
-    if (req.query?.is_active || req.body?.is_active) {
-      query.isActive = req.query?.is_active;
+    if (req.query?.is_active !== undefined && req.query.is_active !== "") {
+      query.isActive = req.query.is_active === "true";
+    }
+    if (req.query?.search?.trim()) {
+      query.name = { $regex: req.query.search.trim(), $options: "i" };
     }
 
     const products = await Product.find(query).populate("category");
@@ -93,6 +96,9 @@ const update = async (req, res) => {
       req.body,
       { new: true },
     );
+    if (!Products) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
     res.status(200).json({
       success: true,
       message: "product update successfull",

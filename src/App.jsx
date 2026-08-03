@@ -40,6 +40,7 @@ import ProductDetails from "./pages/home/Productdetails";
 import About from "./pages/about/About";
 import RequireRole from "./auth/RequireRole";
 import VendorDashboard from "./dashboard/vendor/VendorDashboard";
+import VendorLayout from "./dashboard/vendor/VendorLayout";
 
 function App() {
   return (
@@ -99,10 +100,12 @@ function App() {
         <Route path="/admin/banners/edit/:id" element={<AddBanner />} />
         <Route path="/admin/payments/add" element={<AddPayment />} />
       </Route>
-      <Route path="/vendor" element={<RequireRole roles={["vendor"]}><VendorDashboard /></RequireRole>} />
-      <Route path="/vendor/products" element={<RequireRole roles={["vendor"]}><Products /></RequireRole>} />
-      <Route path="/vendor/products/add" element={<RequireRole roles={["vendor"]}><AddProduct /></RequireRole>} />
-      <Route path="/vendor/products/edit/:product_id" element={<RequireRole roles={["vendor"]}><AddProduct /></RequireRole>} />
+      <Route path="/vendor" element={<RequireRole roles={["vendor"]}><VendorLayout /></RequireRole>}>
+        <Route index element={<VendorDashboard />} />
+        <Route path="products" element={<Products />} />
+        <Route path="products/add" element={<AddProduct />} />
+        <Route path="products/edit/:product_id" element={<AddProduct />} />
+      </Route>
     </Routes>
   );
 }
