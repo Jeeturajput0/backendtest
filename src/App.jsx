@@ -41,12 +41,17 @@ import About from "./pages/about/About";
 import RequireRole from "./auth/RequireRole";
 import VendorDashboard from "./dashboard/vendor/VendorDashboard";
 import VendorLayout from "./dashboard/vendor/VendorLayout";
+import GoogleSuccess from "./auth/GoogleSuccess";
 
 function App() {
   return (
     <Routes>
       {/* User Layout */}
         <Route path="login" element={<Login />} />
+        <Route
+   path="/google-success"
+   element={<GoogleSuccess />}
+/>
 
       <Route path="/" element={<Layout />}>
         <Route index element={<Mainhome />} />

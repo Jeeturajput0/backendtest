@@ -1,4 +1,6 @@
 const express = require("express");
+const session = require("express-session");
+const passport = require("./config/passport");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const path = require("path");
@@ -8,6 +10,16 @@ const port = process.env.PORT || 2000;
 const mongoosedb = require("./config/db");
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 mongoosedb();
+app.use(
+  session({
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.initialize())
+
+app.use(passport.session())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
