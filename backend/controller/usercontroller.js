@@ -3,6 +3,19 @@ const User = require("../model/usermodel");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+const normalizeRole = (role) => {
+  const normalizedRole = String(role || "").trim().toLowerCase();
+  return ["admin", "vendor", "customer"].includes(normalizedRole)
+    ? normalizedRole
+    : "customer";
+};
+
+const sanitizeUser = (user) => {
+  const userData = user.toObject ? user.toObject() : { ...user };
+  delete userData.password;
+  return userData;
+};
+
 const register = async (req, res) => {
   try {
     console.log(req.body);
@@ -11,7 +24,7 @@ const register = async (req, res) => {
     if (!email || !password || !name || !mobile) {
       return res.status(400).json({ success: false, message: "Name, mobile, email and password are required" });
     }
-    const safeRole = role === "vendor" ? "vendor" : "customer";
+    const safeRole = normalizeRole(role);
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({
@@ -43,10 +56,13 @@ const register = async (req, res) => {
     );
     console.log("token", token);
 
+    const userData = sanitizeUser(user);
+
     res.status(200).json({
       success: true,
       message: "user register successfully",
-      user,
+      data: userData,
+      user: userData,
       token,
     });
   } catch (error) {
@@ -95,12 +111,12 @@ const token = jwt.sign(
   }
 );
 
-    const userData = user.toObject();
-    delete userData.password;
+    const userData = sanitizeUser(user);
     res.status(200).json({
       success: true,
       message: "Login successful",
       data: userData,
+      user: userData,
       token,
     });
   } catch (error) {

@@ -31,8 +31,15 @@ const Signup = () => {
     try {
       const res = await axios.post(`${API_URI}/user/register`, formData);
 
-      localStorage.setItem("userdetails", JSON.stringify(res.data));
+      const userData = res.data?.data || res.data?.user || null;
+      const role = userData?.role || "customer";
 
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+      }
+      localStorage.setItem("userdetails", JSON.stringify(userData));
+      localStorage.setItem("role", role);
+ 
       Swal.fire({
         title: "SUCCESS",
         text: "Registered Successfully",

@@ -49,18 +49,19 @@ const handleSubmit = async (e) => {
       formData
     );
 
+    const userData = res.data?.data || res.data?.user || null;
+    const role = userData?.role || "customer";
+
     // Token Save
     localStorage.setItem("token", res.data.token);
-    localStorage.setItem("userdetails", JSON.stringify(res.data.data));
-    localStorage.setItem("role", res.data.data.role);
-
+    localStorage.setItem("userdetails", JSON.stringify(userData));
+    localStorage.setItem("role", role);
+ 
     Swal.fire({
       title: "SUCCESS",
       text: "Login Successfully",
       icon: "success",
     });
-
-    const role = res.data.data.role;
 
     if(role=== "admin" ){
       navigate("/admin")
