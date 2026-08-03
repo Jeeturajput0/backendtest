@@ -1,5 +1,5 @@
 import { Search, Plus } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { API_URI, setImageURL } from "../../../../config";
 import { useEffect, useState } from "react";
 
@@ -32,6 +32,8 @@ const defaultProducts = [
 
 const Products = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const basePath = pathname.startsWith("/vendor") ? "/vendor/products" : "/admin/products";
   const [products, setProducts] = useState(defaultProducts);
   const [formData, setFormData] = useState({
     isActive: "",
@@ -94,7 +96,7 @@ const Products = () => {
         </div>
 
         <button
-          onClick={() => navigate("/admin/products/add")}
+          onClick={() => navigate(`${basePath}/add`)}
           className="ui-button"
         >
           <Plus size={18} />
@@ -207,7 +209,7 @@ const Products = () => {
 
                 <td className="text-center space-x-2">
                   <Link
-                    to={`/admin/products/edit/${item._id}`}
+                    to={`${basePath}/edit/${item._id}`}
                     className="inline-flex rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
                   >
                     Edit

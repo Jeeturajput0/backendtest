@@ -15,7 +15,6 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    role:"customer"
   });
 
   const handleChange = (e) => {
@@ -50,8 +49,6 @@ const handleSubmit = async (e) => {
       formData
     );
 
-    console.log(res.data);
-
     // Token Save
     localStorage.setItem("token", res.data.token);
     localStorage.setItem("userdetails", JSON.stringify(res.data.data));
@@ -63,7 +60,7 @@ const handleSubmit = async (e) => {
       icon: "success",
     });
 
-    const role= res.data.data.role;
+    const role = res.data.data.role;
 
     if(role=== "admin" ){
       navigate("/admin")

@@ -132,7 +132,7 @@ const Authform = ({
           className="ui-input"
         />
       </div>
-      <div className="mb-5">
+      {type === "register" && <div className="mb-5">
   <label className="mb-2 block text-sm font-semibold text-slate-700">
     select your role
   </label>
@@ -145,9 +145,8 @@ const Authform = ({
   >
     <option value="customer">Customer</option>
     <option value="vendor">Vendor</option>
-    <option value="admin">Admin</option>
   </select>
-</div>
+</div>}
 
       <button
         type="submit"

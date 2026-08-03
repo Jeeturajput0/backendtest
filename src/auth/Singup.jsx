@@ -15,7 +15,7 @@ const Signup = () => {
     mobile: "",
     email: "",
     password: "",
-    
+    role: "customer",
   });
 
   const handleChange = (e) => {

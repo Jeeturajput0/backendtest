@@ -38,6 +38,8 @@ import Shop from "./pages/shop/Shop";
 import Cart from "./pages/home/Cart";
 import ProductDetails from "./pages/home/Productdetails";
 import About from "./pages/about/About";
+import RequireRole from "./auth/RequireRole";
+import VendorDashboard from "./dashboard/vendor/VendorDashboard";
 
 function App() {
   return (
@@ -53,7 +55,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/product/:product_id" element={<ProductDetails />} />
       </Route>
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route path="/admin" element={<RequireRole roles={["admin"]}><AdminLayout /></RequireRole>}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/categories" element={<Category />} />
@@ -97,6 +99,10 @@ function App() {
         <Route path="/admin/banners/edit/:id" element={<AddBanner />} />
         <Route path="/admin/payments/add" element={<AddPayment />} />
       </Route>
+      <Route path="/vendor" element={<RequireRole roles={["vendor"]}><VendorDashboard /></RequireRole>} />
+      <Route path="/vendor/products" element={<RequireRole roles={["vendor"]}><Products /></RequireRole>} />
+      <Route path="/vendor/products/add" element={<RequireRole roles={["vendor"]}><AddProduct /></RequireRole>} />
+      <Route path="/vendor/products/edit/:product_id" element={<RequireRole roles={["vendor"]}><AddProduct /></RequireRole>} />
     </Routes>
   );
 }

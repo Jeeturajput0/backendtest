@@ -1,10 +1,12 @@
 import { Save, Upload } from "lucide-react";
 import { API_URI, AUTH_TOKEN, setImageURL, uploadImage } from "../../../../config";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const AddProduct = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const basePath = pathname.startsWith("/vendor") ? "/vendor/products" : "/admin/products";
   const { product_id } = useParams();
   const [categories, setCategories] = useState([]);
   const [size, setSize] = useState([]);
@@ -117,7 +119,7 @@ const AddProduct = () => {
         },
         body: JSON.stringify(formData),
       });
-      navigate("/admin/products");
+      if (res.ok) navigate(basePath);
     } catch (error) {
       console.log(error);
     }

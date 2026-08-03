@@ -21,7 +21,7 @@ export const uploadImage = async (file) => {
     const res = await axios.post(`${API_URI}/upload/image`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${AUTH_TOKEN}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
     // Store this relative URL in MongoDB. It remains valid if the backend host changes.

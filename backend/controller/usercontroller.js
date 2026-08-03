@@ -6,7 +6,12 @@ require("dotenv").config();
 const register = async (req, res) => {
   try {
     console.log(req.body);
-    const { email, password, name, mobile,role } = req.body;
+    const { password, name, mobile, role = "customer" } = req.body;
+    const email = String(req.body.email || "").trim().toLowerCase();
+    if (!email || !password || !name || !mobile) {
+      return res.status(400).json({ success: false, message: "Name, mobile, email and password are required" });
+    }
+    const safeRole = role === "vendor" ? "vendor" : "customer";
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({
@@ -21,7 +26,7 @@ const register = async (req, res) => {
       email,
       mobile,
       password: hashedPassword,
-      role,
+      role: safeRole,
     });
 
 
@@ -54,17 +59,18 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     console.log(req.body);
-   const { email, password, role } = req.body;
+   const { password } = req.body;
+   const email = String(req.body.email || "").trim().toLowerCase();
+   if (!email || !password) {
+     return res.status(400).json({ success: false, message: "Email and password are required" });
+   }
 
-const user = await User.findOne({
-  email,
-  role,
-});
+const user = await User.findOne({ email });
 
 if (!user) {
  return res.status(401).json({
     success:false,
-    message:"Invalid email, password or role"
+    message:"Invalid email or password"
 });
 }
 
@@ -73,7 +79,7 @@ const isMatch = await bcrypt.compare(password, user.password);
 if (!isMatch) {
   return res.status(400).json({
     success: false,
-    message: "Invalid password",
+    message: "Invalid email or password",
   });
 }
 

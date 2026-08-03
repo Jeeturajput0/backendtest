@@ -24,6 +24,7 @@ const create = async (req, res) => {
       category,
       variations,
       image,
+      vendor: req.user?.role === "vendor" ? req.user.userId : undefined,
     });
     res.status(201).json({
       success: true,
@@ -42,6 +43,7 @@ const create = async (req, res) => {
 const list = async (req, res) => {
   try {
     let query = {};
+    if (req.user?.role === "vendor") query.vendor = req.user.userId;
     if (req.query?.is_active || req.body?.is_active) {
       query.isActive = req.query?.is_active;
     }
@@ -65,7 +67,9 @@ const details = async (req, res) => {
   try {
     const { product_id } = req.params;
     const product = await Product.findById(product_id).populate("category");
-;
+    if (!product || (req.user?.role === "vendor" && String(product.vendor) !== String(req.user.userId))) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
     res.status(200).json({
       success: true,
       message: "prodcut detail fetched successful",
@@ -82,8 +86,10 @@ const details = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const Products = await Product.findByIdAndUpdate(
-      req.params.product_id,
+    const filter = { _id: req.params.product_id };
+    if (req.user?.role === "vendor") filter.vendor = req.user.userId;
+    const Products = await Product.findOneAndUpdate(
+      filter,
       req.body,
       { new: true },
     );
@@ -102,9 +108,9 @@ const update = async (req, res) => {
 };
 const destroy = async (req, res) => {
   try {
-    const deletedCategory = await Product.findByIdAndDelete(
-      req.params.product_id,
-    );
+    const filter = { _id: req.params.product_id };
+    if (req.user?.role === "vendor") filter.vendor = req.user.userId;
+    const deletedCategory = await Product.findOneAndDelete(filter);
     if (!deletedCategory) {
       return res.status(404).json({
         success: false,
