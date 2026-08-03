@@ -35,3 +35,7 @@ Vendor product ownership is verified on the server using the authenticated user 
 ## Adding a new feature
 
 Keep a feature in the same layer: React screen in `src`, API endpoint in `backend/routes`, logic in `backend/controller`, and its MongoDB schema in `backend/model`. Do not put database logic inside React components or Express route files.
+
+## Create an admin account
+
+From the `backend` folder, run `npm run create:admin`. It creates (or resets) the default account `admin@shopease.com`. To choose credentials yourself, run `node scripts/createAdmin.js your@email.com YourSecurePassword "Admin Name" 9999999999`.
