@@ -141,7 +141,7 @@ const Authform = ({
       {/* Submit */}
       <button
         type="submit"
-        className="w-full rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 py-3 font-bold text-white shadow-lg transition duration-300 hover:scale-[1.02] hover:shadow-xl"
+        className="w-full rounded-xl bg-linear-to-r from-indigo-600 via-violet-600 to-purple-600 py-3 font-bold text-white shadow-lg transition duration-300 hover:scale-[1.02] hover:shadow-xl"
       >
         {type === "register" ? "Create Account" : "Login"}
       </button>

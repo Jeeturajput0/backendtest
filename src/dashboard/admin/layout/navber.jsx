@@ -21,7 +21,7 @@ export default function Navbar({ onMenuClick }) {
     `https://ui-avatars.com/api/?background=f97316&color=fff&bold=true&name=${encodeURIComponent(profile.name || "Admin")}`;
   return (
     <header className="sticky top-0 z-40 border-b XFborder-slate-200/80 bg-[#F8FAFC]/85 backdrop-blur-xl">
-      <div className="flex h-[76px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="flex h-19 items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <button
             onClick={onMenuClick}

@@ -55,7 +55,7 @@ const Sidebar = ({ onNavigate }) => {
   return (
     <aside className="min-h-full px-4 py-5 text-white">
       <div className="flex items-center gap-3 px-3 pb-8 pt-2">
-        <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-lg shadow-blue-500/25">
+        <div className="grid h-10 w-10 place-items-center rounded-xl bg-linear-to-br from-blue-500 to-blue-700 text-white shadow-lg shadow-blue-500/25">
           <Sparkles size={19} />
         </div>
         <div>
@@ -110,7 +110,7 @@ const Sidebar = ({ onNavigate }) => {
           Everything is running smoothly.
         </p>
         <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
-          <div className="h-full w-[88%] rounded-full bg-gradient-to-r from-blue-400 to-sky-300" />
+          <div className="h-full w-[88%] rounded-full bg-linear-to-r from-blue-400 to-sky-300" />
         </div>
       </div>
       <button onClick={logout} className="mt-5 flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-slate-400 transition hover:bg-white/8 hover:text-white">
