@@ -1,12 +1,19 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Navbar from "./navber";
 import Sidebar from "./Sidebar";
 
 const AdminLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userdetails");
+    navigate("/login", { replace: true });
+  };
   return (
     <div className="admin-shell min-h-screen bg-[#F8FAFC]">
       <aside className="fixed inset-y-0 left-0 z-50 hidden w-[280px] overflow-y-auto border-r border-slate-200 bg-slate-950 lg:block">
@@ -46,8 +53,11 @@ const AdminLayout = () => {
         <main className="min-h-[calc(100vh-76px)] p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
-        <footer className="border-t border-slate-200 px-6 py-5 text-xs font-medium text-slate-400 lg:px-8">
+        <footer className="flex items-center justify-between gap-4 border-t border-slate-200 px-6 py-5 text-xs font-medium text-slate-400 lg:px-8">
           © 2026 ShopEase Admin · Built for better operations.
+          <button onClick={logout} className="rounded-lg border border-rose-200 bg-white px-3 py-2 text-xs font-bold text-rose-600 transition hover:bg-rose-50">
+            Logout
+          </button>
         </footer>
       </div>
     </div>
