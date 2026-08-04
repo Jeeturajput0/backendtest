@@ -9,10 +9,11 @@ import {
   Truck,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URI, setImageURL } from "../../config";
 
 const Cart = () => {
+  const navigate=useNavigate();
   const [cart, setCart] = useState([]);
   const getCart = async () => {
     try {
@@ -201,7 +202,9 @@ const Cart = () => {
               <input className="ui-input py-2.5" placeholder="Promo code" />
               <button className="ui-button-secondary px-3">Apply</button>
             </div>
-            <button className="ui-button-accent mt-5 w-full py-3.5">
+            <button 
+              onClick={() => navigate("/checkout")}
+            className="ui-button-accent mt-5 w-full py-3.5">
               Proceed to checkout <ArrowRight size={17} />
             </button>
             <p className="mt-4 text-center text-xs text-slate-500">

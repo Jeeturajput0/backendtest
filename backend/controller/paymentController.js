@@ -1,54 +1,65 @@
-const Payment = require("../model/paymentmodel");
+const Razorpay = require("razorpay");
+require("dotenv").config();
 
-const create = async (req, res) => {
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+// Create Razorpay Order
+const createPayment = async (req, res) => {
   try {
-    const payment = await Payment.create(req.body);
-    res.status(201).json({ success: true, message: "Payment created successfully", data: payment });
+    const { amount } = req.body;
+
+    const options = {
+      amount: Number(amount) * 100, // paisa
+      currency: "INR",
+      receipt: "receipt_" + Date.now(),
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    res.status(200).json({
+      success: true,
+      message: "Payment order created",
+      data: order,
+    });
   } catch (error) {
-    res.status(400).json({ success: false, message: "Payment creation failed", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-const list = async (req, res) => {
+// Verify payment (learning version)
+const verifyPayment = async (req, res) => {
   try {
-    const { search, status } = req.query;
-    const query = status ? { status } : {};
-    if (search) query.$or = [{ customer: new RegExp(search, "i") }, { orderId: new RegExp(search, "i") }, { transactionId: new RegExp(search, "i") }];
-    const payments = await Payment.find(query).sort({ date: -1, createdAt: -1 });
-    res.json({ success: true, data: payments });
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    } = req.body;
+
+    // In production verify signature using crypto.
+    res.status(200).json({
+      success: true,
+      message: "Payment verified (learning demo)",
+      data: {
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+      },
+    });
   } catch (error) {
-    res.status(400).json({ success: false, message: "Payment list failed", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-const details = async (req, res) => {
-  try {
-    const payment = await Payment.findById(req.params.payment_id);
-    if (!payment) return res.status(404).json({ success: false, message: "Payment not found" });
-    res.json({ success: true, data: payment });
-  } catch (error) {
-    res.status(400).json({ success: false, message: "Payment details failed", error: error.message });
-  }
+module.exports = {
+  createPayment,
+  verifyPayment,
 };
-
-const update = async (req, res) => {
-  try {
-    const payment = await Payment.findByIdAndUpdate(req.params.payment_id, req.body, { new: true, runValidators: true });
-    if (!payment) return res.status(404).json({ success: false, message: "Payment not found" });
-    res.json({ success: true, message: "Payment updated successfully", data: payment });
-  } catch (error) {
-    res.status(400).json({ success: false, message: "Payment update failed", error: error.message });
-  }
-};
-
-const destroy = async (req, res) => {
-  try {
-    const payment = await Payment.findByIdAndDelete(req.params.payment_id);
-    if (!payment) return res.status(404).json({ success: false, message: "Payment not found" });
-    res.json({ success: true, message: "Payment deleted successfully" });
-  } catch (error) {
-    res.status(400).json({ success: false, message: "Payment delete failed", error: error.message });
-  }
-};
-
-module.exports = { create, list, details, update, destroy };

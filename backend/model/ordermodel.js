@@ -2,30 +2,75 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema(
   {
-    orderNumber: { type: String, required: true, unique: true, trim: true },
-    customer: { type: String, required: true, trim: true },
-    customerEmail: { type: String, trim: true, lowercase: true },
+    orderNumber: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    customer: {
+      type: String,
+      required: true,
+    },
+
+    customerEmail: String,
+
+    mobile: String,
+
+    shippingAddress: String,
+
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "Razorpay"],
+      default: "COD",
+    },
+
     items: [
       {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-        name: { type: String, required: true },
-        quantity: { type: Number, required: true, min: 1 },
-        price: { type: Number, required: true, min: 0 },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
+
+        name: String,
+
+        image: String,
+
+        quantity: Number,
+
+        price: Number,
       },
     ],
-    totalAmount: { type: Number, required: true, min: 0 },
+
+    totalAmount: Number,
+
     paymentStatus: {
       type: String,
-      enum: ["Paid", "Pending", "Failed", "Refunded"],
+      enum: ["Paid", "Pending", "Failed"],
       default: "Pending",
     },
+
     orderStatus: {
       type: String,
-      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
+      enum: [
+        "Pending",
+        "Processing",
+        "Shipped",
+        "Delivered",
+        "Cancelled",
+      ],
       default: "Pending",
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  }
 );
 
 module.exports = mongoose.model("Order", orderSchema);

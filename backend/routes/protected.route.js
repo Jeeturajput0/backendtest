@@ -16,6 +16,15 @@ const bannerController = require("../controller/bannerController");
 const profileController = require("../controller/profileController");
 const cartController = require("../controller/cartController");
 
+const {
+  create,
+  list,
+  myOrders,
+  details,
+  update,
+  destroy,
+} = require("../controller/orderController");
+
 router.get("/profile", protect, profileController.getProfile);
 router.put("/profile", protect, profileController.updateProfile);
 
@@ -99,6 +108,29 @@ router.get("/cart", protect, role("customer"), cartController.getCart);
 router.put("/cart/:cartId", protect, role("customer"), cartController.updateCart);
 router.delete("/cart/:cartId", protect, role("customer"), cartController.deleteCart);
 
+
+
+// Place Order
+router.post("/", protect, create);
+
+// Logged in user orders
+router.get("/my-orders", protect, myOrders);
+
+// Order Details
+router.get("/:order_id", protect, details);
+
+// =============================
+// Admin
+// =============================
+
+// All Orders
+router.get("/", protect, role("admin"), list);
+
+// Update Order
+router.put("/:order_id", protect, role("admin"), update);
+
+// Delete Order
+router.delete("/:order_id", protect, role("admin"), destroy);
 module.exports = router;
 
 // router.post("/product",protect,role("vendor"),productController.create);  vendor and admin ADD

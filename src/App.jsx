@@ -42,6 +42,9 @@ import RequireRole from "./auth/RequireRole";
 import VendorDashboard from "./dashboard/vendor/VendorDashboard";
 import VendorLayout from "./dashboard/vendor/VendorLayout";
 import GoogleSuccess from "./auth/GoogleSuccess";
+import Checkout from "./pages/Checkout/Checkout";
+import MyOrders from "./pages/Checkout/MyOrders";
+import OrderSuccess from "./pages/Checkout/OrderSuccess";
 
 function App() {
   return (
@@ -51,6 +54,9 @@ function App() {
       <Route path="/google-success" element={<GoogleSuccess />} />
 
       <Route path="/" element={<Layout />}>
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-success" element={<OrderSuccess/>} />
+        <Route path="/my-orders" element={<MyOrders />} />
         <Route index element={<Mainhome />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/about" element={<About />} />
