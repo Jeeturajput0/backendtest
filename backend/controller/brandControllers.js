@@ -71,3 +71,6 @@ const destory = async (req, res) => {
 };
 
 module.exports = { create, list, update, destory };
+
+
+
