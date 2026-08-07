@@ -107,7 +107,7 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    formData.variations = variations;
+    const payload = { ...formData, variations };
     try {
       const api = product_id
         ? `${productApi}/${product_id}`
@@ -119,7 +119,7 @@ const AddProduct = () => {
           Authorization: `Bearer ${AUTH_TOKEN}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
       if (res.ok) navigate(basePath);
     } catch (error) {

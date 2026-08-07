@@ -36,8 +36,8 @@ const Category = () => {
   const getcategory = async () => {
     try {
       const params = {isFeatured:true};
-      const res = await services.getAllCategories(params);
-      setCategories(resData.data);
+      const resData = await services.getAllCategories(params);
+      setCategories(resData.data || []);
     } catch (error) {
       console.log(error);
     }

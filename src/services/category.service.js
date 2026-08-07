@@ -1,3 +1,5 @@
+import { API_URI, AUTH_TOKEN } from "../config";
+
 const services = {};
 
 // payload = { page: 1, limit: 10, search: "", isActive: true, isFeatured: false }
@@ -11,7 +13,7 @@ services.getAllCategories = async (payload = {}) => {
       isActive: payload.isActive,
       isFeatured: payload.isFeatured,
     }).toString();
-    const response = await fetch(`${process.env.API_URI}/categories?${query}`);
+    const response = await fetch(`${API_URI}/category?${query}`);
     return await response.json();
   } catch (error) {
     return {

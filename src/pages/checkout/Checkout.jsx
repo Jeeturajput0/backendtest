@@ -2,10 +2,20 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { ArrowLeft, CreditCard, MapPin, Truck } from "lucide-react";
-import { Link } from "react-router-dom";
-import { API_URI, AUTH_TOKEN } from "../../config";
+import { Link, useNavigate } from "react-router-dom";
+import { API_URI } from "../../config";
+
+const loadRazorpay = () => new Promise((resolve) => {
+  if (window.Razorpay) return resolve(true);
+  const script = document.createElement("script");
+  script.src = "https://checkout.razorpay.com/v1/checkout.js";
+  script.onload = () => resolve(true);
+  script.onerror = () => resolve(false);
+  document.body.appendChild(script);
+});
 
 export default function Checkout() {
+  const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -22,7 +32,7 @@ export default function Checkout() {
     async function load() {
       try {
         const res = await axios.get(`${API_URI}/admin/cart`, {
-          headers: { Authorization: `Bearer ${AUTH_TOKEN} ` },
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setCart(res.data.data || []);
       } finally {
@@ -42,14 +52,74 @@ export default function Checkout() {
   const total = subtotal + shipping + tax;
 
   const placeOrder = async () => {
-    const payload = {
-      ...address,
+    const token = localStorage.getItem("token");
+    if (!token) return navigate("/login", { state: { from: "/checkout" } });
+    if (!cart.length) return alert("Your cart is empty");
+    if (Object.values(address).some((value) => !String(value).trim())) {
+      return alert("Please complete your shipping address");
+    }
+
+    const items = cart.map((item) => ({
+      product: item.product?._id,
+      name: item.product?.name,
+      image: item.product?.image,
+      quantity: item.quantity,
+      price: item.product?.saleprice || 0,
+    }));
+    const basePayload = {
+      customer: address.fullName,
+      customerEmail: JSON.parse(localStorage.getItem("userdetails") || "{}").email || "",
+      mobile: address.mobile,
+      shippingAddress: `${address.address}, ${address.city}, ${address.state} - ${address.pincode}`,
       paymentMethod,
-      items: cart,
+      items,
       totalAmount: total,
     };
-    console.log(payload);
-    // await axios.post(`${API_URI}/order`,payload)
+    const headers = { Authorization: `Bearer ${token}` };
+    const saveOrder = async (payment) => {
+      const response = await axios.post(`${API_URI}/order`, { ...basePayload, payment }, { headers });
+      navigate("/order-success", {
+        replace: true,
+        state: {
+          orderNumber: response.data.data.orderNumber,
+          paymentMethod,
+          total: response.data.data.totalAmount,
+        },
+      });
+    };
+
+    try {
+      if (paymentMethod === "COD") return await saveOrder();
+      const checkoutLoaded = await loadRazorpay();
+      if (!checkoutLoaded) throw new Error("Razorpay checkout could not be loaded. Check your internet connection.");
+      const paymentOrder = await axios.post(`${API_URI}/payment/create`, { amount: total }, { headers });
+      const options = {
+        key: paymentOrder.data.keyId,
+        amount: paymentOrder.data.data.amount,
+        currency: paymentOrder.data.data.currency,
+        name: "ShopEase",
+        description: "Order payment",
+        order_id: paymentOrder.data.data.id,
+        handler: async (result) => {
+          try {
+            await axios.post(`${API_URI}/payment/verify`, result, { headers });
+            await saveOrder({
+              orderId: result.razorpay_order_id,
+              paymentId: result.razorpay_payment_id,
+              signature: result.razorpay_signature,
+            });
+          } catch (error) {
+            alert(error.response?.data?.message || "Payment could not be verified");
+          }
+        },
+        prefill: { name: address.fullName, contact: address.mobile, email: basePayload.customerEmail },
+        theme: { color: "#4f46e5" },
+        modal: { ondismiss: () => {} },
+      };
+      new window.Razorpay(options).open();
+    } catch (error) {
+      alert(error.response?.data?.message || error.message || "Could not place order");
+    }
   };
 
   if (loading) return <div className="p-10">Loading...</div>;

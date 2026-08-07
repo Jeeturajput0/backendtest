@@ -23,7 +23,7 @@ const Coupon = () => {
 
   const deleteCoupon = async (coupon_id) => {
     try {
-      const res = await fetch(`${API_URI}\/admin/coupon/${coupon_id}`, {
+      const res = await fetch(`${API_URI}/admin/coupon/${coupon_id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,

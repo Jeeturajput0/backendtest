@@ -17,8 +17,6 @@ const productImage = (product) =>
     ? setImageURL(product.image)
     : "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800";
 
-
-<ProductGrid/>
 function SectionTitle({ eyebrow, title }) {
   return (
     <div className="flex items-end justify-between gap-4">
@@ -51,7 +49,7 @@ export default function Mainhome() {
       .then(async (res) => {
         const result = await res.json();
         if (!res.ok || !result.success)
-          throw new Error(result.message );
+          throw new Error(result.message || "Unable to load home data");
         setHome(result.data);
       })
       .catch((error) => setLoadError(error.message));

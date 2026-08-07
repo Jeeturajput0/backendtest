@@ -1,10 +1,13 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import services from "../../services/category.service";
 
 const initialState = {
   name: "",
   isActive: true,
   image: "",
+  categories: [],
+  loading: false,
+  error: null,
 };
 
 export const fetchCategories = createAsyncThunk(

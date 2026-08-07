@@ -3,7 +3,7 @@
 import {useEffect,useState} from "react";
 import axios from "axios";
 import {Package, Eye} from "lucide-react";
-import { API_URI, AUTH_TOKEN } from "../../config";
+import { API_URI } from "../../config";
 
 export default function MyOrders(){
   const [orders,setOrders]=useState([]);
@@ -12,9 +12,9 @@ export default function MyOrders(){
   useEffect(()=>{
     async function load(){
       try{
-        const res=await axios.get(`${API_URI}/order`,{
+        const res=await axios.get(`${API_URI}/order/my-orders`,{
           headers:{
-            Authorization:`Bearer ${AUTH_TOKEN} `
+            Authorization:`Bearer ${localStorage.getItem("token")}`
           }
         });
         setOrders(res.data.data||[]);

@@ -1,10 +1,10 @@
-import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { API_URI, AUTH_TOKEN } from "../../../../config";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddBrand = () => {
   const { brand_id } = useParams;
+  const navigate = useNavigate();
   // const [brand,setBrand]=useState([])
   const [formData, setformData] = useState({
     name: "",
@@ -20,7 +20,7 @@ const AddBrand = () => {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
       });
-      const resdata = res.json();
+      const resdata = await res.json();
       const data = resdata.data;
 
       setformData({
@@ -34,10 +34,8 @@ const AddBrand = () => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      brand_id ? getBrandDetail() : "";
-    }, 200);
-  }, []);
+    if (brand_id) getBrandDetail();
+  }, [brand_id]);
 
   // const getBrand =async()=>{
   //   try {
@@ -55,21 +53,17 @@ const AddBrand = () => {
   //   }
   // }
 
-  const handleChange = (e) => {
-    setBrand({ ...brand, [e.target.name]: e.target.value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const api = brand_id
-        ? `${API_URI}/admin/brand${brand_id}`
+        ? `${API_URI}/admin/brand/${brand_id}`
         : `${API_URI}/admin/brand`;
       const method = brand_id ? "PUT" : "POST";
       const res = await fetch(api, {
         method,
         headers: {
-          Authorization: `Berbar ${AUTH_TOKEN}`,
+          Authorization: `Bearer ${AUTH_TOKEN}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
