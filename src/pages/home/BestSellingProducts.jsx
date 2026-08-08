@@ -1,4 +1,4 @@
-import ProductGrid from "../../components/ProductGrid";
+import ProductGrid from "./ProductGrid";
 import SectionTitle from "./SectionTitle";
 
 export default function BestSellingProducts({ products = [] }) {

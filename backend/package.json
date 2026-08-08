@@ -22,9 +22,11 @@
     "mongoos": "^0.0.1-security",
     "mongoose": "^9.7.0",
     "multer": "^2.2.0",
-    "nodemon": "^3.1.14",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "razorpay": "^2.9.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
