@@ -26,7 +26,7 @@ const jwt = require("jsonwebtoken");
 
 const protect = (req, res, next) => {
   try {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+    const token = req.header("Authorization")?.replace("Bearer ", " ");
 
     if (!token) {
       return res.status(401).json({

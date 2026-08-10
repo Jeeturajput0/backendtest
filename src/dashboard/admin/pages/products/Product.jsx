@@ -1,41 +1,14 @@
 import { Search, Plus } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URI, setImageURL } from "../../../../config";
 import { useEffect, useState } from "react";
 
-const defaultProducts = [
-  {
-    id: 1,
-    name: "Nike Shoes",
-    category: "Footwear",
-    price: "$120",
-    stock: 15,
-    status: "In Stock",
-  },
-  {
-    id: 2,
-    name: "Apple Watch",
-    category: "Electronics",
-    price: "$350",
-    stock: 8,
-    status: "In Stock",
-  },
-  {
-    id: 3,
-    name: "Leather Bag",
-    category: "Accessories",
-    price: "$90",
-    stock: 0,
-    status: "Out of Stock",
-  },
-];
-
 const Products = () => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const basePath = pathname.startsWith("/vendor") ? "/vendor/products" : "/admin/products";
-  const productApi = pathname.startsWith("/vendor") ? `${API_URI}/vendor/products` : `${API_URI}/admin/product`;
-  const [products, setProducts] = useState(defaultProducts);
+  const basePath = "/admin/products";
+  const productApi = `${API_URI}/admin/product`;
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     isActive: "",
     search: "",
@@ -43,6 +16,7 @@ const Products = () => {
 
   const getProducts = async () => {
     try {
+      setError("");
       const res = await fetch(
         `${productApi}?is_active=${formData.isActive}&search=${encodeURIComponent(formData.search)}`,
         {
@@ -55,9 +29,10 @@ const Products = () => {
         throw new Error("Products could not be loaded");
       }
       const resData = await res.json();
-      setProducts(resData.data || []);
+      setProducts(Array.isArray(resData.data) ? resData.data : []);
     } catch (error) {
-      console.log(error);
+      setProducts([]);
+      setError(error.message || "Products could not be loaded");
     }
   };
 
@@ -69,8 +44,9 @@ const Products = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      getProducts();
-      alert("product deleted successfully");
+      if (!res.ok) throw new Error("Product could not be deleted");
+      await getProducts();
+      alert("Product deleted successfully");
     } catch (error) {
       console.log(error);
     }
@@ -109,17 +85,17 @@ const Products = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div className="ui-card p-5">
           <h3 className="text-gray-500">Total Products</h3>
-          <h2 className="text-3xl font-bold mt-2">120</h2>
+          <h2 className="text-3xl font-bold mt-2">{products.length}</h2>
         </div>
 
         <div className="ui-card p-5">
-          <h3 className="text-gray-500">In Stock</h3>
-          <h2 className="text-3xl font-bold text-green-600 mt-2">95</h2>
+          <h3 className="text-gray-500">Active</h3>
+          <h2 className="text-3xl font-bold text-green-600 mt-2">{products.filter((item) => item.isActive === true).length}</h2>
         </div>
 
         <div className="ui-card p-5">
-          <h3 className="text-gray-500">Out of Stock</h3>
-          <h2 className="text-3xl font-bold text-red-600 mt-2">25</h2>
+          <h3 className="text-gray-500">Inactive</h3>
+          <h2 className="text-3xl font-bold text-red-600 mt-2">{products.filter((item) => item.isActive === false).length}</h2>
         </div>
       </div>
 
@@ -148,8 +124,8 @@ const Products = () => {
             className="ui-input py-2.5 md:w-60"
           >
             <option value="">Select</option>
-            <option value={true}>Active</option>
-            <option value={false}>Inactive</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
           </select>
         </div>
         <button
@@ -225,6 +201,9 @@ const Products = () => {
                 </td>
               </tr>
             ))}
+            {!products.length && (
+              <tr><td colSpan="6" className="p-10 text-center text-slate-500">{error || "No products found."}</td></tr>
+            )}
           </tbody>
         </table>
       </div>

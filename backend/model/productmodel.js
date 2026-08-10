@@ -69,10 +69,6 @@ const ProductSchema = new mongoose.Schema({
     required: true,
   },
   variations: [variationSchema],
-  vendor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
 });
 const Product = mongoose.model("Product", ProductSchema);
 module.exports = Product;

@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import Authform from "./Authform";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ArrowRight, LockKeyhole, ShoppingBag } from "lucide-react";
-import { API_URI, BACK_URL } from "../config";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, ShoppingBag } from "lucide-react";
+import { API_URI } from "../config";
 
 const Login = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -23,17 +22,8 @@ const Login = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-
     if (!token) return;
-
-    if (role === "admin") {
-      navigate("/admin");
-    } else if (role === "vendor") {
-      navigate("/vendor");
-    } else {
-      navigate("/");
-    }
+    navigate("/admin");
   }, [navigate]);
 
   const handleSubmit = async (e) => {
@@ -41,13 +31,13 @@ const Login = () => {
     try {
       const res = await axios.post(`${API_URI}/user/login`, formData);
 
-      const userData = res.data?.data || res.data?.user || null;
-      const role = userData?.role || "customer";
-
+      const userData = res.data?.data || res.data?.user;
       // Token Save
+    
+
+      if (!res.data?.token) throw new Error("Login token was not returned by the server");
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userdetails", JSON.stringify(userData));
-      localStorage.setItem("role", role);
 
       Swal.fire({
         title: "SUCCESS",
@@ -55,13 +45,7 @@ const Login = () => {
         icon: "success",
       });
 
-      if (role === "admin") {
-        navigate("/admin");
-      } else if (role === "vendor") {
-        navigate("/vendor");
-      } else {
-        navigate("/");
-      }
+      navigate("/admin");
     } catch (error) {
       Swal.fire({
         title: "ERROR",
@@ -97,13 +81,7 @@ const Login = () => {
       
         />
         <p className="mt-6 text-center text-sm text-slate-500">
-          New here?{" "}
-          <Link
-            to="/signup"
-            className="font-semibold text-indigo-600 hover:text-indigo-800"
-          >
-            Create an account <ArrowRight className="inline" size={14} />
-          </Link>
+          First time here? <Link to="/signup" className="font-semibold text-indigo-600 hover:text-indigo-800">Create your account <ArrowRight className="inline" size={14} /></Link>
         </p>
       </div>
     </div>

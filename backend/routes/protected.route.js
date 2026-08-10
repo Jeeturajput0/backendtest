@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/auth.middleware");
-const role = require("../middleware/role.middleware");
 const categoryController = require("../controller/categoryController");
 const productController = require("../controller/productController");
 const sizeController = require("../controller/sizeController");
 const brandController = require("../controller/brandControllers");
 const couponsController = require("../controller/couponsControlles");
-const offesController = require("../controller/offerControlle");
+const offerController = require("../controller/offerControlle");
 const colorController = require("../controller/colorsControllers");
 const orderController = require("../controller/orderController");
 const paymentController = require("../controller/paymentController");
@@ -16,121 +15,49 @@ const bannerController = require("../controller/bannerController");
 const profileController = require("../controller/profileController");
 const cartController = require("../controller/cartController");
 
-const {
-  create,
-  list,
-  myOrders,
-  details,
-  update,
-  destroy,
-} = require("../controller/orderController");
+router.use(protect);
 
-router.get("/profile", protect, profileController.getProfile);
-router.put("/profile", protect, profileController.updateProfile);
+router.get("/profile", profileController.getProfile);
+router.put("/profile", profileController.updateProfile);
 
-// category
-router.post("/category", protect, role("admin"), categoryController.create);
-router.get("/category", protect, role("admin", "vendor"), categoryController.list);
-router.put("/category/:category_id", protect, role("admin"), categoryController.update);
-router.delete("/category/:category_id", protect, role("admin"), categoryController.destroy);
-// router.get("/category/:category_id", categoryController.details);
+router.route("/cart").post(cartController.create).get(cartController.getCart);
+router.route("/cart/:cartId").put(cartController.updateCart).delete(cartController.deleteCart);
 
-//product routes
-router.post("/product", protect, role("admin", "vendor"), productController.create);
-router.get("/product", protect, role("admin", "vendor"), productController.list);
-router.get("/product/:product_id", protect, role("admin", "vendor"), productController.details);
-router.put("/product/:product_id", protect, role("admin", "vendor"), productController.update);
-router.delete("/product/:product_id", protect, role("admin", "vendor"), productController.destroy);
+// All remaining routes are dashboard-management endpoints.
 
-// size
-router.post("/size", protect, role("admin"), sizeController.create);
-router.get("/size", protect, role("admin", "vendor"), sizeController.list);
-router.put("/size/:size_id", protect, role("admin"), sizeController.update);
-router.delete("/size/:size_id", protect, role("admin"), sizeController.destory);
+router.route("/category").post(categoryController.create).get(categoryController.list);
+router.route("/category/:category_id").put(categoryController.update).delete(categoryController.destroy);
 
-// barnd
-router.get("/brand", protect, role("admin", "vendor"), brandController.list);
-router.post("/brand", protect, role("admin"), brandController.create);
-router.put("/brand/:brand_id", protect, role("admin"), brandController.update);
-router.delete("/brand/:brand_id", protect, role("admin"), brandController.destory);
-// Coupons
-router.get("/coupon", protect, role("admin"), couponsController.list);
-router.post("/coupon", protect, role("admin"), couponsController.create);
-router.put("/coupon/:coupon_id", protect, role("admin"), couponsController.update);
-router.delete("/coupon/:coupon_id", protect, role("admin"), couponsController.destory);
-router.get("/coupon/:coupon_id", protect, role("admin"), couponsController.details);
+router.route("/product").post(productController.create).get(productController.list);
+router.route("/product/:product_id").get(productController.details).put(productController.update).delete(productController.destroy);
 
-// offers
-router.get("/offer", protect, role("admin"), offesController.list);
-router.post("/offer", protect, role("admin"), offesController.create);
-router.put("/offer/:offer_id", protect, role("admin"), offesController.update);
-router.delete("/offer/:offer_id", protect, role("admin"), offesController.destory);
-router.get("/offer/:offer_id", protect, role("admin"), offesController.details);
+router.route("/size").post(sizeController.create).get(sizeController.list);
+router.route("/size/:size_id").put(sizeController.update).delete(sizeController.destory);
 
-// colors
-router.get("/color", protect, role("admin"), colorController.list);
-router.post("/color", protect, role("admin"), colorController.create);
-router.put("/color/:color_id", protect, role("admin"), colorController.update);
-router.delete("/color/:color_id", protect, role("admin"), colorController.destory);
-router.get("/product/:color", protect, role("admin"), colorController.details);
+router.route("/brand").get(brandController.list).post(brandController.create);
+router.route("/brand/:brand_id").put(brandController.update).delete(brandController.destory);
 
-// orders
-router.post("/order", protect, role("admin", "customer"), orderController.create);
-router.get("/order", protect, role("admin"), orderController.list);
-router.get("/order/:order_id", protect, role("admin"), orderController.details);
-router.put("/order/:order_id", protect, role("admin"), orderController.update);
-router.delete("/order/:order_id", protect, role("admin"), orderController.destroy);
+router.route("/coupon").get(couponsController.list).post(couponsController.create);
+router.route("/coupon/:coupon_id").get(couponsController.details).put(couponsController.update).delete(couponsController.destory);
 
+router.route("/offer").get(offerController.list).post(offerController.create);
+router.route("/offer/:offer_id").get(offerController.details).put(offerController.update).delete(offerController.destory);
 
-// payments
-router.post("/payment", protect, role("admin"), paymentController.create);
-router.get("/payment", protect, role("admin"), paymentController.list);
-router.get("/payment/:payment_id", protect, role("admin"), paymentController.details);
-router.put("/payment/:payment_id", protect, role("admin"), paymentController.update);
-router.delete("/payment/:payment_id", protect, role("admin"), paymentController.destroy);
+router.route("/color").get(colorController.list).post(colorController.create);
+router.route("/color/:color_id").put(colorController.update).delete(colorController.destory);
+router.get("/product/:color", colorController.details);
 
-// reviews
-router.post("/review", protect, role("customer", "admin"), reviewController.create);
-router.get("/review", protect, role("admin"), reviewController.list);
-router.get("/review/:review_id", protect, role("admin"), reviewController.details);
-router.put("/review/:review_id", protect, role("admin"), reviewController.update);
-router.delete("/review/:review_id", protect, role("admin"), reviewController.destroy);
+router.route("/order").post(orderController.create).get(orderController.list);
+router.get("/order/my-orders", orderController.myOrders);
+router.route("/order/:order_id").get(orderController.details).put(orderController.update).delete(orderController.destroy);
 
-// banners
-router.post("/banner", protect, role("admin"), bannerController.create);
-router.get("/banner", protect, role("admin"), bannerController.list);
-router.get("/banner/:banner_id", protect, role("admin"), bannerController.details);
-router.put("/banner/:banner_id", protect, role("admin"), bannerController.update);
-router.delete("/banner/:banner_id", protect, role("admin"), bannerController.destroy);
-//cart
-router.post("/cart", protect, role("customer"), cartController.create);
-router.get("/cart", protect, role("customer"), cartController.getCart);
-router.put("/cart/:cartId", protect, role("customer"), cartController.updateCart);
-router.delete("/cart/:cartId", protect, role("customer"), cartController.deleteCart);
+router.route("/payment").post(paymentController.create).get(paymentController.list);
+router.route("/payment/:payment_id").get(paymentController.details).put(paymentController.update).delete(paymentController.destroy);
 
+router.route("/review").post(reviewController.create).get(reviewController.list);
+router.route("/review/:review_id").get(reviewController.details).put(reviewController.update).delete(reviewController.destroy);
 
+router.route("/banner").post(bannerController.create).get(bannerController.list);
+router.route("/banner/:banner_id").get(bannerController.details).put(bannerController.update).delete(bannerController.destroy);
 
-// Place Order
-router.post("/", protect, create);
-
-// Logged in user orders
-router.get("/my-orders", protect, myOrders);
-
-// Order Details
-router.get("/:order_id", protect, details);
-
-// =============================
-// Admin
-// =============================
-
-// All Orders
-router.get("/", protect, role("admin"), list);
-
-// Update Order
-router.put("/:order_id", protect, role("admin"), update);
-
-// Delete Order
-router.delete("/:order_id", protect, role("admin"), destroy);
 module.exports = router;
-
-// router.post("/product",protect,role("vendor"),productController.create);  vendor and admin ADD

@@ -11,7 +11,6 @@ const {
 } = require("../controller/orderController");
 
 const { protect } = require("../middleware/auth.middleware");
-const role = require("../middleware/role.middleware");
 
 // =============================
 // Customer
@@ -31,12 +30,12 @@ router.get("/:order_id", protect, details);
 // =============================
 
 // All Orders
-router.get("/", protect, role("admin"), list);
+router.get("/", protect, list);
 
 // Update Order
-router.put("/:order_id", protect, role("admin"), update);
+router.put("/:order_id", protect, update);
 
 // Delete Order
-router.delete("/:order_id", protect, role("admin"), destroy);
+router.delete("/:order_id", protect, destroy);
 
 module.exports = router;

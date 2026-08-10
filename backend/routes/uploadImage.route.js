@@ -4,7 +4,6 @@ const fs = require("fs");
 const path = require("path");
 const router = express.Router();
 const { protect } = require("../middleware/auth.middleware");
-const role = require("../middleware/role.middleware");
 
 const uploadDirectory = path.join(__dirname, "..", "uploads", "products");
 fs.mkdirSync(uploadDirectory, { recursive: true });
@@ -32,7 +31,7 @@ const upload = multer({
 });
 
 // Upload API
-router.post("/image", protect, role("admin", "vendor"), upload.single("image"), (req, res) => {
+router.post("/image", protect, upload.single("image"), (req, res) => {
 
     if (!req.file) {
         return res.status(400).json({

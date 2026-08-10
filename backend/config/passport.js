@@ -31,7 +31,6 @@ passport.use(
             email,
             googleId: profile.id,
             avatar: profile.photos?.[0]?.value || "",
-            role: "customer",
           });
         } else if (!user.googleId) {
           // Link an existing email/password account rather than creating a duplicate.

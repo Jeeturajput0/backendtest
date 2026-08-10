@@ -20,24 +20,19 @@ export default function GoogleSuccess() {
         )
       );
 
-      if (!payload.role || (payload.exp && payload.exp * 1000 < Date.now())) {
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
         throw new Error("Invalid Google token");
       }
 
       localStorage.setItem("token", token);
-      localStorage.setItem("role", payload.role);
       localStorage.setItem(
         "userdetails",
-        JSON.stringify({ _id: payload.userId, email: payload.email, role: payload.role })
+        JSON.stringify({ _id: payload.userId, email: payload.email })
       );
 
-      navigate(
-        payload.role === "admin" ? "/admin" : payload.role === "vendor" ? "/vendor" : "/",
-        { replace: true }
-      );
+      navigate("/admin", { replace: true });
     } catch {
       localStorage.removeItem("token");
-      localStorage.removeItem("role");
       localStorage.removeItem("userdetails");
       navigate("/login?error=google_auth_failed", { replace: true });
     }

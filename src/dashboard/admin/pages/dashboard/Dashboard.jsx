@@ -1,225 +1,66 @@
 import { motion } from "framer-motion";
-import {
-  ArrowUpRight,
-  DollarSign,
-  Ellipsis,
-  Package,
-  ShoppingCart,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { DollarSign, Package, ShoppingCart, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { API_URI } from "../../../../config";
 
-const stats = [
-  [
-    "Total revenue",
-    "₹25,480",
-    "+12.5%",
-    DollarSign,
-    "bg-orange-50 text-orange-600",
-  ],
-  ["Orders", "1,240", "+8.2%", ShoppingCart, "bg-sky-50 text-sky-600"],
-  ["Customers", "845", "+5.1%", Users, "bg-violet-50 text-violet-600"],
-  [
-    "Products",
-    "320",
-    "18 low stock",
-    Package,
-    "bg-emerald-50 text-emerald-600",
-  ],
-];
-const orders = [
-  ["#SE-1048", "Aarav Sharma", "₹4,299", "Delivered", "emerald"],
-  ["#SE-1047", "Meera Nair", "₹2,499", "Processing", "sky"],
-  ["#SE-1046", "Rohan Gupta", "₹8,990", "Pending", "amber"],
-  ["#SE-1045", "Nisha Verma", "₹1,799", "Delivered", "emerald"],
-];
-const Dashboard = () => (
-  <div className="mx-auto max-w-7xl space-y-7">
-    <section className="relative overflow-hidden rounded-[2rem] bg-slate-950 px-6 py-8 text-white shadow-2xl shadow-slate-900/15 sm:px-8">
-      <div className="absolute -right-12 -top-16 h-60 w-60 rounded-full bg-orange-500/30 blur-3xl" />
-      <div className="absolute bottom-0 left-1/3 h-36 w-72 rounded-full bg-violet-500/20 blur-3xl" />
-      <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[.18em] text-orange-300">
-            <Sparkles size={14} />
-            Good morning, operator
-          </div>
-          <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-            Your store is looking sharp.
-          </h1>
-          <p className="mt-2 max-w-xl text-sm text-slate-300 sm:text-base">
-            A live snapshot of the moments that matter across ShopEase.
-          </p>
-        </div>
-        <button className="ui-button-accent shrink-0">
-          View analytics <ArrowUpRight size={17} />
-        </button>
-      </div>
-    </section>
-    <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      {stats.map(([label, value, trend, Icon, tint], index) => (
-        <motion.article
-          key={label}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.06 }}
-          whileHover={{ y: -4 }}
-          className="ui-card p-5"
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-500">{label}</p>
-              <h2 className="mt-2 text-3xl font-extrabold tracking-tight">
-                {value}
-              </h2>
-            </div>
-            <div className={`rounded-2xl p-3 ${tint}`}>
-              <Icon size={21} />
-            </div>
-          </div>
-          <p
-            className={`mt-4 text-xs font-bold ${trend.startsWith("+") ? "text-emerald-600" : "text-slate-500"}`}
-          >
-            {trend}{" "}
-            <span className="font-medium text-slate-400">this month</span>
-          </p>
-        </motion.article>
-      ))}
-    </section>
-    <section className="grid gap-6 xl:grid-cols-[1.55fr_.75fr]">
-      <article className="ui-card overflow-hidden p-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="eyebrow">Performance</p>
-            <h2 className="mt-1 text-xl font-extrabold">Revenue overview</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              A healthy upward trend over the last 12 months.
-            </p>
-          </div>
-          <button className="rounded-xl border border-slate-200 p-2 text-slate-500 hover:bg-slate-50">
-            <Ellipsis size={18} />
-          </button>
-        </div>
-        <div className="mt-8 flex h-60 items-end gap-2 rounded-2xl bg-gradient-to-br from-orange-50 via-white to-slate-50 px-5 pb-7 pt-12 sm:gap-3">
-          {[33, 48, 40, 62, 51, 77, 58, 89, 71, 83, 75, 100].map(
-            (height, index) => (
-              <div
-                key={index}
-                className="group relative flex h-full flex-1 items-end"
-              >
-                <div
-                  style={{ height: `${height}%` }}
-                  className="w-full rounded-t-lg bg-gradient-to-t from-orange-500 to-amber-300 transition duration-300 group-hover:from-slate-950 group-hover:to-slate-700"
-                />
-                {index === 11 && (
-                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 rounded-lg bg-slate-950 px-2 py-1 text-[10px] font-bold text-white">
-                    ₹25.4K
-                  </span>
-                )}
-              </div>
-            ),
-          )}
-        </div>
-        <div className="mt-4 flex justify-between text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-          <span>Aug</span>
-          <span>Oct</span>
-          <span>Dec</span>
-          <span>Feb</span>
-          <span>Apr</span>
-          <span>Jul</span>
-        </div>
-      </article>
-      <article className="ui-card p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="eyebrow">Top movers</p>
-            <h2 className="mt-1 text-xl font-extrabold">Best sellers</h2>
-          </div>
-          <button className="text-sm font-bold text-orange-600 hover:text-orange-700">
-            View all
-          </button>
-        </div>
-        <div className="mt-6 space-y-5">
-          {[
-            ["Nike Air Max 270", "250 sold", 82],
-            ["Apple Watch Series 9", "180 sold", 67],
-            ["Leather Everyday Bag", "145 sold", 53],
-            ["Sony WH-1000XM5", "120 sold", 45],
-          ].map(([name, sales, width], index) => (
-            <div key={name}>
-              <div className="flex justify-between gap-3 text-sm">
-                <span className="font-bold text-slate-800">
-                  <span className="mr-2 text-slate-400">0{index + 1}</span>
-                  {name}
-                </span>
-                <span className="shrink-0 text-slate-500">{sales}</span>
-              </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-500"
-                  style={{ width: `${width}%` }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </article>
-    </section>
-    <section className="ui-table-wrap">
-      <div className="flex items-center justify-between border-b border-slate-100 p-5">
-        <div>
-          <h2 className="font-extrabold text-slate-950">Recent orders</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            A live view of your latest store activity.
-          </p>
-        </div>
-        <button className="ui-button-secondary px-3 py-2 text-xs">
-          All orders <ArrowUpRight size={14} />
-        </button>
-      </div>
-      <table className="ui-table">
-        <thead>
-          <tr>
-            <th>Order</th>
-            <th>Customer</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th className="text-right">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map(([id, name, amount, status, color]) => (
-            <tr key={id}>
-              <td className="font-bold text-slate-800">{id}</td>
-              <td>
-                <div className="flex items-center gap-3">
-                  <span className="grid h-8 w-8 place-items-center rounded-full bg-slate-100 text-xs font-bold text-slate-600">
-                    {name
-                      .split(" ")
-                      .map((x) => x[0])
-                      .join("")}
-                  </span>
-                  <span className="font-semibold text-slate-700">{name}</span>
-                </div>
-              </td>
-              <td className="font-bold text-slate-800">{amount}</td>
-              <td>
-                <span
-                  className={`inline-flex rounded-full px-2.5 py-1 text-xs font-bold ${color === "emerald" ? "bg-emerald-50 text-emerald-700" : color === "sky" ? "bg-sky-50 text-sky-700" : "bg-amber-50 text-amber-700"}`}
-                >
-                  {status}
-                </span>
-              </td>
-              <td className="text-right">
-                <button className="text-sm font-bold text-orange-600 hover:text-orange-700">
-                  Details
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </section>
-  </div>
-);
-export default Dashboard;
+const money = (value) => `₹${Number(value || 0).toLocaleString("en-IN")}`;
+
+export default function Dashboard() {
+  const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const headers = { Authorization: `Bearer ${localStorage.getItem("token")}` };
+    Promise.all([
+      fetch(`${API_URI}/admin/product`, { headers }),
+      fetch(`${API_URI}/admin/order`, { headers }),
+      fetch(`${API_URI}/admin/payment`, { headers }),
+    ])
+      .then(async ([productRes, orderRes, paymentRes]) => {
+        if (![productRes, orderRes, paymentRes].every((res) => res.ok)) throw new Error("Dashboard data could not be loaded");
+        const [productData, orderData, paymentData] = await Promise.all([productRes.json(), orderRes.json(), paymentRes.json()]);
+        setProducts(Array.isArray(productData.data) ? productData.data : []);
+        setOrders(Array.isArray(orderData.data) ? orderData.data : []);
+        setPayments(Array.isArray(paymentData.data) ? paymentData.data : []);
+      })
+      .catch((loadError) => setError(loadError.message));
+  }, []);
+
+  const revenue = payments.filter((item) => item.status === "Paid").reduce((total, item) => total + Number(item.amount || 0), 0);
+  const stats = [
+    ["Revenue", money(revenue), "Paid payments", DollarSign, "bg-orange-50 text-orange-600"],
+    ["Orders", orders.length, `${orders.filter((item) => item.orderStatus === "Pending").length} pending`, ShoppingCart, "bg-sky-50 text-sky-600"],
+    ["Products", products.length, `${products.filter((item) => item.isActive === false).length} inactive`, Package, "bg-emerald-50 text-emerald-600"],
+    ["Payments", payments.length, `${payments.filter((item) => item.status === "Pending").length} pending`, Users, "bg-violet-50 text-violet-600"],
+  ];
+
+  return (
+    <div className="mx-auto max-w-7xl space-y-7">
+      <section className="rounded-[2rem] bg-slate-950 px-6 py-8 text-white shadow-2xl sm:px-8">
+        <p className="text-xs font-bold uppercase tracking-[.18em] text-orange-300">Live store overview</p>
+        <h1 className="mt-3 text-3xl font-extrabold sm:text-4xl">Your store dashboard</h1>
+        <p className="mt-2 text-sm text-slate-300">Products, orders and payments shown directly from your backend.</p>
+      </section>
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {stats.map(([label, value, detail, Icon, tint], index) => (
+          <motion.article key={label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} className="ui-card p-5">
+            <div className="flex items-start justify-between"><div><p className="text-sm font-medium text-slate-500">{label}</p><h2 className="mt-2 text-3xl font-extrabold">{value}</h2></div><div className={`rounded-2xl p-3 ${tint}`}><Icon size={21} /></div></div>
+            <p className="mt-4 text-xs font-bold text-slate-500">{detail}</p>
+          </motion.article>
+        ))}
+      </section>
+      <section className="grid gap-6 xl:grid-cols-2">
+        <article className="ui-card p-6"><h2 className="text-xl font-extrabold">Recent products</h2><div className="mt-5 space-y-3">
+          {products.slice(0, 5).map((product) => <div key={product._id} className="flex items-center justify-between border-b border-slate-100 pb-3"><div><p className="font-bold text-slate-800">{product.name}</p><p className="text-xs text-slate-500">{product.category?.title || "Uncategorised"}</p></div><span className={product.isActive ? "status-active" : "status-inactive"}>{product.isActive ? "Active" : "Inactive"}</span></div>)}
+          {!products.length && <p className="text-sm text-slate-500">{error || "No products found."}</p>}
+        </div></article>
+        <article className="ui-card p-6"><h2 className="text-xl font-extrabold">Recent orders</h2><div className="mt-5 space-y-3">
+          {orders.slice(0, 5).map((order) => <div key={order._id} className="flex items-center justify-between border-b border-slate-100 pb-3"><div><p className="font-bold text-slate-800">{order.orderNumber}</p><p className="text-xs text-slate-500">{order.customer || "Customer"}</p></div><div className="text-right"><p className="font-bold">{money(order.totalAmount)}</p><p className="text-xs text-slate-500">{order.orderStatus}</p></div></div>)}
+          {!orders.length && <p className="text-sm text-slate-500">{error || "No orders found."}</p>}
+        </div></article>
+      </section>
+    </div>
+  );
+}

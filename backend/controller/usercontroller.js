@@ -3,12 +3,7 @@ const User = require("../model/usermodel");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const normalizeRole = (role) => {
-  const normalizedRole = String(role || "").trim().toLowerCase();
-  return ["admin", "vendor", "customer"].includes(normalizedRole)
-    ? normalizedRole
-    : "customer";
-};
+
 
 const sanitizeUser = (user) => {
   const userData = user.toObject ? user.toObject() : { ...user };
@@ -18,12 +13,11 @@ const sanitizeUser = (user) => {
 
 const register = async (req, res) => {
   try {
-    const { password, name, mobile, role = "customer" } = req.body;
+    const { password, name, mobile } = req.body;
     const email = String(req.body.email || "").trim().toLowerCase();
     if (!email || !password || !name || !mobile) {
       return res.status(400).json({ success: false, message: "Name, mobile, email and password are required" });
     }
-    const safeRole = normalizeRole(role);
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({
@@ -38,7 +32,6 @@ const register = async (req, res) => {
       email,
       mobile,
       password: hashedPassword,
-      role: safeRole,
     });
 
 
@@ -46,7 +39,6 @@ const register = async (req, res) => {
       {
         userId: user._id,
         email: user.email,
-        role:user.role
       },
       process.env.JWT_SECRET,
       {
@@ -99,7 +91,6 @@ const token = jwt.sign(
   {
     userId: user._id,
     email: user.email,
-    role: user.role,
   },
   process.env.JWT_SECRET,
   {

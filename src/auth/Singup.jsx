@@ -15,7 +15,6 @@ const Signup = () => {
     mobile: "",
     email: "",
     password: "",
-    role: "customer",
   });
 
   const handleChange = (e) => {
@@ -31,14 +30,10 @@ const Signup = () => {
     try {
       const res = await axios.post(`${API_URI}/user/register`, formData);
 
-      const userData = res.data?.data || res.data?.user || null;
-      const role = userData?.role || "customer";
-
-      if (res.data?.token) {
-        localStorage.setItem("token", res.data.token);
-      }
+      const userData = res.data?.data || res.data?.user;
+      if (!res.data?.token) throw new Error("Registration token was not returned by the server");
+      localStorage.setItem("token", res.data.token);
       localStorage.setItem("userdetails", JSON.stringify(userData));
-      localStorage.setItem("role", role);
  
       Swal.fire({
         title: "SUCCESS",
@@ -46,7 +41,7 @@ const Signup = () => {
         icon: "success",
       });
 
-      navigate("/login");
+      navigate("/admin", { replace: true });
     } catch (error) {
       Swal.fire({
         title: "ERROR",

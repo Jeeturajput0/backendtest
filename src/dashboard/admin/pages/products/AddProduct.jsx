@@ -1,14 +1,12 @@
 import { Save, Upload } from "lucide-react";
 import { API_URI, AUTH_TOKEN, setImageURL, uploadImage } from "../../../../config";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddProduct = () => {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const basePath = pathname.startsWith("/vendor") ? "/vendor/products" : "/admin/products";
-  const isVendor = pathname.startsWith("/vendor");
-  const productApi = isVendor ? `${API_URI}/vendor/products` : `${API_URI}/admin/product`;
+  const basePath = "/admin/products";
+  const productApi = `${API_URI}/admin/product`;
   const { product_id } = useParams();
   const [categories, setCategories] = useState([]);
   const [size, setSize] = useState([]);
@@ -71,7 +69,7 @@ const AddProduct = () => {
 
   const getCategories = async () => {
     try {
-      const res = await fetch(isVendor ? `${API_URI}/vendor/categories` : `${API_URI}/admin/category`, {
+      const res = await fetch(`${API_URI}/admin/category`, {
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
@@ -85,7 +83,7 @@ const AddProduct = () => {
 
   const getSize = async () => {
     try {
-      const res = await fetch(isVendor ? `${API_URI}/vendor/sizes` : `${API_URI}/admin/size`, {
+      const res = await fetch(`${API_URI}/admin/size`, {
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },

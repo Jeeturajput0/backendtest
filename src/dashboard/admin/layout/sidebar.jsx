@@ -29,7 +29,6 @@ const primary = [
   [ShoppingCart, "Orders", "/admin/orders"],
   [CreditCard, "Payments", "/admin/payments"],
   [Users, "Customers", "/admin/users"],
-  [Users, "Vendors", "/admin/vendors"],
   [User, "Profile", "/admin/profile"],
   [Settings, "Settings", "/admin/settings"],
 ];
@@ -49,7 +48,7 @@ const Sidebar = ({ onNavigate }) => {
     `flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${isActive ? "bg-white text-slate-950 shadow-xl shadow-black/10" : "text-slate-400 hover:bg-white/8 hover:text-white"}`;
   const navigate = useNavigate();
   const logout = () => {
-    ["token", "role", "userdetails"].forEach((key) => localStorage.removeItem(key));
+    ["token", "userdetails"].forEach((key) => localStorage.removeItem(key));
     navigate("/login");
   };
   return (

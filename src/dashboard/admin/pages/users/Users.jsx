@@ -16,7 +16,6 @@ const UsersPage = () => {
       name: "Jeetu Rajput",
       email: "jeetu@gmail.com",
       phone: "9876543210",
-      role: "Admin",
       status: "Active",
       joined: "10 Jul 2026",
       image: "https://i.pravatar.cc/150?img=1",
@@ -65,7 +64,6 @@ const UsersPage = () => {
               <th className="p-4 text-left">User</th>
               <th>Email</th>
               <th>Phone</th>
-              <th>Role</th>
               <th>Status</th>
               <th>Joined</th>
               <th className="text-center">Action</th>
@@ -96,7 +94,6 @@ const UsersPage = () => {
 
                 <td>{user.phone}</td>
 
-                <td>{user.role}</td>
 
                 <td>
                   <span

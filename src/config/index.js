@@ -2,9 +2,12 @@ import axios from "axios";
 
 export const BACK_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:2000";
 export const API_URI = import.meta.env.VITE_API_URI || `${BACK_URL}/api`;
-// Kept for existing dashboard modules. New requests should read localStorage
-// when sending the request so they always use the latest token.
-export const AUTH_TOKEN = localStorage.getItem("token");
+// Existing pages interpolate this value in request headers. Its string value is
+// read at request time, so a token received after login is never stale.
+export const AUTH_TOKEN = {
+  [Symbol.toPrimitive]: () => localStorage.getItem("token") || "",
+  toString: () => localStorage.getItem("token") || "",
+};
 
 export const setImageURL = (image) => {
   if (!image) return "";

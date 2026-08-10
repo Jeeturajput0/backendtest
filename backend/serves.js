@@ -35,14 +35,12 @@ const auth = require("./routes/auth.routes");
 const protectedRoute = require("./routes/protected.route");
 const website = require("./routes/website.route");
 const uploadImage = require("./routes/uploadImage.route");
-const vendor = require("./routes/vendor.routes");
 const orderRoutes = require("./routes/oder.routes");
 const paymentRoutes = require("./routes/payment.routes");
 
 
 app.use("/api/user", auth);
 app.use("/api/admin", protectedRoute);
-app.use("/api/vendor", vendor);
 app.use("/api", website);
 app.use("/api/upload", uploadImage);
 app.use("/api/order", orderRoutes);

@@ -30,11 +30,7 @@ const userSchema = new mongoose.Schema({
   country: { type: String, default: "India" },
   bio: { type: String, default: "" },
   avatar: { type: String, default: "" },
-  role: {
-    type: String,
-    enum: ["admin", "vendor", "customer"],
-    default: "customer",
-  },
+
 }, { timestamps: true });
 const User = mongoose.model("User", userSchema);
 module.exports = User;
