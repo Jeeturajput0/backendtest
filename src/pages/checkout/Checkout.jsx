@@ -5,15 +5,6 @@ import { ArrowLeft, CreditCard, MapPin, Truck } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_URI } from "../../config";
 
-const loadRazorpay = () => new Promise((resolve) => {
-  if (window.Razorpay) return resolve(true);
-  const script = document.createElement("script");
-  script.src = "https://checkout.razorpay.com/v1/checkout.js";
-  script.onload = () => resolve(true);
-  script.onerror = () => resolve(false);
-  document.body.appendChild(script);
-});
-
 export default function Checkout() {
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
@@ -76,8 +67,8 @@ export default function Checkout() {
       totalAmount: total,
     };
     const headers = { Authorization: `Bearer ${token}` };
-    const saveOrder = async (payment) => {
-      const response = await axios.post(`${API_URI}/order`, { ...basePayload, payment }, { headers });
+    const saveOrder = async () => {
+      const response = await axios.post(`${API_URI}/order`, basePayload, { headers });
       navigate("/order-success", {
         
         state: {
@@ -89,34 +80,7 @@ export default function Checkout() {
     };
 
     try {
-      if (paymentMethod === "COD") return await saveOrder();
-      const checkoutLoaded = await loadRazorpay();
-      if (!checkoutLoaded) throw new Error("Razorpay checkout could not be loaded. Check your internet connection.");
-      const paymentOrder = await axios.post(`${API_URI}/payment/create`, { amount: total }, { headers });
-      const options = {
-        key: paymentOrder.data.keyId,
-        amount: paymentOrder.data.data.amount,
-        currency: paymentOrder.data.data.currency,
-        name: "ShopEase",
-        description: "Order payment",
-        order_id: paymentOrder.data.data.id,
-        handler: async (result) => {
-          try {
-            await axios.post(`${API_URI}/payment/verify`, result, { headers });
-            await saveOrder({
-              orderId: result.razorpay_order_id,
-              paymentId: result.razorpay_payment_id,
-              signature: result.razorpay_signature,
-            });
-          } catch (error) {
-            alert(error.response?.data?.message || "Payment could not be verified");
-          }
-        },
-        prefill: { name: address.fullName, contact: address.mobile, email: basePayload.customerEmail },
-        theme: { color: "#4f46e5" },
-        modal: { ondismiss: () => {} },
-      };
-      new window.Razorpay(options).open();
+      await saveOrder();
     } catch (error) {
       alert(error.response?.data?.message || error.message || "Could not place order");
     }
@@ -184,15 +148,6 @@ export default function Checkout() {
                 onChange={() => setPaymentMethod("COD")}
               />{" "}
               Cash on Delivery
-            </label>
-            <br />
-            <label>
-              <input
-                type="radio"
-                checked={paymentMethod === "Razorpay"}
-                onChange={() => setPaymentMethod("Razorpay")}
-              />{" "}
-              Razorpay
             </label>
           </div>
         </motion.div>

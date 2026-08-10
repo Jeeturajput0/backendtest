@@ -1,6 +1,5 @@
 const Order = require("../model/ordermodel");
 const Cart = require("../model/cartmodlel");
-const crypto = require("crypto");
 
 // =======================
 // Create Order
@@ -15,23 +14,10 @@ const create = async (req, res) => {
       paymentMethod,
       items,
       totalAmount,
-      payment,
     } = req.body;
 
     if (!customer || !mobile || !shippingAddress || !Array.isArray(items) || items.length === 0 || !Number.isFinite(Number(totalAmount)) || Number(totalAmount) <= 0) {
       return res.status(400).json({ success: false, message: "Customer, mobile, address, items and a valid total are required" });
-    }
-
-    if (paymentMethod === "Razorpay") {
-      if (!payment?.orderId || !payment?.paymentId || !payment?.signature || !process.env.RAZORPAY_KEY_SECRET) {
-        return res.status(400).json({ success: false, message: "Verified Razorpay payment details are required" });
-      }
-      const signature = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-        .update(`${payment.orderId}|${payment.paymentId}`)
-        .digest("hex");
-      if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(payment.signature))) {
-        return res.status(400).json({ success: false, message: "Payment verification failed" });
-      }
     }
 
     const orderNumber = `ORD${Date.now()}`;
@@ -46,7 +32,7 @@ const create = async (req, res) => {
       paymentMethod,
       items,
       totalAmount,
-      paymentStatus: paymentMethod === "Razorpay" ? "Paid" : "Pending",
+      paymentStatus: "Pending",
     });
 
     // Cart Empty

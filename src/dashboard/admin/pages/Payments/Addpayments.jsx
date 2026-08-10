@@ -9,7 +9,7 @@ const AddPayment = () => {
     customer: "",
     orderId: "",
     amount: "",
-    method: "Razorpay",
+    method: "Cash On Delivery",
     status: "Paid",
     transactionId: "",
     date: "",
@@ -116,7 +116,6 @@ const AddPayment = () => {
                 onChange={handleChange}
                 className="w-full border rounded-xl p-3"
               >
-                <option>Razorpay</option>
                 <option>Stripe</option>
                 <option>PayPal</option>
                 <option>UPI</option>
