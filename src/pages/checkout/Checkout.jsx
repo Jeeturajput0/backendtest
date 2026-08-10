@@ -79,7 +79,7 @@ export default function Checkout() {
     const saveOrder = async (payment) => {
       const response = await axios.post(`${API_URI}/order`, { ...basePayload, payment }, { headers });
       navigate("/order-success", {
-        replace: true,
+        
         state: {
           orderNumber: response.data.data.orderNumber,
           paymentMethod,

@@ -50,7 +50,7 @@ const Sidebar = ({ onNavigate }) => {
   const navigate = useNavigate();
   const logout = () => {
     ["token", "role", "userdetails"].forEach((key) => localStorage.removeItem(key));
-    navigate("/login", { replace: true });
+    navigate("/login");
   };
   return (
     <aside className="min-h-full px-4 py-5 text-white">

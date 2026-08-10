@@ -51,7 +51,7 @@ function App() {
     <Routes>
       {/* User Layout */}
       <Route path="login" element={<Login />} />
-      <Route path="/google-success" element={<GoogleSuccess />} />
+      {/* <Route path="/google-success" element={<GoogleSuccess />} /> */}
 
       <Route path="/" element={<Layout />}>
         <Route path="/checkout" element={<Checkout />} />
@@ -72,7 +72,7 @@ function App() {
           </RequireRole>
         }
       >
-        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route index element={<Navigate to="dashboard"  />} />
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/categories" element={<Category />} />
         <Route path="/admin/categories/add" element={<AddCategory />} />

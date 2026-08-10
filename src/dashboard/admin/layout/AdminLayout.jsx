@@ -12,7 +12,7 @@ const AdminLayout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userdetails");
-    navigate("/login", { replace: true });
+    navigate("/login");
   };
   return (
     <div className="admin-shell min-h-screen bg-[#F8FAFC]">

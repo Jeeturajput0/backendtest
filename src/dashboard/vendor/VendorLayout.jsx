@@ -10,7 +10,7 @@ export default function VendorLayout() {
   const navigate = useNavigate();
   const logout = () => {
     ["token", "role", "userdetails"].forEach((key) => localStorage.removeItem(key));
-    navigate("/login", { replace: true });
+    navigate("/login");
   };
 
   return (

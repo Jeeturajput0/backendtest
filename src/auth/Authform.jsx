@@ -162,9 +162,9 @@ const Authform = ({
       {/* Google Login */}
       <button
         type="button"
-        onClick={() => {
-          window.location.href = `${API_URI.replace("/api", "")}/api/user/google`;
-        }}
+        // onClick={() => {
+        //   window.location.href = `${API_URI.replace("/api", "")}/api/user/google`;
+        // }}
         className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 font-semibold text-slate-700 transition-all hover:border-indigo-300 hover:bg-slate-50 hover:shadow-md"
       >
         <Globe  size={20} className="text-red-500" />

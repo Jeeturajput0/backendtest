@@ -3,22 +3,10 @@ const crypto = require("crypto");
 const Payment = require("../model/paymentmodel");
 require("dotenv").config();
 
-const getRazorpayClient = () => {
-  const { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } = process.env;
-  if (
-    !RAZORPAY_KEY_ID ||
-    !RAZORPAY_KEY_SECRET ||
-    RAZORPAY_KEY_ID === "YOUR_KEY_ID" ||
-    RAZORPAY_KEY_ID === "your_razorpay_key_id"
-  ) {
-    return null;
-  }
-
-  return new Razorpay({
-    key_id: RAZORPAY_KEY_ID,
-    key_secret: RAZORPAY_KEY_SECRET,
-  });
-};
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 // Create Razorpay Order
 const createPayment = async (req, res) => {
@@ -27,8 +15,7 @@ const createPayment = async (req, res) => {
     if (!Number.isFinite(amount) || amount <= 0) {
       return res.status(400).json({ success: false, message: "A valid payment amount is required" });
     }
-    const razorpay = getRazorpayClient();
-    if (!razorpay) {
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET || process.env.RAZORPAY_KEY_ID === "YOUR_KEY_ID") {
       return res.status(503).json({ success: false, message: "Razorpay is not configured. Add valid RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET to backend/.env." });
     }
 

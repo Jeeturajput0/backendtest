@@ -5,10 +5,10 @@ export default function RequireRole({ roles, children }) {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
-  if (!token) return <Navigate to="/login" replace state={{ from: location }} />;
-  if (!roles.includes(role)) {
-    const destination = role === "admin" ? "/admin" : role === "vendor" ? "/vendor" : "/";
-    return <Navigate to={destination} replace />;
-  }
+  if (!token) return <Navigate to="/login" />;
+  // if (!roles.includes(role)) {
+  //   const destination = role === "admin" ? "/admin" : role === "vendor" ? "/vendor" : "/";
+  //   return <Navigate to={destination}  />;
+  // } 
   return children;
 }
