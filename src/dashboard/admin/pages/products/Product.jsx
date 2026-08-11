@@ -3,43 +3,22 @@ import { Link, useNavigate } from "react-router-dom";
 import { setImageURL } from "../../../../config";
 import { useEffect, useState } from "react";
 import services from "../../../../services/products.service";
-
+import { fetchproducts } from "../../../../store/slices/products.slice";
+import { useSelector, useDispatch } from "react-redux";
 const Products = () => {
   const navigate = useNavigate();
   const basePath = `/admin/products`;
-  const [products, setProducts] = useState([]);
+
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     isActive: "",
     search: "",
   });
-
-
-  const getProducts = async () => {
-  try {
-    const params = {
-      search: formData.search,
-      isActive: formData.isActive,
-    };
-
-    const resData = await services.getAllproducts(params);
-
-    console.log("PRODUCT RESPONSE:", resData);
-
-    if (resData.success) {
-      setProducts(resData.data || []);
-      setError("");
-    } else {
-      setProducts([]);
-      setError(resData.message || "Products not found");
-    }
-  } catch (error) {
-    console.log(error);
-    setError(error.message);
-    setProducts([]);
-  }
-};
-
+  const { categories: products } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchproducts());
+  });
   const deleteProduct = async (product_id) => {
     try {
       const res = await services.deleteProduct(product_id);
@@ -48,10 +27,6 @@ const Products = () => {
       console.log(error);
     }
   };
-  
-  useEffect(() => {
-    getProducts();
-  }, []);
 
   return (
     <div className="mx-auto max-w-7xl space-y-7">
@@ -87,12 +62,16 @@ const Products = () => {
 
         <div className="ui-card p-5">
           <h3 className="text-gray-500">Active</h3>
-          <h2 className="text-3xl font-bold text-green-600 mt-2">{products.filter((item) => item.isActive === true).length}</h2>
+          <h2 className="text-3xl font-bold text-green-600 mt-2">
+            {products.filter((item) => item.isActive === true).length}
+          </h2>
         </div>
 
         <div className="ui-card p-5">
           <h3 className="text-gray-500">Inactive</h3>
-          <h2 className="text-3xl font-bold text-red-600 mt-2">{products.filter((item) => item.isActive === false).length}</h2>
+          <h2 className="text-3xl font-bold text-red-600 mt-2">
+            {products.filter((item) => item.isActive === false).length}
+          </h2>
         </div>
       </div>
 
@@ -127,7 +106,7 @@ const Products = () => {
         </div>
         <button
           className="ui-button bg-emerald-600 hover:bg-emerald-700"
-          onClick={getProducts}
+          // onClick={getProducts}
         >
           <Search size={18} />
           Search
@@ -199,7 +178,11 @@ const Products = () => {
               </tr>
             ))}
             {!products.length && (
-              <tr><td colSpan="6" className="p-10 text-center text-slate-500">{error || "No products found."}</td></tr>
+              <tr>
+                <td colSpan="6" className="p-10 text-center text-slate-500">
+                  {error || "No products found."}
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

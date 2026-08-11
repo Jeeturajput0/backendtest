@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import services from "../../services/products.service";
 
-
 const initialState = {
   name: "",
   isActive: true,
@@ -15,11 +14,12 @@ export const fetchproducts = createAsyncThunk(
   "product",
   async (_, thunkAPI) => {
     try {
-      return await services.getproducts();
+      const response = await services.getAllproducts();
+      return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
-  }
+  },
 );
 
 const ProductSlice = createSlice({

@@ -28,11 +28,10 @@ services.getAllproducts = async (payload = {}) => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const data = await response.json();
-
     return data;
   } catch (error) {
     return {
@@ -46,16 +45,13 @@ services.deleteProduct = async (product_id) => {
   try {
     const token = localStorage.getItem("token");
 
-    const response = await fetch(
-      `${API_URI}/admin/product/${product_id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`${API_URI}/admin/product/${product_id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     return await response.json();
   } catch (error) {
