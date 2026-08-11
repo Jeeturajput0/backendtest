@@ -44,8 +44,9 @@ const create = async (req, res) => {
 const list = async (req, res) => {
   try {
     let query = {};
-    if (req.query?.is_active !== undefined && req.query.is_active !== "") {
-      query.isActive = req.query.is_active === "true";
+    const isActive = req.query?.is_active ?? req.query?.isActive;
+    if (isActive !== undefined && isActive !== "") {
+      query.isActive = isActive === "true" || isActive === true;
     }
     if (req.query?.search?.trim()) {
       query.name = { $regex: req.query.search.trim(), $options: "i" };
@@ -88,7 +89,11 @@ const details = async (req, res) => {
 const update = async (req, res) => {
   try {
     const filter = { _id: req.params.product_id };
-   
+    const Products = await Product.findOneAndUpdate(filter, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
     if (!Products) {
       return res.status(404).json({ success: false, message: "Product not found" });
     }

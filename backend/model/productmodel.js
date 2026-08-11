@@ -66,7 +66,7 @@ const ProductSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true,
-    required: true,
+    // required: true,
   },
   variations: [variationSchema],
 });

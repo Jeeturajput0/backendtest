@@ -24,7 +24,7 @@ router.get("/my-orders", protect, myOrders);
 
 // Order Details
 router.get("/:order_id", protect, details);
-
+router.get("/order/:order_id", protect,details);
 // =============================
 // Admin
 // =============================

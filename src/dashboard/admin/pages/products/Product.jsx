@@ -1,12 +1,12 @@
 import { Search, Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URI, setImageURL } from "../../../../config";
+import { setImageURL } from "../../../../config";
 import { useEffect, useState } from "react";
+import services from "../../../../services/products.service";
 
 const Products = () => {
   const navigate = useNavigate();
-  const basePath = "/admin/products";
-  const productApi = `${API_URI}/admin/product`;
+  const basePath = `/admin/products`;
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -14,44 +14,41 @@ const Products = () => {
     search: "",
   });
 
+
   const getProducts = async () => {
-    try {
+  try {
+    const params = {
+      search: formData.search,
+      isActive: formData.isActive,
+    };
+
+    const resData = await services.getAllproducts(params);
+
+    console.log("PRODUCT RESPONSE:", resData);
+
+    if (resData.success) {
+      setProducts(resData.data || []);
       setError("");
-      const res = await fetch(
-        `${productApi}?is_active=${formData.isActive}&search=${encodeURIComponent(formData.search)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        },
-      );
-      if (!res.ok) {
-        throw new Error("Products could not be loaded");
-      }
-      const resData = await res.json();
-      setProducts(Array.isArray(resData.data) ? resData.data : []);
-    } catch (error) {
+    } else {
       setProducts([]);
-      setError(error.message || "Products could not be loaded");
+      setError(resData.message || "Products not found");
     }
-  };
+  } catch (error) {
+    console.log(error);
+    setError(error.message);
+    setProducts([]);
+  }
+};
 
   const deleteProduct = async (product_id) => {
     try {
-      const res = await fetch(`${productApi}/${product_id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (!res.ok) throw new Error("Product could not be deleted");
-      await getProducts();
-      alert("Product deleted successfully");
+      const res = await services.deleteProduct(product_id);
+      getProducts();
     } catch (error) {
       console.log(error);
     }
   };
-
+  
   useEffect(() => {
     getProducts();
   }, []);
@@ -119,7 +116,7 @@ const Products = () => {
           <select
             value={formData.isActive}
             onChange={(e) =>
-              setFormData({ ...formData, ["isActive"]: e.target.value })
+              setFormData({ ...formData, isActive: e.target.value })
             }
             className="ui-input py-2.5 md:w-60"
           >
@@ -130,7 +127,7 @@ const Products = () => {
         </div>
         <button
           className="ui-button bg-emerald-600 hover:bg-emerald-700"
-          onClick={() => getProducts()}
+          onClick={getProducts}
         >
           <Search size={18} />
           Search
@@ -180,7 +177,7 @@ const Products = () => {
                       item.isActive ? "status-active" : "status-inactive"
                     }
                   >
-                    {item.isActive ? "Active" : "In-Active"}
+                    {item.isActive ? "Active" : "Inactive"}
                   </span>
                 </td>
 

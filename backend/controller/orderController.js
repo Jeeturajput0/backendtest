@@ -142,8 +142,10 @@ const myOrders = async (req, res) => {
 // =======================
 const details = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.order_id)
-      .populate("user", "name email")
+    const { order_id } = req.params;
+
+    const order = await Order.findById(order_id)
+      .populate("customer")
       .populate("items.product");
 
     if (!order) {
@@ -153,16 +155,16 @@ const details = async (req, res) => {
       });
     }
 
-    res.json({
+    res.status(200).json({
       success: true,
+      message: "Order details fetched successfully",
       data: order,
     });
   } catch (error) {
-    console.log(error);
-
-    res.status(500).json({
+    res.status(400).json({
       success: false,
-      message: error.message,
+      message: "Order details failed",
+      error: error.message,
     });
   }
 };
