@@ -39,7 +39,7 @@ export const checkAuth = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     if (!localStorage.getItem("token")) return rejectWithValue("No token");
     try {
-      return (await api.get("/profile")).data.user;
+      return (await api.get("/profile")).data.data;
     } catch {
       return rejectWithValue("Session expired");
     }

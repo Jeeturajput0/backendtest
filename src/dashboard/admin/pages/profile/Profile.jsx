@@ -21,17 +21,23 @@ const requestHeaders = () => ({
 export default function Profile() {
   const [form, setForm] = useState(emptyProfile);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   useEffect(() => {
+    setLoading(true);
     fetch(`${API_URI}/admin/profile`, { headers: requestHeaders() })
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setForm((current) => ({ ...current, ...data.data }));
         else setMessage(data.message);
       })
-      .catch(() => setMessage("Profile could not be loaded"));
+      .catch(() => setMessage("Profile could not be loaded"))
+      .finally(() => setLoading(false));
   }, []);
   const submit = async (event) => {
     event.preventDefault();
+    setSaving(true);
+    setMessage("");
     const res = await fetch(`${API_URI}/admin/profile`, {
       method: "PUT",
       headers: requestHeaders(),
@@ -43,6 +49,7 @@ export default function Profile() {
       setForm((current) => ({ ...current, ...data.data }));
       window.dispatchEvent(new Event("profile-updated"));
     }
+    setSaving(false);
   };
   const change = (event) =>
     setForm((current) => ({
@@ -53,24 +60,27 @@ export default function Profile() {
     form.avatar ||
     `https://ui-avatars.com/api/?background=2563eb&color=fff&name=${encodeURIComponent(form.name || "Admin")}`;
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl bg-white shadow-lg">
-        <div className="relative h-40 bg-blue-600">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 p-4 sm:p-6">
+      <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl bg-white shadow-[0_20px_60px_rgba(15,23,42,0.10)] ring-1 ring-slate-200/70">
+        <div className="relative h-44 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500">
           <img
             src={avatar}
             alt="Profile"
-            className="absolute left-8 top-20 h-32 w-32 rounded-full border-4 border-white object-cover"
+            className="absolute left-6 top-24 h-28 w-28 rounded-full border-4 border-white object-cover shadow-xl sm:left-8 sm:h-32 sm:w-32"
           />
           <Camera
-            className="absolute left-32 top-44 rounded-full bg-blue-600 p-2 text-white"
+            className="absolute left-28 top-44 rounded-full bg-slate-950/80 p-2 text-white shadow-lg sm:left-36"
             size={34}
           />
         </div>
-        <form onSubmit={submit} className="mt-16 p-8">
-          <div className="mb-8 flex items-center gap-3">
+        <form onSubmit={submit} className="mt-14 p-5 sm:p-8">
+          <div className="mb-3 flex items-center gap-3">
             <User className="text-blue-600" />
             <h2 className="text-2xl font-bold">My Profile</h2>
           </div>
+          <p className="mb-8 text-sm text-slate-500">
+            {loading ? "Loading your profile..." : "Update your admin details and save changes."}
+          </p>
           <div className="grid gap-6 md:grid-cols-2">
             {[
               ["name", "Full Name", "text"],
@@ -88,9 +98,9 @@ export default function Profile() {
                   name={name}
                   type={type}
                   value={form[name] || ""}
-                  disabled={name === "email"}
+                  readOnly={name === "email"}
                   onChange={change}
-                  className="w-full rounded-xl border p-3 outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100"
+                  className="w-full rounded-xl border border-slate-200 bg-white p-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 read-only:bg-slate-50 read-only:text-slate-500"
                 />
               </label>
             ))}
@@ -101,15 +111,18 @@ export default function Profile() {
                 name="bio"
                 value={form.bio || ""}
                 onChange={change}
-                className="w-full rounded-xl border p-3 outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-xl border border-slate-200 bg-white p-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
               />
             </label>
           </div>
-          {message && <p className="mt-5 text-sm text-blue-700">{message}</p>}
+          {message && <p className="mt-5 text-sm text-slate-600">{message}</p>}
           <div className="mt-8 flex justify-end">
-            <button className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-white hover:bg-blue-700">
+            <button
+              disabled={saving || loading}
+              className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+            >
               <Save size={18} />
-              Update Profile
+              {saving ? "Saving..." : "Update Profile"}
             </button>
           </div>
         </form>
