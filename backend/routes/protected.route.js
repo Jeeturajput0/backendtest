@@ -35,7 +35,7 @@ router.route("/size").post(sizeController.create).get(sizeController.list);
 router.route("/size/:size_id").put(sizeController.update).delete(sizeController.destory);
 
 router.route("/brand").get(brandController.list).post(brandController.create);
-router.route("/brand/:brand_id").put(brandController.update).delete(brandController.destory);
+router.route("/brand/:brand_id").get(brandController.details).put(brandController.update).delete(brandController.destory);
 
 router.route("/coupon").get(couponsController.list).post(couponsController.create);
 router.route("/coupon/:coupon_id").get(couponsController.details).put(couponsController.update).delete(couponsController.destory);

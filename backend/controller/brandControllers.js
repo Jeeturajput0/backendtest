@@ -39,6 +39,18 @@ const list = async (req, res) => {
   }
 };
 
+const details = async (req, res) => {
+  try {
+    const brand = await Brand.findById(req.params.brand_id);
+    if (!brand) {
+      return res.status(404).json({ success: false, message: "Brand not found" });
+    }
+    return res.status(200).json({ success: true, data: brand });
+  } catch (err) {
+    return res.status(400).json({ success: false, message: "Invalid brand id" });
+  }
+};
+
 const update = async (req, res) => {
   try {
     const brand = await Brand.findByIdAndUpdate(req.params.brand_id, req.body, { new: true });
@@ -70,7 +82,7 @@ const destory = async (req, res) => {
   }
 };
 
-module.exports = { create, list, update, destory };
+module.exports = { create, list, details, update, destory };
 
 
 
