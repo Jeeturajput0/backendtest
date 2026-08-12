@@ -1,47 +1,67 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
 import services from "../../services/order.service";
 
-
 const initialState = {
-  name: "",
-  isActive: true,
-  image: "",
-  categories: [],
+  orders: [],
   loading: false,
   error: null,
 };
 
-export const fetchorder = createAsyncThunk(
-  "product",
-  async (_, thunkAPI) => {
+export const getOrders = createAsyncThunk(
+  "order/getOrders",
+
+  async (params = {}, thunkAPI) => {
     try {
-      return await services.getorders();
+      const response = await services.getAllOrders(params);
+
+      console.log("ORDER RESPONSE:", response);
+
+      if (response.success) {
+        return response.data || [];
+      }
+
+      return thunkAPI.rejectWithValue(response.message || "Orders not found");
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message ||
+          error.message ||
+          "Something went wrong",
+      );
     }
-  }
+  },
 );
 
-const orderslice = createSlice({
-  name: "product",
+const orderSlice = createSlice({
+  name: "order",
+
   initialState,
+
   reducers: {},
+
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchorder.pending, (state) => {
-        state.loading = true;
-      })
 
-      .addCase(fetchorder.fulfilled, (state, action) => {
-        state.loading = false;
-        state.categories = action.payload.data || [];
-      })
+    builder.addCase(getOrders.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
 
-      .addCase(fetchorder.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+
+    builder.addCase(getOrders.fulfilled, (state, action) => {
+      state.loading = false;
+
+      state.orders = action.payload || [];
+
+      state.error = null;
+    });
+
+
+    builder.addCase(getOrders.rejected, (state, action) => {
+      state.loading = false;
+
+      state.error = action.payload || "Failed to fetch orders";
+    });
   },
 });
 
-export default orderslice.reducer;
+export default orderSlice.reducer;
