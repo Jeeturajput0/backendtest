@@ -27,12 +27,7 @@ const Brand = () => {
   };
 
   const deleteBrand = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this brand?",
-    );
-
-    if (!confirmDelete) return;
-
+  
     try {
       const res = await fetch(`${API_URI}/brand/${id}`, {
         method: "DELETE",
@@ -56,6 +51,7 @@ const Brand = () => {
 
   useEffect(() => {
     getBrand();
+    deleteBrand();
   }, []);
 
   return (

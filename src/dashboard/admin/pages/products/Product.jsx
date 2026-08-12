@@ -156,8 +156,8 @@ const Products = () => {
                   </div>
                 </td>
                 <td>{item?.category?.title}</td>
-                <td className="font-medium text-slate-800">Rs {item.saleprice}</td>
-                <td>Rs {item.mrp}</td>
+                <td className="font-medium text-slate-800">₹ {item.saleprice}</td>
+                <td>₹ {item.mrp}</td>
 
                 <td className="p-4">
                   <span

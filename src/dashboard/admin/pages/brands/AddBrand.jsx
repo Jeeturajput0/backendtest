@@ -13,7 +13,7 @@ const AddBrand = () => {
     isActive: true,
   });
 
-  const getBrandDetail = async () => {
+  const getBrandDetail = async (brand_id) => {
     try {
       const res = await fetch(`${API_URI}/admin/brand/${brand_id}`, {
         headers: {
@@ -34,7 +34,7 @@ const AddBrand = () => {
   };
 
   useEffect(() => {
-    if (brand_id) getBrandDetail();
+ getBrandDetail(brand_id);
   }, [brand_id]);
 
   // const getBrand =async()=>{
