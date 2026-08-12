@@ -1,110 +1,96 @@
-import { Search, Eye, Plus } from "lucide-react";
-
+import { Eye, Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { useDispatch, useSelector } from "react-redux";
-
 import { getOrders } from "../../../../store/slices/order.slice";
+
+const money = (value) => `Rs ${Number(value || 0).toLocaleString("en-IN")}`;
+
 const Orders = () => {
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
-
   const { orders, loading, error } = useSelector((state) => state.order);
-
   const [search, setSearch] = useState("");
 
-  const getOrdersData = () => {
-    const params = {
-      search: search,
-      page: 1,
-      limit: 10,
-    };
-
-    console.log("DISPATCH PARAMS:", params);
-
-    dispatch(getOrders(params));
-  }; CALL
+  const getOrdersData = (term = search) => {
+    dispatch(
+      getOrders({
+        search: term,
+        page: 1,
+        limit: 10,
+      }),
+    );
+  };
 
   useEffect(() => {
-    getOrdersData();
-  }, []); STATUS
+    getOrdersData("");
+  }, [dispatch]);
 
-  const count = (status) => {
-    return orders.filter((order) => order.orderStatus === status).length;
-  };
+  const count = (status) =>
+    orders.filter((order) => order.orderStatus === status).length;
+
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-
-      <div className="flex items-center justify-between">
+    <div className="mx-auto max-w-7xl space-y-7">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Orders</h1>
-
-          <p className="text-gray-500">Manage customer orders.</p>
+          <p className="text-sm font-bold uppercase tracking-[.16em] text-indigo-600">
+            Sales
+          </p>
+          <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-900">
+            Orders
+          </h1>
+          <p className="mt-2 text-slate-500">Manage customer orders.</p>
         </div>
 
         <button
           onClick={() => navigate("/admin/orders/add")}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg transition"
+          className="ui-button"
         >
           <Plus size={18} />
           Add Order
         </button>
       </div>
 
-
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-4">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-600">
           {error}
         </div>
       )}
 
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-
-        <div className="bg-white rounded-xl shadow p-5">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
+        <div className="ui-card p-5">
           <p className="text-gray-500">Total Orders</p>
-
-          <h2 className="text-3xl font-bold mt-2 text-gray-800">
+          <h2 className="mt-2 text-3xl font-bold text-gray-800">
             {orders.length}
           </h2>
         </div>
 
-
-        <div className="bg-white rounded-xl shadow p-5">
+        <div className="ui-card p-5">
           <p className="text-gray-500">Pending</p>
-
-          <h2 className="text-3xl font-bold mt-2 text-yellow-500">
+          <h2 className="mt-2 text-3xl font-bold text-yellow-500">
             {count("Pending")}
           </h2>
         </div>
 
-
-        <div className="bg-white rounded-xl shadow p-5">
+        <div className="ui-card p-5">
           <p className="text-gray-500">Delivered</p>
-
-          <h2 className="text-3xl font-bold mt-2 text-green-600">
+          <h2 className="mt-2 text-3xl font-bold text-green-600">
             {count("Delivered")}
           </h2>
         </div>
 
-
-        <div className="bg-white rounded-xl shadow p-5">
+        <div className="ui-card p-5">
           <p className="text-gray-500">Cancelled</p>
-
-          <h2 className="text-3xl font-bold mt-2 text-red-600">
+          <h2 className="mt-2 text-3xl font-bold text-red-600">
             {count("Cancelled")}
           </h2>
         </div>
       </div>
 
-
-      <div className="bg-white rounded-xl shadow p-4">
+      <div className="ui-card p-4">
         <div className="relative max-w-sm">
           <Search className="absolute left-3 top-3 text-gray-400" size={18} />
-
           <input
             type="text"
             placeholder="Search Orders..."
@@ -115,46 +101,35 @@ const Orders = () => {
                 getOrdersData();
               }
             }}
-            className="w-full border rounded-lg pl-10 pr-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+            className="ui-input py-2 pl-10 pr-4"
           />
         </div>
 
         <button
-          onClick={getOrdersData}
+          onClick={() => getOrdersData()}
           disabled={loading}
-          className="mt-3 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg"
+          className="mt-3 ui-button bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
         >
           <Search size={17} />
-
           {loading ? "Searching..." : "Search"}
         </button>
       </div>
 
-
-      <div className="bg-white rounded-xl shadow overflow-x-auto">
-        <table className="w-full">
-
-          <thead className="bg-gray-100">
+      <div className="ui-table-wrap">
+        <table className="ui-table">
+          <thead>
             <tr>
-              <th className="text-left p-4">Order ID</th>
-
-              <th className="text-left p-4">Customer</th>
-
-              <th className="text-left p-4">Date</th>
-
-              <th className="text-left p-4">Amount</th>
-
-              <th className="text-left p-4">Payment</th>
-
-              <th className="text-left p-4">Status</th>
-
-              <th className="text-center p-4">Action</th>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Payment</th>
+              <th>Status</th>
+              <th className="text-center">Action</th>
             </tr>
           </thead>
 
-
           <tbody>
-
             {loading && (
               <tr>
                 <td colSpan="7" className="p-10 text-center text-gray-500">
@@ -163,46 +138,34 @@ const Orders = () => {
               </tr>
             )}
 
-
             {!loading &&
               orders.length > 0 &&
               orders.map((item) => (
-                <tr key={item._id} className="border-t hover:bg-gray-50">
-
-                  <td className="p-4 font-medium">
-                    {item.orderNumber || item._id}
-                  </td>
-
-
-                  <td className="p-4">{item.customer || "-"}</td>
-
-
-                  <td className="p-4">
+                <tr key={item._id} className="hover:bg-gray-50">
+                  <td className="font-medium">{item.orderNumber || item._id}</td>
+                  <td>{item.customer || "-"}</td>
+                  <td>
                     {item.createdAt
                       ? new Date(item.createdAt).toLocaleDateString()
                       : "-"}
                   </td>
-
-
-                  <td className="p-4">₹{item.totalAmount || 0}</td>
-
-
-                  <td className="p-4">
+                  <td>{money(item.totalAmount)}</td>
+                  <td>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm ${
+                      className={`rounded-full px-3 py-1 text-sm ${
                         item.paymentStatus === "Paid"
                           ? "bg-green-100 text-green-700"
-                          : "bg-yellow-100 text-yellow-700"
+                          : item.paymentStatus === "Failed"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
                       {item.paymentStatus || "Pending"}
                     </span>
                   </td>
-
-
-                  <td className="p-4">
+                  <td>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm ${
+                      className={`rounded-full px-3 py-1 text-sm ${
                         item.orderStatus === "Delivered"
                           ? "bg-green-100 text-green-700"
                           : item.orderStatus === "Cancelled"
@@ -213,12 +176,10 @@ const Orders = () => {
                       {item.orderStatus || "Pending"}
                     </span>
                   </td>
-
-
-                  <td className="p-4 text-center">
+                  <td className="text-center">
                     <button
                       onClick={() => navigate(`/admin/orders/${item._id}`)}
-                      className="flex items-center gap-2 mx-auto bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg"
+                      className="mx-auto flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-white hover:bg-blue-700"
                     >
                       <Eye size={16} />
                       View
@@ -227,11 +188,10 @@ const Orders = () => {
                 </tr>
               ))}
 
-
             {!loading && orders.length === 0 && (
               <tr>
                 <td colSpan="7" className="p-10 text-center text-gray-500">
-                  No Orders Found
+                  {error || "No Orders Found"}
                 </td>
               </tr>
             )}

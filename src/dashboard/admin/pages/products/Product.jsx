@@ -1,36 +1,49 @@
 import { Search, Plus } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { setImageURL } from "../../../../config";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import { setImageURL } from "../../../../config";
 import services from "../../../../services/products.service";
 import { fetchproducts } from "../../../../store/slices/products.slice";
-import { useSelector, useDispatch } from "react-redux";
+
 const Products = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const basePath = `/admin/products`;
-
-  const [error, setError] = useState("");
+  const { products, loading, error } = useSelector((state) => state.product);
   const [formData, setFormData] = useState({
     isActive: "",
     search: "",
   });
-  const { categories: products } = useSelector((state) => state.product);
-  const dispatch = useDispatch();
+
+  const getProducts = (filters = formData) => {
+    dispatch(
+      fetchproducts({
+        scope: "admin",
+        ...filters,
+      }),
+    );
+  };
+
   useEffect(() => {
-    dispatch(fetchproducts());
-  });
+    getProducts({
+      isActive: "",
+      search: "",
+    });
+  }, [dispatch]);
+
   const deleteProduct = async (product_id) => {
     try {
-      const res = await services.deleteProduct(product_id);
+      await services.deleteProduct(product_id);
       getProducts();
-    } catch (error) {
-      console.log(error);
+    } catch (deleteError) {
+      console.log(deleteError);
     }
   };
 
   return (
     <div className="mx-auto max-w-7xl space-y-7">
-      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-bold uppercase tracking-[.16em] text-indigo-600">
@@ -53,29 +66,27 @@ const Products = () => {
         </button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
         <div className="ui-card p-5">
           <h3 className="text-gray-500">Total Products</h3>
-          <h2 className="text-3xl font-bold mt-2">{products.length}</h2>
+          <h2 className="mt-2 text-3xl font-bold">{products.length}</h2>
         </div>
 
         <div className="ui-card p-5">
           <h3 className="text-gray-500">Active</h3>
-          <h2 className="text-3xl font-bold text-green-600 mt-2">
-            {products.filter((item) => item.isActive === true).length}
+          <h2 className="mt-2 text-3xl font-bold text-green-600">
+            {products.filter((item) => item.isActive).length}
           </h2>
         </div>
 
         <div className="ui-card p-5">
           <h3 className="text-gray-500">Inactive</h3>
-          <h2 className="text-3xl font-bold text-red-600 mt-2">
+          <h2 className="mt-2 text-3xl font-bold text-red-600">
             {products.filter((item) => item.isActive === false).length}
           </h2>
         </div>
       </div>
 
-      {/* Search */}
       <div className="ui-card flex flex-col gap-3 p-4 md:flex-row">
         <div className="relative w-full md:w-80 ">
           <Search
@@ -83,8 +94,9 @@ const Products = () => {
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
           />
           <input
+            value={formData.search}
             onChange={(e) =>
-              setFormData({ ...formData, ["search"]: e.target.value })
+              setFormData({ ...formData, search: e.target.value })
             }
             type="text"
             placeholder="Search Product..."
@@ -106,14 +118,13 @@ const Products = () => {
         </div>
         <button
           className="ui-button bg-emerald-600 hover:bg-emerald-700"
-          // onClick={getProducts}
+          onClick={() => getProducts()}
         >
           <Search size={18} />
           Search
         </button>
       </div>
 
-      {/* Table */}
       <div className="ui-table-wrap">
         <table className="ui-table">
           <thead>
@@ -145,10 +156,8 @@ const Products = () => {
                   </div>
                 </td>
                 <td>{item?.category?.title}</td>
-                <td className="font-medium text-slate-800">
-                  ₹{item.saleprice}
-                </td>
-                <td>₹{item.mrp}</td>
+                <td className="font-medium text-slate-800">Rs {item.saleprice}</td>
+                <td>Rs {item.mrp}</td>
 
                 <td className="p-4">
                   <span
@@ -160,7 +169,7 @@ const Products = () => {
                   </span>
                 </td>
 
-                <td className="text-center space-x-2">
+                <td className="space-x-2 text-center">
                   <Link
                     to={`${basePath}/edit/${item._id}`}
                     className="inline-flex rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
@@ -180,7 +189,7 @@ const Products = () => {
             {!products.length && (
               <tr>
                 <td colSpan="6" className="p-10 text-center text-slate-500">
-                  {error || "No products found."}
+                  {loading ? "Loading products..." : error || "No products found."}
                 </td>
               </tr>
             )}
