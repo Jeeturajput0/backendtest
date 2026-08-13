@@ -4,6 +4,7 @@ import homeReducer from "./slices/home.slice";
 import productReducer from "./slices/products.slice";
 import orderReducer from "./slices/order.slice";
 import brandReducer from "./slices/brand.slice";
+import sizeReducer from "./slices/size.slice"
 export const store = configureStore({
   reducer: {
     homepage: homeReducer,
@@ -11,6 +12,7 @@ export const store = configureStore({
     product: productReducer,
     order:orderReducer,
     brand: brandReducer,
+    size:sizeReducer,
 
   },
 });
