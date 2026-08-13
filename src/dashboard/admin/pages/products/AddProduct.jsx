@@ -9,12 +9,13 @@ const AddProduct = () => {
   const productApi = `${API_URI}/admin/product`;
   const { product_id } = useParams();
   const [categories, setCategories] = useState([]);
+  const [brand, setBrand] = useState([]);
   const [size, setSize] = useState([]);
 
   const [formData, setFormData] = useState({
     name: "",
     details: "",
-    brand: "",
+    brand: null,
     size: null,
     color: "red",
     category: null,
@@ -97,8 +98,25 @@ const AddProduct = () => {
       console.log(error);
     }
   };
+  const getBrand = async () => {
+    try {
+      const res = await fetch(`${API_URI}/admin/brand`, {
+        headers: {
+          Authorization: `Bearer ${AUTH_TOKEN}`,
+        },
+      });
+
+      const resData = await res.json();
+      console.log(resData);
+
+      setBrand(resData.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
+    getBrand()
     getSize();
     getCategories();
   }, []);
@@ -216,20 +234,40 @@ const AddProduct = () => {
 
         {/* Brand & SKU */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block mb-2 font-medium text-gray-700">
-              Brand
-            </label>
-            <input
-              type="text"
-              value={formData.brand}
-              onChange={(e) =>
-                setFormData({ ...formData, ["brand"]: e.target.value })
-              }
-              placeholder="Apple, Nike..."
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-            />
-          </div>
+         <div>
+  <label className="mb-2 block font-medium text-gray-700">
+    Brand
+  </label>
+
+  <select
+    name="brand"
+    value={formData.brand || ""}
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        brand: e.target.value,
+      })
+    }
+    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+  >
+    <option
+      value=""
+      className="bg-white text-gray-900"
+    >
+      Select Brand
+    </option>
+
+    {brand?.map((item) => (
+      <option
+        key={item._id}
+        value={item._id}
+        className="bg-white text-gray-900"
+      >
+        {item.name}
+      </option>
+    ))}
+  </select>
+</div>
           {/* size */}
           <div>
             <label className="block mb-2 font-medium text-gray-700">Size</label>

@@ -56,9 +56,7 @@ const OrderDetails = () => {
       <div className="min-h-[500px] flex items-center justify-center">
         <div className="text-center">
           <div className="w-10 h-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto" />
-          <p className="mt-4 text-gray-500">
-            Loading order details...
-          </p>
+          <p className="mt-4 text-gray-500">Loading order details...</p>
         </div>
       </div>
     );
@@ -76,10 +74,7 @@ const OrderDetails = () => {
         </button>
 
         <div className="bg-white rounded-2xl shadow-sm border p-12 text-center">
-          <XCircle
-            size={50}
-            className="mx-auto text-red-400"
-          />
+          <XCircle size={50} className="mx-auto text-red-400" />
 
           <h2 className="mt-4 text-xl font-bold text-gray-800">
             Order Not Found
@@ -100,17 +95,14 @@ const OrderDetails = () => {
     items.reduce(
       (total, item) =>
         total +
-        Number(item.price || item.saleprice || 0) *
-          Number(item.quantity || 1),
-      0
+        Number(item.price || item.saleprice || 0) * Number(item.quantity || 1),
+      0,
     );
 
   const shipping = Number(order.shippingCharge || 0);
   const discount = Number(order.discount || 0);
 
-  const total =
-    order.totalAmount ??
-    subtotal + shipping - discount;
+  const total = order.totalAmount ?? subtotal + shipping - discount;
 
   const customerName =
     order.customer?.name ||
@@ -120,22 +112,13 @@ const OrderDetails = () => {
     "Customer";
 
   const customerEmail =
-    order.customer?.email ||
-    order.email ||
-    order.user?.email ||
-    "-";
+    order.customer?.email || order.email || order.user?.email || "-";
 
   const customerPhone =
-    order.customer?.phone ||
-    order.phone ||
-    order.user?.phone ||
-    "-";
+    order.customer?.phone || order.phone || order.user?.phone || "-";
 
   const address =
-    order.shippingAddress ||
-    order.address ||
-    order.deliveryAddress ||
-    {};
+    order.shippingAddress || order.address || order.deliveryAddress || {};
 
   const getStatusClass = (status) => {
     switch (status) {
@@ -165,19 +148,14 @@ const OrderDetails = () => {
     {
       title: "Processing",
       icon: Package,
-      active: [
-        "Processing",
-        "Shipped",
-        "Delivered",
-      ].includes(order.orderStatus),
+      active: ["Processing", "Shipped", "Delivered"].includes(
+        order.orderStatus,
+      ),
     },
     {
       title: "Shipped",
       icon: Truck,
-      active: [
-        "Shipped",
-        "Delivered",
-      ].includes(order.orderStatus),
+      active: ["Shipped", "Delivered"].includes(order.orderStatus),
     },
     {
       title: "Delivered",
@@ -188,10 +166,8 @@ const OrderDetails = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
         <div>
           <button
             onClick={() => navigate("/admin/orders")}
@@ -202,13 +178,11 @@ const OrderDetails = () => {
           </button>
 
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">
-              Order Details
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900">Order Details</h1>
 
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusClass(
-                order.orderStatus
+                order.orderStatus,
               )}`}
             >
               {order.orderStatus || "Pending"}
@@ -221,22 +195,15 @@ const OrderDetails = () => {
         </div>
 
         <div className="text-sm text-gray-500">
-          {order.createdAt
-            ? new Date(order.createdAt).toLocaleString()
-            : "-"}
+          {order.createdAt ? new Date(order.createdAt).toLocaleString() : "-"}
         </div>
-
       </div>
 
       {/* Status Timeline */}
       <div className="bg-white rounded-2xl border shadow-sm p-6">
-
-        <h2 className="font-bold text-gray-900 mb-6">
-          Order Status
-        </h2>
+        <h2 className="font-bold text-gray-900 mb-6">Order Status</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-
           {steps.map((step, index) => {
             const Icon = step.icon;
 
@@ -245,7 +212,6 @@ const OrderDetails = () => {
                 key={step.title}
                 className="relative flex items-center gap-3"
               >
-
                 <div
                   className={`w-11 h-11 rounded-full flex items-center justify-center ${
                     step.active
@@ -259,9 +225,7 @@ const OrderDetails = () => {
                 <div>
                   <p
                     className={`font-semibold ${
-                      step.active
-                        ? "text-gray-900"
-                        : "text-gray-400"
+                      step.active ? "text-gray-900" : "text-gray-400"
                     }`}
                   >
                     {step.title}
@@ -269,74 +233,49 @@ const OrderDetails = () => {
 
                   {index === 0 && order.createdAt && (
                     <p className="text-xs text-gray-400 mt-1">
-                      {new Date(
-                        order.createdAt
-                      ).toLocaleDateString()}
+                      {new Date(order.createdAt).toLocaleDateString()}
                     </p>
                   )}
                 </div>
-
               </div>
             );
           })}
-
         </div>
       </div>
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
         {/* Left */}
         <div className="lg:col-span-2 space-y-6">
-
           {/* Products */}
           <div className="bg-white rounded-2xl border shadow-sm overflow-hidden">
-
             <div className="p-6 border-b">
               <div className="flex items-center gap-2">
-                <Package
-                  size={20}
-                  className="text-blue-600"
-                />
+                <Package size={20} className="text-blue-600" />
 
-                <h2 className="font-bold text-gray-900">
-                  Ordered Products
-                </h2>
+                <h2 className="font-bold text-gray-900">Ordered Products</h2>
               </div>
             </div>
 
             <div className="divide-y">
-
               {items.length > 0 ? (
                 items.map((item, index) => {
+                  const product = item.product || item;
 
-                  const product =
-                    item.product || item;
+                  const image = product.image || item.image;
 
-                  const image =
-                    product.image ||
-                    item.image;
-
-                  const name =
-                    product.name ||
-                    item.name ||
-                    "Product";
+                  const name = product.name || item.name || "Product";
 
                   const price =
-                    item.price ||
-                    item.saleprice ||
-                    product.saleprice ||
-                    0;
+                    item.price || item.saleprice || product.saleprice || 0;
 
-                  const quantity =
-                    item.quantity || 1;
+                  const quantity = item.quantity || 1;
 
                   return (
                     <div
                       key={item._id || index}
                       className="p-5 flex items-center gap-4"
                     >
-
                       {image ? (
                         <img
                           src={setImageURL(image)}
@@ -345,17 +284,12 @@ const OrderDetails = () => {
                         />
                       ) : (
                         <div className="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center">
-                          <Package
-                            size={28}
-                            className="text-gray-400"
-                          />
+                          <Package size={28} className="text-gray-400" />
                         </div>
                       )}
 
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-900">
-                          {name}
-                        </h3>
+                        <h3 className="font-semibold text-gray-900">{name}</h3>
 
                         {item.size && (
                           <p className="text-sm text-gray-500 mt-1">
@@ -376,15 +310,13 @@ const OrderDetails = () => {
 
                       <div className="text-right">
                         <p className="font-bold text-gray-900">
-                          ₹
-                          {Number(price * quantity).toLocaleString()}
+                          ₹{Number(price * quantity).toLocaleString()}
                         </p>
 
                         <p className="text-xs text-gray-400">
                           ₹{Number(price).toLocaleString()} each
                         </p>
                       </div>
-
                     </div>
                   );
                 })
@@ -393,30 +325,20 @@ const OrderDetails = () => {
                   No products found in this order.
                 </div>
               )}
-
             </div>
           </div>
 
           {/* Payment */}
           <div className="bg-white rounded-2xl border shadow-sm p-6">
-
             <div className="flex items-center gap-2 mb-5">
-              <CreditCard
-                size={20}
-                className="text-blue-600"
-              />
+              <CreditCard size={20} className="text-blue-600" />
 
-              <h2 className="font-bold text-gray-900">
-                Payment Information
-              </h2>
+              <h2 className="font-bold text-gray-900">Payment Information</h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-
               <div>
-                <p className="text-sm text-gray-500">
-                  Payment Method
-                </p>
+                <p className="text-sm text-gray-500">Payment Method</p>
 
                 <p className="font-semibold mt-1">
                   {order.paymentMethod || "Online"}
@@ -424,9 +346,7 @@ const OrderDetails = () => {
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">
-                  Payment Status
-                </p>
+                <p className="text-sm text-gray-500">Payment Status</p>
 
                 <span
                   className={`inline-block mt-1 px-3 py-1 rounded-full text-sm font-medium ${
@@ -440,55 +360,35 @@ const OrderDetails = () => {
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">
-                  Transaction ID
-                </p>
+                <p className="text-sm text-gray-500">Transaction ID</p>
 
                 <p className="font-semibold mt-1 break-all">
-                  {order.transactionId ||
-                    order.paymentId ||
-                    "-"}
+                  {order.transactionId || order.paymentId || "-"}
                 </p>
               </div>
-
             </div>
           </div>
-
         </div>
 
         {/* Right */}
         <div className="space-y-6">
-
           {/* Customer */}
           <div className="bg-white rounded-2xl border shadow-sm p-6">
-
             <div className="flex items-center gap-2 mb-5">
-              <User
-                size={20}
-                className="text-blue-600"
-              />
+              <User size={20} className="text-blue-600" />
 
-              <h2 className="font-bold text-gray-900">
-                Customer
-              </h2>
+              <h2 className="font-bold text-gray-900">Customer</h2>
             </div>
 
             <div className="space-y-4">
-
               <div>
-                <p className="text-sm text-gray-500">
-                  Name
-                </p>
+                <p className="text-sm text-gray-500">Name</p>
 
-                <p className="font-semibold text-gray-900">
-                  {customerName}
-                </p>
+                <p className="font-semibold text-gray-900">{customerName}</p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">
-                  Email
-                </p>
+                <p className="text-sm text-gray-500">Email</p>
 
                 <p className="font-medium text-gray-800 break-all">
                   {customerEmail}
@@ -496,41 +396,26 @@ const OrderDetails = () => {
               </div>
 
               <div className="flex items-start gap-3">
-                <Phone
-                  size={17}
-                  className="text-gray-400 mt-1"
-                />
+                <Phone size={17} className="text-gray-400 mt-1" />
 
                 <div>
-                  <p className="text-sm text-gray-500">
-                    Phone
-                  </p>
+                  <p className="text-sm text-gray-500">Phone</p>
 
-                  <p className="font-medium">
-                    {customerPhone}
-                  </p>
+                  <p className="font-medium">{customerPhone}</p>
                 </div>
               </div>
-
             </div>
           </div>
 
           {/* Address */}
           <div className="bg-white rounded-2xl border shadow-sm p-6">
-
             <div className="flex items-center gap-2 mb-5">
-              <MapPin
-                size={20}
-                className="text-blue-600"
-              />
+              <MapPin size={20} className="text-blue-600" />
 
-              <h2 className="font-bold text-gray-900">
-                Delivery Address
-              </h2>
+              <h2 className="font-bold text-gray-900">Delivery Address</h2>
             </div>
 
             <div className="text-gray-600 leading-7">
-
               {typeof address === "string" ? (
                 <p>{address}</p>
               ) : (
@@ -539,79 +424,51 @@ const OrderDetails = () => {
                     {address.name || customerName}
                   </p>
 
-                  <p>
-                    {address.address ||
-                      address.street ||
-                      ""}
-                  </p>
+                  <p>{address.address || address.street || ""}</p>
 
                   <p>
                     {address.city || ""}
-                    {address.city && address.state
-                      ? ", "
-                      : ""}
+                    {address.city && address.state ? ", " : ""}
                     {address.state || ""}
                   </p>
 
-                  <p>
-                    {address.pincode ||
-                      address.zipCode ||
-                      ""}
-                  </p>
+                  <p>{address.pincode || address.zipCode || ""}</p>
 
-                  <p>
-                    {address.phone ||
-                      customerPhone}
-                  </p>
+                  <p>{address.phone || customerPhone}</p>
                 </>
               )}
-
             </div>
           </div>
 
           {/* Price Summary */}
           <div className="bg-white rounded-2xl border shadow-sm p-6">
-
-            <h2 className="font-bold text-gray-900 mb-5">
-              Price Summary
-            </h2>
+            <h2 className="font-bold text-gray-900 mb-5">Price Summary</h2>
 
             <div className="space-y-3">
-
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal</span>
-                <span>
-                  ₹{Number(subtotal).toLocaleString()}
-                </span>
+                <span>₹{Number(subtotal).toLocaleString()}</span>
               </div>
 
               <div className="flex justify-between text-gray-600">
                 <span>Shipping</span>
-                <span>
-                  ₹{Number(shipping).toLocaleString()}
-                </span>
+                <span>₹{Number(shipping).toLocaleString()}</span>
               </div>
 
               <div className="flex justify-between text-green-600">
                 <span>Discount</span>
-                <span>
-                  - ₹{Number(discount).toLocaleString()}
-                </span>
+                <span>- ₹{Number(discount).toLocaleString()}</span>
               </div>
 
               <div className="border-t pt-4 flex justify-between">
-                <span className="font-bold text-gray-900">
-                  Total
-                </span>
+                <span className="font-bold text-gray-900">Total</span>
 
                 <span className="text-xl font-bold text-blue-600">
                   ₹{Number(total).toLocaleString()}
                 </span>
               </div>
-
             </div>
           </div>
-
         </div>
       </div>
     </div>
