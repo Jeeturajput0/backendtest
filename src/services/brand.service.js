@@ -19,7 +19,9 @@ service.getAllBrands = async (payload = {}) => {
     const token =
       localStorage.getItem("token") || AUTH_TOKEN;
 
-    const url = `${API_URI}/brand?${query.toString()}`;
+    // Brand routes are protected and are registered under `/api/admin`.
+    // Using `/api/brand` returns a 404 before the Redux thunk receives data.
+    const url = `${API_URI}/admin/brand?${query.toString()}`;
 
     console.log("BRAND API URL:", url);
 
@@ -42,7 +44,7 @@ service.getAllBrands = async (payload = {}) => {
 
     try {
       data = JSON.parse(text);
-    } catch (error) {
+    } catch {
       return {
         success: false,
         message: `Backend JSON nahi bhej raha. Status: ${response.status}`,

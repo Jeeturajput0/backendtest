@@ -1,4 +1,11 @@
 const Brand = require("../model/brandmodel");
+
+const createSlug = (value = "") => value
+  .trim()
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/(^-|-$)/g, "");
+
 const create = async (req, res) => {
   try {
     const { name, description, isActive, logo, slug } = req.body;
@@ -7,7 +14,10 @@ const create = async (req, res) => {
       description,
       isActive,
       logo,
-      slug,
+      // The admin form does not expose a slug field.  The schema has a
+      // unique slug index, so generate one from the name to avoid saving
+      // multiple empty slugs.
+      slug: slug || createSlug(name),
     });
     res.status(201).json({
       success: true,
@@ -15,6 +25,13 @@ const create = async (req, res) => {
       data: brands,
     });
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "A brand with this name already exists",
+      });
+    }
+
     res.status(500).json({
       success: false,
       message: "brand is failed",
