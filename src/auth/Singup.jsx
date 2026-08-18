@@ -15,6 +15,7 @@ const Signup = () => {
     mobile: "",
     email: "",
     password: "",
+    role: "customer",
   });
 
   const handleChange = (e) => {
@@ -34,6 +35,7 @@ const Signup = () => {
       if (!res.data?.token) throw new Error("Registration token was not returned by the server");
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userdetails", JSON.stringify(userData));
+      localStorage.setItem("user", JSON.stringify(userData));
  
       Swal.fire({
         title: "SUCCESS",
@@ -41,8 +43,11 @@ const Signup = () => {
         icon: "success",
       });
 
-      navigate("/admin", { replace: true });
+      navigate(userData?.role === "vendor" ? "/vendor" : "/admin", { replace: true });
     } catch (error) {
+      console.log("REGISTER ERROR:", error);
+  console.log("STATUS:", error.response?.status);
+  console.log("DATA:", error.response?.data);
       Swal.fire({
         title: "ERROR",
         text: error.response?.data?.message || "Something went wrong",

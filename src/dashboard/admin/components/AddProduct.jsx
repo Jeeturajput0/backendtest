@@ -1,11 +1,15 @@
 import { Save, Upload } from "lucide-react";
-import { API_URI, AUTH_TOKEN, setImageURL, uploadImage } from "../../../../config";
+import {
+  API_URI,
+  AUTH_TOKEN,
+  setImageURL,
+  uploadImage,
+} from "../../../config";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const AddProduct = () => {
   const navigate = useNavigate();
-  const basePath = "/admin/products";
   const productApi = `${API_URI}/admin/product`;
   const { product_id } = useParams();
   const [categories, setCategories] = useState([]);
@@ -54,7 +58,7 @@ const AddProduct = () => {
         mrp: data.mrp,
         saleprice: data.saleprice,
         isActive: data.isActive,
-        image:data.image
+        image: data.image,
       });
       setVariations(data.variations);
     } catch (error) {
@@ -116,7 +120,7 @@ const AddProduct = () => {
   };
 
   useEffect(() => {
-    getBrand()
+    getBrand();
     getSize();
     getCategories();
   }, []);
@@ -125,9 +129,7 @@ const AddProduct = () => {
     e.preventDefault();
     const payload = { ...formData, variations };
     try {
-      const api = product_id
-        ? `${productApi}/${product_id}`
-        : productApi;
+      const api = product_id ? `${productApi}/${product_id}` : productApi;
       const method = product_id ? "PUT" : "POST";
       const res = await fetch(api, {
         method,
@@ -137,7 +139,7 @@ const AddProduct = () => {
         },
         body: JSON.stringify(payload),
       });
-      if (res.ok) navigate(basePath);
+      
     } catch (error) {
       console.log(error);
     }
@@ -234,40 +236,37 @@ const AddProduct = () => {
 
         {/* Brand & SKU */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-         <div>
-  <label className="mb-2 block font-medium text-gray-700">
-    Brand
-  </label>
+          <div>
+            <label className="mb-2 block font-medium text-gray-700">
+              Brand
+            </label>
 
-  <select
-    name="brand"
-    value={formData.brand || ""}
-    onChange={(e) =>
-      setFormData({
-        ...formData,
-        brand: e.target.value,
-      })
-    }
-    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-  >
-    <option
-      value=""
-      className="bg-white text-gray-900"
-    >
-      Select Brand
-    </option>
+            <select
+              name="brand"
+              value={formData.brand || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  brand: e.target.value,
+                })
+              }
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="" className="bg-white text-gray-900">
+                Select Brand
+              </option>
 
-    {brand?.map((item) => (
-      <option
-        key={item._id}
-        value={item._id}
-        className="bg-white text-gray-900"
-      >
-        {item.name}
-      </option>
-    ))}
-  </select>
-</div>
+              {brand?.map((item) => (
+                <option
+                  key={item._id}
+                  value={item._id}
+                  className="bg-white text-gray-900"
+                >
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
           {/* size */}
           <div>
             <label className="block mb-2 font-medium text-gray-700">Size</label>

@@ -7,7 +7,11 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     select: false,
-  },
+  },role: {
+  type: String,
+  enum: ["admin", "vendor", "customer"],
+  default: "customer",
+},
   email: {
     type: String,
     unique: true,

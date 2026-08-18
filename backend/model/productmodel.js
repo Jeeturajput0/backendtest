@@ -67,7 +67,11 @@ const ProductSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     // required: true,
-  },
+  },vendor: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  required: true,
+},
   variations: [variationSchema],
 });
 const Product = mongoose.model("Product", ProductSchema);

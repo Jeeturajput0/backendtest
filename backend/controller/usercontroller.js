@@ -11,13 +11,27 @@ const sanitizeUser = (user) => {
   return userData;
 };
 
+const normalizeRole = (role) =>
+  String(role || "customer").trim().toLowerCase() === "vendor"
+    ? "vendor"
+    : "customer";
+
+const createToken = (user) =>
+  jwt.sign(
+    { userId: user._id.toString(), email: user.email, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" },
+  );
+
 const register = async (req, res) => {
   try {
-    const { password, name, mobile } = req.body;
+    const { password, name, mobile ,role = "customer"} = req.body;
     const email = String(req.body.email || "").trim().toLowerCase();
+    const safeRole = normalizeRole(role);
     if (!email || !password || !name || !mobile) {
       return res.status(400).json({ success: false, message: "Name, mobile, email and password are required" });
     }
+
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({
@@ -25,6 +39,12 @@ const register = async (req, res) => {
         message: "user are already exists",
       });
     }
+    if (String(role).toLowerCase() === "admin") {
+  return res.status(403).json({
+    success: false,
+    message: "Admin registration is not allowed",
+  });
+}
 
     const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_ROUNDS || 12));
     const user = await User.create({
@@ -32,19 +52,10 @@ const register = async (req, res) => {
       email,
       mobile,
       password: hashedPassword,
+      role: safeRole,
     });
 
-
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        email: user.email,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      },
-    );
+    const token = createToken(user);
     const userData = sanitizeUser(user);
 
     res.status(200).json({
@@ -87,16 +98,7 @@ if (!isMatch) {
   });
 }
 
-const token = jwt.sign(
-  {
-    userId: user._id,
-    email: user.email,
-  },
-  process.env.JWT_SECRET,
-  {
-    expiresIn: "4d",
-  }
-);
+const token = createToken(user);
 
     const userData = sanitizeUser(user);
     res.status(200).json({

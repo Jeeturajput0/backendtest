@@ -23,7 +23,8 @@ const Login = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
-    navigate("/admin");
+    const user = JSON.parse(localStorage.getItem("user") || localStorage.getItem("userdetails") || "null");
+    navigate(user?.role === "vendor" ? "/vendor" : "/admin");
   }, [navigate]);
 
   const handleSubmit = async (e) => {
@@ -38,6 +39,7 @@ const Login = () => {
       if (!res.data?.token) throw new Error("Login token was not returned by the server");
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userdetails", JSON.stringify(userData));
+      localStorage.setItem("user", JSON.stringify(userData));
 
       Swal.fire({
         title: "SUCCESS",
@@ -45,7 +47,7 @@ const Login = () => {
         icon: "success",
       });
 
-      navigate("/admin");
+      navigate(userData?.role === "vendor" ? "/vendor" : "/admin");
     } catch (error) {
       Swal.fire({
         title: "ERROR",

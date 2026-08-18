@@ -15,7 +15,7 @@ import OrderSuccess from "./pages/checkout/OrderSuccess";
 import AdminLayout from "./dashboard/admin/layout/AdminLayout";
 import Dashboard from "./dashboard/admin/pages/dashboard/Dashboard";
 import Products from "./dashboard/admin/pages/products/Product";
-import AddProduct from "./dashboard/admin/pages/products/AddProduct";
+import AddProduct from "./dashboard/admin/components/AddProduct";
 import Orders from "./dashboard/admin/pages/orders/Order";
 
 import AddOrders from "./dashboard/admin/pages/orders/Addoders";
@@ -41,12 +41,25 @@ import Profile from "./dashboard/admin/pages/profile/Profile";
 import Settings from "./dashboard/admin/pages/settings/Setting";
 import Users from "./dashboard/admin/pages/users/Users";
 import OrderDetails from "./dashboard/admin/pages/orders/Orderdetails";
+import VendorDashboard from "./dashboard/vendor/pages/VendorDashboard";
+import VendorLayout from "./dashboard/vendor/layout/VendorLayout";
+import VendorProducts from "./dashboard/vendor/pages/products/VendorProducts";
+import VendorProductAdd from "./dashboard/vendor/pages/products/vendorProductAdd";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+
+      {/* vendor */}
+      <Route path="/vendor" element={<VendorLayout />}>
+        <Route index element={<VendorDashboard />} />
+        <Route path="products" element={<VendorProducts />} />
+        <Route path="products/add" element={<VendorProductAdd />} />
+      </Route>
+
+      {/* home page */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Mainhome />} />
         <Route path="shop" element={<Shop />} />
@@ -101,7 +114,7 @@ export default function App() {
         <Route path="settings" element={<Settings />} />
         <Route path="users" element={<Users />} />
       </Route>
-      <Route
+      {/* <Route
         path="*"
         element={
           <Navigate
@@ -109,7 +122,7 @@ export default function App() {
             replace
           />
         }
-      />
+      /> */}
     </Routes>
   );
 }

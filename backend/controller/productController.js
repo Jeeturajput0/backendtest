@@ -24,7 +24,7 @@ const create = async (req, res) => {
       brand,
       category,
       variations,
-      image,
+      image, vendor: req.user.userId,
       isActive: isActive !== undefined ? isActive === true || isActive === "true" : true,
     });
     res.status(201).json({
@@ -52,7 +52,13 @@ const list = async (req, res) => {
       query.name = { $regex: req.query.search.trim(), $options: "i" };
     }
 
-    const products = await Product.find(query).populate("category");
+    const products = await Product.find(query,{vendor: req.user.userId,}).populate("category");
+    if (!product) {
+  return res.status(404).json({
+    success: false,
+    message: "Product not found or access denied",
+  });
+}
     res.status(200).json({
       success: true,
       message: "prodcut lists successfull",

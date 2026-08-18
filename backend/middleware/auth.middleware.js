@@ -23,8 +23,9 @@
 // module.exports = authMiddleware;
 
 const jwt = require("jsonwebtoken");
+const User = require("../model/usermodel");
 
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
   try {
 const token = req.header("Authorization")?.split(" ")[1];
     if (!token) {
@@ -35,7 +36,12 @@ const token = req.header("Authorization")?.split(" ")[1];
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    const user = await User.findById(decoded.userId).select("_id email role");
+    if (!user) {
+      return res.status(401).json({ success: false, message: "User no longer exists" });
+    }
+    // Use the role currently stored in the database, not a stale JWT claim.
+    req.user = { userId: user._id.toString(), email: user.email, role: user.role };
     next();
   } catch (error) {
     res.status(401).json({
