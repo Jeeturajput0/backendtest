@@ -32,7 +32,7 @@ router.route("/product").post(productController.create).get(productController.li
 router.route("/product/:product_id").get(productController.details).put(productController.update).delete(productController.destroy);
 
 router.route("/size").post(sizeController.create).get(sizeController.list);
-router.route("/size/:size_id").put(sizeController.update).delete(sizeController.destory);
+router.route("/size/:size_id").get(sizeController.details).put(sizeController.update).delete(sizeController.destory);
 
 router.route("/brand").get(brandController.list).post(brandController.create);
 router.route("/brand/:brand_id").get(brandController.details).put(brandController.update).delete(brandController.destory);

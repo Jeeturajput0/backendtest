@@ -36,11 +36,34 @@ const list = async (req, res) => {
     });
   }
 };
+const details = async (req, res) => {
+  try {
+    const size = await Size.findById(req.params.size_id);
+    if (!size) {
+      return res.status(404).json({ success: false, message: "Size not found" });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "size details successful",
+      data: size,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: "size details failed",
+      error: error.message,
+    });
+  }
+};
 const update = async (req, res) => {
   try {
     const size = await Size.findByIdAndUpdate(req.params.size_id, req.body, {
       new: true,
+      runValidators: true,
     });
+    if (!size) {
+      return res.status(404).json({ success: false, message: "Size not found" });
+    }
     res.status(200).json({
       success: true,
       message: "size update successful",
@@ -56,7 +79,10 @@ const update = async (req, res) => {
 };
 const destory = async (req, res) => {
   try {
-    const size = await Size.findByIdAndDelete(req.params.size_id, req.body);
+    const size = await Size.findByIdAndDelete(req.params.size_id);
+    if (!size) {
+      return res.status(404).json({ success: false, message: "Size not found" });
+    }
     res.status(200).json({
       success: true,
       message: "size delete successful",
@@ -71,4 +97,4 @@ const destory = async (req, res) => {
   }
 };
 
-module.exports = { list, create, update, destory };
+module.exports = { list, details, create, update, destory };

@@ -9,10 +9,9 @@ service.getallsize = async (payload = {}) => {
       limit: String(payload.limit || 10),
     });
 
-    const url = `${API_URI}/size?${query.toString()}`;
-
-    console.log("SIZE API URL:", url);
-    console.log("SIZE TOKEN:", AUTH_TOKEN);
+    // Size management is an authenticated admin API. The public `/size`
+    // endpoint does not exist, which previously caused the list to fail.
+    const url = `${API_URI}/admin/size?${query.toString()}`;
 
     const res = await fetch(url, {
       method: "GET",
@@ -22,17 +21,15 @@ service.getallsize = async (payload = {}) => {
       },
     });
 
-    console.log("SIZE STATUS:", res.status);
-
     const data = await res.json();
 
-    console.log("SIZE RESPONSE:", data);
-
-    return data;
+    return {
+      ...data,
+      success: res.ok && data.success !== false,
+      data: Array.isArray(data.data) ? data.data : [],
+    };
 
   } catch (error) {
-    console.error("SIZE SERVICE ERROR:", error);
-
     return {
       success: false,
       message: error.message || "Size is not fetched",

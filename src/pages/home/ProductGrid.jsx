@@ -19,9 +19,9 @@ import {
   fetchproducts,
 } from "../../store/slices/products.slice";
 
-// ==========================================
-// Product Image
-// ==========================================
+
+
+
 
 const productImage = (product) => {
   if (product?.image) {
@@ -31,17 +31,17 @@ const productImage = (product) => {
   return "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500";
 };
 
-// ==========================================
-// Product Grid
-// ==========================================
+
+
+
 
 function ProductGrid({ sale = false }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // ========================================
-  // Redux State
-  // ========================================
+ 
+ 
+ 
 
   const {
     products = [],
@@ -51,9 +51,9 @@ function ProductGrid({ sale = false }) {
     (state) => state.product
   );
 
-  // ========================================
-  // Fetch Products
-  // ========================================
+ 
+ 
+ 
 
   useEffect(() => {
     dispatch(
@@ -66,9 +66,9 @@ function ProductGrid({ sale = false }) {
     );
   }, [dispatch]);
 
-  // ========================================
-  // Sale Products
-  // ========================================
+ 
+ 
+ 
 
   const visibleProducts = sale
     ? products.filter(
@@ -78,15 +78,15 @@ function ProductGrid({ sale = false }) {
       )
     : products;
 
-  // ========================================
-  // Add To Cart
-  // ========================================
+ 
+ 
+ 
 
   const addToCart = async (item) => {
     const token =
       localStorage.getItem("token");
 
-    // User login check
+   
     if (!token) {
       navigate("/login", {
         state: {
@@ -126,9 +126,9 @@ function ProductGrid({ sale = false }) {
     }
   };
 
-  // ========================================
-  // Loading
-  // ========================================
+ 
+ 
+ 
 
   if (loading && products.length === 0) {
     return (
@@ -157,9 +157,9 @@ function ProductGrid({ sale = false }) {
     );
   }
 
-  // ========================================
-  // Error
-  // ========================================
+ 
+ 
+ 
 
   if (error && products.length === 0) {
     return (
@@ -169,9 +169,9 @@ function ProductGrid({ sale = false }) {
     );
   }
 
-  // ========================================
-  // UI
-  // ========================================
+ 
+ 
+ 
 
   return (
     <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -210,9 +210,6 @@ function ProductGrid({ sale = false }) {
             className="group overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_10px_30px_rgba(15,23,42,.06)]"
           >
 
-            {/* ================================= */}
-            {/* IMAGE */}
-            {/* ================================= */}
 
             <div
               onClick={() =>
@@ -230,7 +227,6 @@ function ProductGrid({ sale = false }) {
                 className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
               />
 
-              {/* SALE BADGE */}
 
               {(sale ||
                 Number(item.mrp) >
@@ -254,7 +250,6 @@ function ProductGrid({ sale = false }) {
                 </span>
               )}
 
-              {/* WISHLIST */}
 
               <button
                 onClick={(e) =>
@@ -268,11 +263,9 @@ function ProductGrid({ sale = false }) {
                 <Heart size={17} />
               </button>
 
-              {/* HOVER ACTIONS */}
 
               <div className="absolute inset-x-3 bottom-3 flex translate-y-14 gap-2 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
 
-                {/* QUICK VIEW */}
 
                 <button
                   onClick={(e) => {
@@ -290,7 +283,6 @@ function ProductGrid({ sale = false }) {
                   Quick view
                 </button>
 
-                {/* CART */}
 
                 <button
                   onClick={(e) => {
@@ -308,9 +300,6 @@ function ProductGrid({ sale = false }) {
 
             </div>
 
-            {/* ================================= */}
-            {/* PRODUCT INFO */}
-            {/* ================================= */}
 
             <div className="p-4">
 
@@ -328,7 +317,6 @@ function ProductGrid({ sale = false }) {
 
               </div>
 
-              {/* NAME */}
 
               <h3
                 onClick={() =>
@@ -342,7 +330,6 @@ function ProductGrid({ sale = false }) {
                 {item.name}
               </h3>
 
-              {/* PRICE */}
 
               <div className="mt-3 flex items-end justify-between">
 
@@ -365,7 +352,6 @@ function ProductGrid({ sale = false }) {
 
                 </div>
 
-                {/* CART BUTTON */}
 
                 <button
                   onClick={() =>
@@ -391,9 +377,6 @@ function ProductGrid({ sale = false }) {
         )
       )}
 
-      {/* ===================================== */}
-      {/* NO PRODUCTS */}
-      {/* ===================================== */}
 
       {!loading &&
         !visibleProducts.length && (

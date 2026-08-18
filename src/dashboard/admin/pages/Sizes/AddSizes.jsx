@@ -10,6 +10,8 @@ const AddSize = () => {
   const [form, setForm] = useState({
     name: "",
   });
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const handleChange = (e) => {
     setForm({
@@ -18,41 +20,34 @@ const AddSize = () => {
     });
   };
 
-  // Get Single Size
-  const getSizeDetails = async () => {
-    try {
-      const res = await fetch(
-        `${API_URI}/admin/size/${sizes_id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${AUTH_TOKEN}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setForm({
-          name: data.data.name,
-        });
-      } else {
-        alert(data.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    if (sizes_id) {
-      getSizeDetails();
-    }
+    if (!sizes_id) return;
+
+    const getSizeDetails = async () => {
+      try {
+        const res = await fetch(`${API_URI}/admin/size/${sizes_id}`, {
+          headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          setForm({ name: data.data.name });
+        } else {
+          setError(data.message || "Size could not be loaded.");
+        }
+      } catch {
+        setError("Could not connect to the server.");
+      }
+    };
+
+    getSizeDetails();
   }, [sizes_id]);
 
   // Add / Update
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSaving(true);
 
     try {
       const url = sizes_id
@@ -72,13 +67,15 @@ const AddSize = () => {
 
       const data = await res.json();
 
-      alert(data.message);
-
-      if (res.ok) {
+      if (res.ok && data.success) {
         navigate("/admin/sizes");
+        return;
       }
-    } catch (error) {
-      console.log(error);
+      setError(data.message || "Size could not be saved.");
+    } catch {
+      setError("Could not connect to the server.");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -89,6 +86,8 @@ const AddSize = () => {
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-5">
+
+        {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
         <div>
           <label className="block mb-2 font-medium">
@@ -102,7 +101,8 @@ const AddSize = () => {
             onChange={handleChange}
             placeholder="S, M, L, XL, XXL"
             className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-            required
+          required
+          disabled={saving}
           />
         </div>
 
@@ -111,7 +111,7 @@ const AddSize = () => {
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"
         >
           <Save size={18} />
-          {sizes_id ? "Update Size" : "Save Size"}
+          {saving ? "Saving..." : sizes_id ? "Update Size" : "Save Size"}
         </button>
 
       </form>
