@@ -95,7 +95,7 @@ export default function Mainhome() {
 
       {/* Featured Products */}
       <FeaturedProducts
-        
+        products={home.featuredProducts || []}
       />
 
       {/* Offer */}

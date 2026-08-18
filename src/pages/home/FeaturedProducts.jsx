@@ -1,7 +1,7 @@
 import ProductGrid from "./ProductGrid";
 import SectionTitle from "./SectionTitle";
 
-export default function FeaturedProducts() {
+export default function FeaturedProducts({ products = [] }) {
   return (
     <section className="bg-slate-50 py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -11,7 +11,7 @@ export default function FeaturedProducts() {
           title="Featured Products"
         />
 
-        <ProductGrid />
+        <ProductGrid products={products} limit={8} />
 
       </div>
     </section>

@@ -35,7 +35,7 @@ const productImage = (product) => {
 
 
 
-function ProductGrid({ sale = false }) {
+function ProductGrid({ products: providedProducts, sale = false, limit }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -51,11 +51,16 @@ function ProductGrid({ sale = false }) {
     (state) => state.product
   );
 
+  const hasProvidedProducts = Array.isArray(providedProducts);
+  const displayedProducts = hasProvidedProducts ? providedProducts : products;
+
  
  
  
 
   useEffect(() => {
+    if (hasProvidedProducts) return;
+
     dispatch(
       fetchproducts({
         scope: "public",
@@ -64,19 +69,19 @@ function ProductGrid({ sale = false }) {
         limit: 20,
       })
     );
-  }, [dispatch]);
+  }, [dispatch, hasProvidedProducts]);
 
  
  
  
 
-  const visibleProducts = sale
-    ? products.filter(
+  const visibleProducts = (sale
+    ? displayedProducts.filter(
         (item) =>
           Number(item?.saleprice) <
           Number(item?.mrp)
       )
-    : products;
+    : displayedProducts).slice(0, limit);
 
  
  
@@ -130,7 +135,7 @@ function ProductGrid({ sale = false }) {
  
  
 
-  if (loading && products.length === 0) {
+  if (!hasProvidedProducts && loading && products.length === 0) {
     return (
       <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 
@@ -161,7 +166,7 @@ function ProductGrid({ sale = false }) {
  
  
 
-  if (error && products.length === 0) {
+  if (!hasProvidedProducts && error && products.length === 0) {
     return (
       <div className="mt-10 rounded-2xl border border-red-200 bg-red-50 px-6 py-12 text-center text-red-600">
         {error}
