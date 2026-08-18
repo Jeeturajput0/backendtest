@@ -17,6 +17,7 @@ app.use(
     credentials: true,
   })
 );
+
 const auth = require("./routes/auth.routes");
 const protectedRoute = require("./routes/protected.route");
 const website = require("./routes/website.route");
