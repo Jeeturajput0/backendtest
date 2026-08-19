@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   clearBrandError,
@@ -19,22 +16,11 @@ const AddBrand = () => {
 
   const dispatch = useDispatch();
 
-  // =================================================
-  // REDUX
-  // =================================================
 
-  const {
-    saving,
-    loading,
-    selectedBrand,
-    error,
-  } = useSelector(
-    (state) => state.brand
+  const { saving, loading, selectedBrand, error } = useSelector(
+    (state) => state.brand,
   );
 
-  // =================================================
-  // FORM
-  // =================================================
 
   const [formData, setFormData] = useState({
     name: "",
@@ -42,134 +28,81 @@ const AddBrand = () => {
     isActive: true,
   });
 
-  // =================================================
-  // EDIT MODE
-  // =================================================
 
   useEffect(() => {
-
     dispatch(clearBrandError());
 
     dispatch(clearSelectedBrand());
 
     if (brand_id) {
-      dispatch(
-        fetchBrandById(brand_id)
-      );
+      dispatch(fetchBrandById(brand_id));
     }
-
   }, [brand_id, dispatch]);
 
-  // =================================================
-  // SET EDIT DATA
-  // =================================================
 
   useEffect(() => {
-
     if (selectedBrand) {
-
       setFormData({
-        name:
-          selectedBrand.name || "",
+        name: selectedBrand.name || "",
 
-        description:
-          selectedBrand.description ||
-          "",
+        description: selectedBrand.description || "",
 
-        isActive:
-          selectedBrand.isActive ??
-          true,
+        isActive: selectedBrand.isActive ?? true,
       });
-
     }
-
   }, [selectedBrand]);
 
-  // =================================================
-  // INPUT CHANGE
-  // =================================================
 
   const handleChange = (e) => {
-
-    const {
-      name,
-      value,
-    } = e.target;
+    const { name, value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
 
-      [name]:
-        name === "isActive"
-          ? value === "true"
-          : value,
+      [name]: name === "isActive" ? value === "true" : value,
     }));
   };
 
-  // =================================================
-  // SUBMIT
-  // =================================================
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
     const values = {
-      name:
-        formData.name.trim(),
+      name: formData.name.trim(),
 
-      description:
-        formData.description.trim(),
+      description: formData.description.trim(),
 
-      isActive:
-        formData.isActive,
+      isActive: formData.isActive,
     };
 
     try {
-
       await dispatch(
         saveBrand({
           id: brand_id,
           values,
-        })
+        }),
       ).unwrap();
 
       alert(
-        brand_id
-          ? "Brand updated successfully"
-          : "Brand added successfully"
+        brand_id ? "Brand updated successfully" : "Brand added successfully",
       );
 
       navigate("/admin/brand");
-
     } catch (error) {
-
-      console.error(
-        "Save brand error:",
-        error
-      );
+      console.error("Save brand error:", error);
     }
   };
 
-  // =================================================
-  // UI
-  // =================================================
 
   return (
     <div className="mx-auto max-w-3xl rounded-xl bg-white p-6 shadow-md">
-
       {/* HEADER */}
 
       <div className="mb-6">
-
-        <p className="eyebrow">
-          Catalog
-        </p>
+        <p className="eyebrow">Catalog</p>
 
         <h1 className="mt-1 text-2xl font-bold">
-          {brand_id
-            ? "Edit Brand"
-            : "Add New Brand"}
+          {brand_id ? "Edit Brand" : "Add New Brand"}
         </h1>
 
         <p className="mt-1 text-sm text-gray-500">
@@ -177,7 +110,6 @@ const AddBrand = () => {
             ? "Update brand information."
             : "Create a new brand for your catalog."}
         </p>
-
       </div>
 
       {/* ERROR */}
@@ -191,25 +123,13 @@ const AddBrand = () => {
       {/* LOADING EDIT */}
 
       {loading && brand_id ? (
-
-        <div className="py-10 text-center text-gray-500">
-          Loading brand...
-        </div>
-
+        <div className="py-10 text-center text-gray-500">Loading brand...</div>
       ) : (
-
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
-
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* BRAND NAME */}
 
           <div>
-
-            <label className="mb-2 block font-medium">
-              Brand Name
-            </label>
+            <label className="mb-2 block font-medium">Brand Name</label>
 
             <input
               required
@@ -220,16 +140,12 @@ const AddBrand = () => {
               placeholder="Enter brand name"
               className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
             />
-
           </div>
 
           {/* DESCRIPTION */}
 
           <div>
-
-            <label className="mb-2 block font-medium">
-              Description
-            </label>
+            <label className="mb-2 block font-medium">Description</label>
 
             <textarea
               name="description"
@@ -239,49 +155,38 @@ const AddBrand = () => {
               placeholder="Brand description"
               className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
             />
-
           </div>
 
           {/* STATUS */}
 
           <div>
-
-            <label className="mb-2 block font-medium">
-              Status
-            </label>
-
+            <label className="mb-2 block font-medium">Status</label>
             <select
-              name="isActive"
-              value={String(
-                formData.isActive
-              )}
-              onChange={handleChange}
-              className="w-full rounded-lg border px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.category}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  category: e.target.value,
+                })
+              }
+              className="w-full border rounded-lg px-4 py-3"
             >
+              <option value="">Select Category</option>
 
-              <option value="true">
-                Active
-              </option>
-
-              <option value="false">
-                Inactive
-              </option>
-
+              {categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.title}
+                </option>
+              ))}
             </select>
-
           </div>
 
           {/* BUTTONS */}
 
           <div className="flex gap-3">
-
             <button
               type="button"
-              onClick={() =>
-                navigate(
-                  "/admin/brand"
-                )
-              }
+              onClick={() => navigate("/admin/brand")}
               className="rounded-lg border px-5 py-3 font-semibold text-gray-700 hover:bg-gray-50"
             >
               Cancel
@@ -292,20 +197,11 @@ const AddBrand = () => {
               disabled={saving}
               className="rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-
-              {saving
-                ? "Saving..."
-                : brand_id
-                ? "Update Brand"
-                : "Save Brand"}
-
+              {saving ? "Saving..." : brand_id ? "Update Brand" : "Save Brand"}
             </button>
-
           </div>
-
         </form>
       )}
-
     </div>
   );
 };

@@ -3,7 +3,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import Login from "./auth/Login";
 import Signup from "./auth/Singup";
-import RequireAuth from "./auth/RequireAuth";
+import RequireAdmin from "./auth/RequireAdmin";
+import AdminLogin from "./auth/AdminLogin";
 import Mainhome from "./pages/home/Mainhome";
 import Shop from "./pages/shop/Shop";
 import Cart from "./pages/home/Cart";
@@ -51,6 +52,7 @@ export default function App() {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
 
       {/* vendor */}
       <Route path="/vendor" element={<VendorLayout />}>
@@ -73,9 +75,9 @@ export default function App() {
       <Route
         path="/admin"
         element={
-          <RequireAuth>
+          <RequireAdmin>
             <AdminLayout />
-          </RequireAuth>
+          </RequireAdmin>
         }
       >
         <Route index element={<Navigate to="dashboard" replace />} />

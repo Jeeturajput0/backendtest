@@ -1,105 +1,159 @@
 const Brand = require("../model/brandmodel");
 
-const createSlug = (value = "") => value
-  .trim()
-  .toLowerCase()
-  .replace(/[^a-z0-9]+/g, "-")
-  .replace(/(^-|-$)/g, "");
-
 const create = async (req, res) => {
   try {
-    const { name, description, isActive, logo, slug } = req.body;
-    const brands = await Brand.create({
-      name,
-      description,
-      isActive,
-      logo,
-      // The admin form does not expose a slug field.  The schema has a
-      // unique slug index, so generate one from the name to avoid saving
-      // multiple empty slugs.
-      slug: slug || createSlug(name),
-    });
-    res.status(201).json({
-      success: true,
-      message: "brand creteded successfull",
-      data: brands,
-    });
-  } catch (err) {
-    if (err.code === 11000) {
-      return res.status(409).json({
+    const { name, category } = req.body;
+
+    if (!name || !category) {
+      return res.status(400).json({
         success: false,
-        message: "A brand with this name already exists",
+        message: "Brand name and category are required",
       });
     }
 
+    const exists = await Brand.findOne({
+      name,
+      category,
+    });
+
+    if (exists) {
+      return res.status(400).json({
+        success: false,
+        message: "Brand already exists in this category",
+      });
+    }
+
+    const brand = await Brand.create({
+      name,
+      category,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Brand created successfully",
+      data: brand,
+    });
+  } catch (error) {
     res.status(500).json({
       success: false,
-      message: "brand is failed",
-      err: err.message,
+      message: error.message,
     });
   }
 };
 
 const list = async (req, res) => {
   try {
-    const brands = await Brand.find();
+    const { category } = req.query;
+
+    const query = {};
+
+    if (category) {
+      query.category = category;
+    }
+
+    const brands = await Brand.find(query)
+      .populate("category", "title")
+      .sort({ createdAt: -1 });
+
     res.status(200).json({
       success: true,
-      message: "brand listed successfull",
       data: brands,
     });
-  } catch (err) {
-    res.status(400).json({
+  } catch (error) {
+    console.log("BRAND LIST ERROR:", error);
+
+    res.status(500).json({
       success: false,
-      message: "brand listed failed",
+      message: "Brand list failed",
+      error: error.message,
     });
   }
 };
 
 const details = async (req, res) => {
   try {
-    const brand = await Brand.findById(req.params.brand_id);
+    const brand = await Brand.findById(req.params.brand_id).populate(
+      "category",
+      "title"
+    );
+
     if (!brand) {
-      return res.status(404).json({ success: false, message: "Brand not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Brand not found",
+      });
     }
-    return res.status(200).json({ success: true, data: brand });
-  } catch (err) {
-    return res.status(400).json({ success: false, message: "Invalid brand id" });
+
+    res.json({
+      success: true,
+      data: brand,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
 const update = async (req, res) => {
   try {
-    const brand = await Brand.findByIdAndUpdate(req.params.brand_id, req.body, { new: true });
-    res.status(200).json({
+    const brand = await Brand.findByIdAndUpdate(
+      req.params.brand_id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!brand) {
+      return res.status(404).json({
+        success: false,
+        message: "Brand not found",
+      });
+    }
+
+    res.json({
       success: true,
-      message: "brand update successfull",
+      message: "Brand updated successfully",
       data: brand,
     });
-  } catch (err) {
-    res.status(400).json({
+  } catch (error) {
+    res.status(500).json({
       success: false,
-      message: "brand updated failed",
+      message: error.message,
     });
   }
 };
-const destory = async (req, res) => {
+
+const destroy = async (req, res) => {
   try {
     const brand = await Brand.findByIdAndDelete(req.params.brand_id);
-    res.status(200).json({
+
+    if (!brand) {
+      return res.status(404).json({
+        success: false,
+        message: "Brand not found",
+      });
+    }
+
+    res.json({
       success: true,
-      message: "brand deleted successfull",
-      data: brand,
+      message: "Brand deleted successfully",
     });
-  } catch (err) {
-    res.status(400).json({
+  } catch (error) {
+    res.status(500).json({
       success: false,
-      message: "brand deleted  failed",
+      message: error.message,
     });
   }
 };
 
-module.exports = { create, list, details, update, destory };
-
-
-
+module.exports = {
+  create,
+  list,
+  details,
+  update,
+  destroy,
+};

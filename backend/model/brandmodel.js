@@ -16,12 +16,18 @@ const brandSchema = new mongoose.Schema({
   },
   logo: {
     type: String,
-  },  slug: {
-      type: String,
-      unique: true,
-      lowercase: true,
-      trim: true,
-    },
+  },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
+  slug: {
+    type: String,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
 });
 const Brand = mongoose.model("Brand", brandSchema);
 module.exports = Brand;

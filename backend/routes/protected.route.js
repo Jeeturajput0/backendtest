@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/auth.middleware");
+const role = require("../middleware/role.middleware");
+const { updateAdminCredentials } = require("../controller/usercontroller");
 const categoryController = require("../controller/categoryController");
 const productController = require("../controller/productController");
 const sizeController = require("../controller/sizeController");
@@ -19,11 +21,13 @@ router.use(protect);
 
 router.get("/profile", profileController.getProfile);
 router.put("/profile", profileController.updateProfile);
+router.put("/account", role("admin"), updateAdminCredentials);
 
 router.route("/cart").post(cartController.create).get(cartController.getCart);
 router.route("/cart/:cartId").put(cartController.updateCart).delete(cartController.deleteCart);
 
 // All remaining routes are dashboard-management endpoints.
+router.use(role("admin"));
 
 router.route("/category").post(categoryController.create).get(categoryController.list);
 router.route("/category/:category_id").put(categoryController.update).delete(categoryController.destroy);
@@ -32,10 +36,10 @@ router.route("/product").post(productController.create).get(productController.li
 router.route("/product/:product_id").get(productController.details).put(productController.update).delete(productController.destroy);
 
 router.route("/size").post(sizeController.create).get(sizeController.list);
-router.route("/size/:size_id").get(sizeController.details).put(sizeController.update).delete(sizeController.destory);
+router.route("/size/:size_id").get(sizeController.details).put(sizeController.update).delete(sizeController.destroy);
 
 router.route("/brand").get(brandController.list).post(brandController.create);
-router.route("/brand/:brand_id").get(brandController.details).put(brandController.update).delete(brandController.destory);
+router.route("/brand/:brand_id").get(brandController.details).put(brandController.update).delete(brandController.destroy);
 
 router.route("/coupon").get(couponsController.list).post(couponsController.create);
 router.route("/coupon/:coupon_id").get(couponsController.details).put(couponsController.update).delete(couponsController.destory);

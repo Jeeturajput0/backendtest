@@ -86,26 +86,29 @@ const AddSize = () => {
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-5">
+        {error && (
+          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+        <select
+          value={formData.category}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              category: e.target.value,
+            })
+          }
+          className="w-full border rounded-lg px-4 py-3"
+        >
+          <option value="">Select Category</option>
 
-        {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
-
-        <div>
-          <label className="block mb-2 font-medium">
-            Size Name
-          </label>
-
-          <input
-            type="text"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            placeholder="S, M, L, XL, XXL"
-            className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-          required
-          disabled={saving}
-          />
-        </div>
-
+          {categories.map((category) => (
+            <option key={category._id} value={category._id}>
+              {category.title}
+            </option>
+          ))}
+        </select>
         <button
           type="submit"
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"
@@ -113,7 +116,6 @@ const AddSize = () => {
           <Save size={18} />
           {saving ? "Saving..." : sizes_id ? "Update Size" : "Save Size"}
         </button>
-
       </form>
     </div>
   );

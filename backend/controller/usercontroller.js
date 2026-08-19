@@ -16,17 +16,19 @@ const normalizeRole = (role) =>
     ? "vendor"
     : "customer";
 
+const normalizedEmail = (email) => String(email || "").trim().toLowerCase();
+
 const createToken = (user) =>
   jwt.sign(
     { userId: user._id.toString(), email: user.email, role: user.role },
     process.env.JWT_SECRET,
-    { expiresIn: "7d" },
+    { expiresIn: "14d" },
   );
 
 const register = async (req, res) => {
   try {
     const { password, name, mobile ,role = "customer"} = req.body;
-    const email = String(req.body.email || "").trim().toLowerCase();
+    const email = normalizedEmail(req.body.email);
     const safeRole = normalizeRole(role);
     if (!email || !password || !name || !mobile) {
       return res.status(400).json({ success: false, message: "Name, mobile, email and password are required" });
@@ -75,7 +77,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
    const { password } = req.body;
-   const email = String(req.body.email || "").trim().toLowerCase();
+   const email = normalizedEmail(req.body.email);
    if (!email || !password) {
      return res.status(400).json({ success: false, message: "Email and password are required" });
    }
@@ -116,7 +118,71 @@ const token = createToken(user);
   }
 };
 
-module.exports = { register, login };
+// This endpoint deliberately accepts only accounts whose database role is admin.
+// Regular customers and vendors must continue to use /api/user/login.
+const adminLogin = async (req, res) => {
+  try {
+    const { password } = req.body;
+    const email = normalizedEmail(req.body.email);
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password are required" });
+    }
+
+    const admin = await User.findOne({ email, role: "admin" }).select("+password");
+    if (!admin || !admin.password || !(await bcrypt.compare(password, admin.password))) {
+      return res.status(401).json({ success: false, message: "Invalid admin email or password" });
+    }
+
+    const user = sanitizeUser(admin);
+    return res.json({ success: true, message: "Admin login successful", data: user, user, token: createToken(admin) });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updateAdminCredentials = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const email = normalizedEmail(req.body.email);
+    if (!currentPassword) {
+      return res.status(400).json({ success: false, message: "Current password is required" });
+    }
+    if (!email && !newPassword) {
+      return res.status(400).json({ success: false, message: "Provide a new email or password" });
+    }
+    if (newPassword && newPassword.length < 8) {
+      return res.status(400).json({ success: false, message: "New password must be at least 8 characters" });
+    }
+
+    const admin = await User.findById(req.user.userId).select("+password");
+    if (!admin || admin.role !== "admin") {
+      return res.status(403).json({ success: false, message: "Admin access required" });
+    }
+    if (!(await bcrypt.compare(currentPassword, admin.password))) {
+      return res.status(401).json({ success: false, message: "Current password is incorrect" });
+    }
+    if (email && email !== admin.email) {
+      const emailInUse = await User.exists({ email, _id: { $ne: admin._id } });
+      if (emailInUse) return res.status(409).json({ success: false, message: "Email is already in use" });
+      admin.email = email;
+    }
+    if (newPassword) admin.password = await bcrypt.hash(newPassword, Number(process.env.BCRYPT_ROUNDS || 12));
+    await admin.save();
+
+    const user = sanitizeUser(admin);
+    return res.json({
+      success: true,
+      message: "Admin credentials updated successfully",
+      data: user,
+      user,
+      token: createToken(admin),
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = { register, login, adminLogin, updateAdminCredentials };
 
 // const User = require("../model/user.model");
 // const bcrypt = require("bcrypt");

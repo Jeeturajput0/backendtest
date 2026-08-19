@@ -15,7 +15,7 @@ async function createAdmin() {
   const hashedPassword = await bcrypt.hash(password, 12);
   const admin = await User.findOneAndUpdate(
     { email: normalizedEmail },
-    { name, mobile, password: hashedPassword },
+    { name, mobile, password: hashedPassword, role: "admin" },
     { returnDocument: "after", upsert: true, setDefaultsOnInsert: true },
   );
 

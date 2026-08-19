@@ -5,26 +5,33 @@ import {
   setImageURL,
   uploadImage,
 } from "../../../config";
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const AddProduct = () => {
   const navigate = useNavigate();
   const productApi = `${API_URI}/admin/product`;
+
   const { product_id } = useParams();
+
   const [categories, setCategories] = useState([]);
   const [brand, setBrand] = useState([]);
   const [size, setSize] = useState([]);
 
+  const [loadingBrands, setLoadingBrands] = useState(false);
+  const [loadingSizes, setLoadingSizes] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     details: "",
-    brand: null,
-    size: null,
+    brand: "",
+    size: "",
     color: "red",
-    category: null,
+    category: "",
     mrp: 0,
     saleprice: 0,
+    quantity: 0,
     image: null,
     isActive: true,
   });
@@ -39,6 +46,10 @@ const AddProduct = () => {
     },
   ]);
 
+  // =========================
+  // Get Product for Edit
+  // =========================
+
   const getProductDetail = async () => {
     try {
       const res = await fetch(`${productApi}/${product_id}`, {
@@ -46,31 +57,39 @@ const AddProduct = () => {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
       });
+
       const resData = await res.json();
+
+      if (!resData.success) {
+        console.log(resData.message);
+        return;
+      }
+
       const data = resData.data;
 
       setFormData({
-        name: data.name,
-        details: data.details,
-        brand: data.brand,
-        size: data.size,
-        category: data.category,
-        mrp: data.mrp,
-        saleprice: data.saleprice,
-        isActive: data.isActive,
-        image: data.image,
+        name: data.name || "",
+        details: data.details || "",
+        brand: data.brand?._id || data.brand || "",
+        size: data.size?._id || data.size || "",
+        category: data.category?._id || data.category || "",
+        color: data.color || "red",
+        mrp: data.mrp || 0,
+        saleprice: data.saleprice || 0,
+        quantity: data.quantity || 0,
+        isActive: data.isActive ?? true,
+        image: data.image || null,
       });
-      setVariations(data.variations);
+
+      setVariations(data.variations || []);
     } catch (error) {
-      console.log(error);
+      console.log("PRODUCT DETAILS ERROR:", error);
     }
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      product_id ? getProductDetail() : "";
-    }, 200);
-  }, []);
+  // =========================
+  // Categories
+  // =========================
 
   const getCategories = async () => {
     try {
@@ -79,58 +98,171 @@ const AddProduct = () => {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
       });
+
       const resData = await res.json();
-      setCategories(resData.data);
+
+      if (resData.success) {
+        setCategories(resData.data || []);
+      }
     } catch (error) {
-      console.log(error);
+      console.log("CATEGORY ERROR:", error);
     }
   };
 
-  const getSize = async () => {
+  // =========================
+  // Brands According To Category
+  // =========================
+
+  const getBrand = async (categoryId) => {
+    if (!categoryId) {
+      setBrand([]);
+      return;
+    }
+
     try {
-      const res = await fetch(`${API_URI}/admin/size`, {
-        headers: {
-          Authorization: `Bearer ${AUTH_TOKEN}`,
-        },
-      });
+      setLoadingBrands(true);
+
+      const res = await fetch(
+        `${API_URI}/admin/brand?category=${categoryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH_TOKEN}`,
+          },
+        }
+      );
 
       const resData = await res.json();
-      console.log(resData);
 
-      setSize(resData.data);
+      if (resData.success) {
+        setBrand(resData.data || []);
+      } else {
+        setBrand([]);
+      }
     } catch (error) {
-      console.log(error);
+      console.log("BRAND ERROR:", error);
+      setBrand([]);
+    } finally {
+      setLoadingBrands(false);
     }
   };
-  const getBrand = async () => {
+
+  // =========================
+  // Sizes According To Category
+  // =========================
+
+  const getSize = async (categoryId) => {
+    if (!categoryId) {
+      setSize([]);
+      return;
+    }
+
     try {
-      const res = await fetch(`${API_URI}/admin/brand`, {
-        headers: {
-          Authorization: `Bearer ${AUTH_TOKEN}`,
-        },
-      });
+      setLoadingSizes(true);
+
+      const res = await fetch(
+        `${API_URI}/admin/size?category=${categoryId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH_TOKEN}`,
+          },
+        }
+      );
 
       const resData = await res.json();
-      console.log(resData);
 
-      setBrand(resData.data);
+      if (resData.success) {
+        setSize(resData.data || []);
+      } else {
+        setSize([]);
+      }
     } catch (error) {
-      console.log(error);
+      console.log("SIZE ERROR:", error);
+      setSize([]);
+    } finally {
+      setLoadingSizes(false);
     }
   };
+
+  // =========================
+  // Initial Data
+  // =========================
 
   useEffect(() => {
-    getBrand();
-    getSize();
     getCategories();
+
+    if (product_id) {
+      getProductDetail();
+    }
   }, []);
+
+  // =========================
+  // IMPORTANT:
+  // After category is loaded,
+  // fetch brands and sizes
+  // =========================
+
+  useEffect(() => {
+    if (formData.category) {
+      getBrand(formData.category);
+      getSize(formData.category);
+    } else {
+      setBrand([]);
+      setSize([]);
+    }
+  }, [formData.category]);
+
+  // =========================
+  // Category Change
+  // =========================
+
+  const handleCategoryChange = (e) => {
+    const categoryId = e.target.value;
+
+    setFormData((prev) => ({
+      ...prev,
+      category: categoryId,
+      brand: "",
+      size: "",
+    }));
+
+    // useEffect automatically fetches
+    // filtered brand + size
+  };
+
+  // =========================
+  // Submit
+  // =========================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = { ...formData, variations };
+
+    if (!formData.category) {
+      alert("Please select category");
+      return;
+    }
+
+    if (!formData.brand) {
+      alert("Please select brand");
+      return;
+    }
+
+    if (!formData.size) {
+      alert("Please select size");
+      return;
+    }
+
+    const payload = {
+      ...formData,
+      variations,
+    };
+
     try {
-      const api = product_id ? `${productApi}/${product_id}` : productApi;
+      const api = product_id
+        ? `${productApi}/${product_id}`
+        : productApi;
+
       const method = product_id ? "PUT" : "POST";
+
       const res = await fetch(api, {
         method,
         headers: {
@@ -139,16 +271,36 @@ const AddProduct = () => {
         },
         body: JSON.stringify(payload),
       });
-      
+
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        alert(result.message || "Product save failed");
+        return;
+      }
+
+      alert(
+        product_id
+          ? "Product updated successfully"
+          : "Product added successfully"
+      );
+
+      navigate("/admin/products");
     } catch (error) {
-      console.log(error);
+      console.log("PRODUCT SAVE ERROR:", error);
+      alert("Something went wrong");
     }
   };
+
+  // =========================
+  // Variation
+  // =========================
 
   const handleVariationChange = (index, e) => {
     const { name, value } = e.target;
 
     const updated = [...variations];
+
     updated[index][name] = value;
 
     setVariations(updated);
@@ -169,73 +321,111 @@ const AddProduct = () => {
 
   const removeVariation = (index) => {
     const updated = variations.filter((_, i) => i !== index);
+
     setVariations(updated);
   };
 
+  // =========================
+  // Image
+  // =========================
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
+
     if (!file) return;
-    const imagePath = await uploadImage(file);
-    if (!imagePath) return;
-    setFormData((prev) => ({
-      ...prev,
-      image: imagePath,
-    }));
+
+    try {
+      const imagePath = await uploadImage(file);
+
+      if (!imagePath) return;
+
+      setFormData((prev) => ({
+        ...prev,
+        image: imagePath,
+      }));
+    } catch (error) {
+      console.log("IMAGE ERROR:", error);
+    }
   };
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 bg-white rounded-2xl shadow-md p-8">
+
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-800">
-          {product_id ? "Update" : "Add New "} Product
+          {product_id ? "Update" : "Add New"} Product
         </h2>
+
         <p className="text-gray-500 mt-1">
           Fill in the details to create a new product.
         </p>
       </div>
 
-      <form className="space-y-6" onSubmit={handleSubmit}>
-        {/* Product Name & Category */}
+      <form
+        className="space-y-6"
+        onSubmit={handleSubmit}
+      >
+
+        {/* Product Name + Category */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
           <div>
             <label className="block mb-2 font-medium text-gray-700">
               Product Name
             </label>
+
             <input
               type="text"
               placeholder="Enter product name"
               value={formData.name}
               onChange={(e) =>
-                setFormData({ ...formData, ["name"]: e.target.value })
+                setFormData({
+                  ...formData,
+                  name: e.target.value,
+                })
               }
               className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              required
             />
           </div>
+
+          {/* CATEGORY */}
 
           <div>
             <label className="block mb-2 font-medium text-gray-700">
               Category
             </label>
+
             <select
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
               value={formData.category}
-              onChange={(e) =>
-                setFormData({ ...formData, ["category"]: e.target.value })
-              }
+              onChange={handleCategoryChange}
+              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              required
             >
-              <option>Select Category</option>
-              {categories.length > 0 &&
-                categories.map((item, i) => (
-                  <option key={i} value={item._id}>
-                    {item.title}
-                  </option>
-                ))}
+              <option value="">
+                Select Category
+              </option>
+
+              {categories.map((item) => (
+                <option
+                  key={item._id}
+                  value={item._id}
+                >
+                  {item.title}
+                </option>
+              ))}
             </select>
           </div>
+
         </div>
 
-        {/* Brand & SKU */}
+        {/* BRAND + SIZE */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          {/* BRAND */}
+
           <div>
             <label className="mb-2 block font-medium text-gray-700">
               Brand
@@ -243,65 +433,108 @@ const AddProduct = () => {
 
             <select
               name="brand"
-              value={formData.brand || ""}
+              value={formData.brand}
+              disabled={!formData.category || loadingBrands}
               onChange={(e) =>
                 setFormData({
                   ...formData,
                   brand: e.target.value,
                 })
               }
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none disabled:bg-gray-100"
+              required
             >
-              <option value="" className="bg-white text-gray-900">
-                Select Brand
+              <option value="">
+                {!formData.category
+                  ? "First Select Category"
+                  : loadingBrands
+                  ? "Loading Brands..."
+                  : "Select Brand"}
               </option>
 
-              {brand?.map((item) => (
+              {brand.map((item) => (
                 <option
                   key={item._id}
                   value={item._id}
-                  className="bg-white text-gray-900"
                 >
                   {item.name}
                 </option>
               ))}
             </select>
+
+            {formData.category && !loadingBrands && brand.length === 0 && (
+              <p className="mt-2 text-sm text-red-500">
+                No brand found for this category.
+              </p>
+            )}
           </div>
-          {/* size */}
+
+          {/* SIZE */}
+
           <div>
-            <label className="block mb-2 font-medium text-gray-700">Size</label>
+            <label className="block mb-2 font-medium text-gray-700">
+              Size
+            </label>
+
             <select
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
               value={formData.size}
+              disabled={!formData.category || loadingSizes}
               onChange={(e) =>
-                setFormData({ ...formData, ["size"]: e.target.value })
+                setFormData({
+                  ...formData,
+                  size: e.target.value,
+                })
               }
+              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100"
+              required
             >
-              <option>Select Size</option>
-              {size.length > 0 &&
-                size.map((item, i) => (
-                  <option key={i} value={item._id}>
-                    {item.name}
-                  </option>
-                ))}
+              <option value="">
+                {!formData.category
+                  ? "First Select Category"
+                  : loadingSizes
+                  ? "Loading Sizes..."
+                  : "Select Size"}
+              </option>
+
+              {size.map((item) => (
+                <option
+                  key={item._id}
+                  value={item._id}
+                >
+                  {item.name}
+                </option>
+              ))}
             </select>
+
+            {formData.category && !loadingSizes && size.length === 0 && (
+              <p className="mt-2 text-sm text-red-500">
+                No size found for this category.
+              </p>
+            )}
           </div>
+
         </div>
 
-        {/* Price & Stock */}
+        {/* PRICE + STOCK */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
           <div>
             <label className="block mb-2 font-medium text-gray-700">
               Sale Price
             </label>
+
             <input
               type="number"
               value={formData.saleprice}
               onChange={(e) =>
-                setFormData({ ...formData, ["saleprice"]: e.target.value })
+                setFormData({
+                  ...formData,
+                  saleprice: e.target.value,
+                })
               }
-              placeholder="$0.00"
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full border rounded-lg px-4 py-3"
+              required
             />
           </div>
 
@@ -309,33 +542,24 @@ const AddProduct = () => {
             <label className="block mb-2 font-medium text-gray-700">
               Stock
             </label>
+
             <input
               type="number"
               value={formData.quantity}
               onChange={(e) =>
-                setFormData({ ...formData, ["quantity"]: e.target.value })
+                setFormData({
+                  ...formData,
+                  quantity: e.target.value,
+                })
               }
-              placeholder="Available Quantity"
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full border rounded-lg px-4 py-3"
             />
           </div>
+
         </div>
 
-        {/* Product Image */}
-        {/* <div>
-          <label className="block mb-2 font-medium text-gray-700">
-            Product Image
-          </label>
+        {/* DESCRIPTION */}
 
-          <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-xl h-44 cursor-pointer hover:border-blue-500 transition">
-            <Upload size={40} className="text-gray-400 mb-2" />
-            <span className="text-gray-500">Click to Upload Image</span>
-
-            <input type="file" className="hidden"  />
-          </label>
-        </div> */}
-
-        {/* Description */}
         <div>
           <label className="block mb-2 font-medium text-gray-700">
             Product Description
@@ -343,137 +567,184 @@ const AddProduct = () => {
 
           <textarea
             rows="5"
-            name="details"
             value={formData.details}
             onChange={(e) =>
-              setFormData({ ...formData, ["details"]: e.target.value })
+              setFormData({
+                ...formData,
+                details: e.target.value,
+              })
             }
             placeholder="Write product description..."
-            className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+            className="w-full border rounded-lg px-4 py-3 resize-none"
           />
         </div>
 
-        {/* Status */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block mb-2 font-medium">Image</label>
-            <input
-              type="file"
-              name="image"
-              onChange={handleFileChange}
-              placeholder="choose category image"
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-              required={!product_id && !formData.image}
-            />
-            {formData.image && (
-              <img
-                src={setImageURL(formData.image)}
-                alt="Product preview"
-                className="mt-3 h-24 w-24 rounded-lg border object-cover"
-              />
-            )}
-          </div>
-          <div>
-            <label className="block mb-2 font-medium text-gray-700">
-              Status
-            </label>
+        {/* IMAGE */}
 
-            <select
-              value={formData.isActive}
-              onChange={(e) =>
-                setFormData({ ...formData, ["isActive"]: e.target.value })
-              }
-              className="w-full md:w-60 border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
-            >
-              <option value={true}>Active</option>
-              <option value={false}>Inactive</option>
-            </select>
-          </div>
+        <div>
+          <label className="block mb-2 font-medium">
+            Image
+          </label>
+
+          <input
+            type="file"
+            name="image"
+            onChange={handleFileChange}
+            required={!product_id && !formData.image}
+            className="w-full border rounded-lg px-4 py-3"
+          />
+
+          {formData.image && (
+            <img
+              src={setImageURL(formData.image)}
+              alt="Product preview"
+              className="mt-3 h-24 w-24 rounded-lg border object-cover"
+            />
+          )}
         </div>
 
-        <h4>Product Variation</h4>
-        {variations.map((item, index) => (
-          <div key={index} className="grid grid-cols-6 gap-3 mb-3">
-            <input
-              type="text"
-              name="color"
-              placeholder="Color"
-              value={item.color}
-              onChange={(e) => handleVariationChange(index, e)}
-              className="border p-2 rounded"
-            />
+        {/* STATUS */}
 
-            <input
-              type="text"
-              name="size"
-              placeholder="Size"
-              value={item.size}
-              onChange={(e) => handleVariationChange(index, e)}
-              className="border p-2 rounded"
-            />
+        <div>
+          <label className="block mb-2 font-medium">
+            Status
+          </label>
 
-            <input
-              type="number"
-              name="price"
-              placeholder="Price"
-              value={item.price}
-              onChange={(e) => handleVariationChange(index, e)}
-              className="border p-2 rounded"
-            />
+          <select
+            value={formData.isActive}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                isActive: e.target.value === "true",
+              })
+            }
+            className="w-full md:w-60 border rounded-lg px-4 py-3"
+          >
+            <option value="true">
+              Active
+            </option>
 
-            <input
-              type="number"
-              name="stock"
-              placeholder="Stock"
-              value={item.stock}
-              onChange={(e) => handleVariationChange(index, e)}
-              className="border p-2 rounded"
-            />
+            <option value="false">
+              Inactive
+            </option>
+          </select>
+        </div>
 
-            <input
-              type="text"
-              name="sku"
-              placeholder="SKU"
-              value={item.sku}
-              onChange={(e) => handleVariationChange(index, e)}
-              className="border p-2 rounded"
-            />
+        {/* VARIATIONS */}
 
-            <button
-              type="button"
-              onClick={() => removeVariation(index)}
-              className="bg-red-500 text-white rounded px-3"
+        <div>
+          <h4 className="font-bold text-lg mb-4">
+            Product Variation
+          </h4>
+
+          {variations.map((item, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-1 md:grid-cols-6 gap-3 mb-3"
             >
-              Remove
-            </button>
-          </div>
-        ))}
+              <input
+                type="text"
+                name="color"
+                placeholder="Color"
+                value={item.color}
+                onChange={(e) =>
+                  handleVariationChange(index, e)
+                }
+                className="border p-2 rounded"
+              />
 
-        <button
-          type="button"
-          onClick={addVariation}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          + Add Variation
-        </button>
+              <input
+                type="text"
+                name="size"
+                placeholder="Size"
+                value={item.size}
+                onChange={(e) =>
+                  handleVariationChange(index, e)
+                }
+                className="border p-2 rounded"
+              />
 
-        {/* Buttons */}
-        <div className="flex justify-end gap-4 pt-6">
+              <input
+                type="number"
+                name="price"
+                placeholder="Price"
+                value={item.price}
+                onChange={(e) =>
+                  handleVariationChange(index, e)
+                }
+                className="border p-2 rounded"
+              />
+
+              <input
+                type="number"
+                name="stock"
+                placeholder="Stock"
+                value={item.stock}
+                onChange={(e) =>
+                  handleVariationChange(index, e)
+                }
+                className="border p-2 rounded"
+              />
+
+              <input
+                type="text"
+                name="sku"
+                placeholder="SKU"
+                value={item.sku}
+                onChange={(e) =>
+                  handleVariationChange(index, e)
+                }
+                className="border p-2 rounded"
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  removeVariation(index)
+                }
+                className="bg-red-500 text-white rounded px-3"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+
           <button
             type="button"
-            className="px-6 py-3 rounded-lg border border-gray-300 hover:bg-gray-100"
+            onClick={addVariation}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            + Add Variation
+          </button>
+        </div>
+
+        {/* BUTTONS */}
+
+        <div className="flex justify-end gap-4 pt-6">
+
+          <button
+            type="button"
+            onClick={() =>
+              navigate("/admin/products")
+            }
+            className="px-6 py-3 rounded-lg border"
           >
             Cancel
           </button>
 
           <button
             type="submit"
-            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 cursor-pointer"
+            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg"
           >
             <Save size={18} />
-            Save Product
+
+            {product_id
+              ? "Update Product"
+              : "Save Product"}
           </button>
+
         </div>
+
       </form>
     </div>
   );

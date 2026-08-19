@@ -24,7 +24,7 @@ const Login = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
     const user = JSON.parse(localStorage.getItem("user") || localStorage.getItem("userdetails") || "null");
-    navigate(user?.role === "vendor" ? "/vendor" : "/admin");
+    navigate(user?.role === "admin" ? "/admin/dashboard" : user?.role === "vendor" ? "/vendor" : "/");
   }, [navigate]);
 
   const handleSubmit = async (e) => {
@@ -47,7 +47,7 @@ const Login = () => {
         icon: "success",
       });
 
-      navigate(userData?.role === "vendor" ? "/vendor" : "/admin");
+      navigate(userData?.role === "admin" ? "/admin/dashboard" : userData?.role === "vendor" ? "/vendor" : "/");
     } catch (error) {
       Swal.fire({
         title: "ERROR",
