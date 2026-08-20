@@ -1,145 +1,100 @@
-import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
-import { API_URI, AUTH_TOKEN } from "../../../../config";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URI, AUTH_TOKEN } from "../../../../config";
 
 const AddSize = () => {
   const navigate = useNavigate();
   const { sizes_id } = useParams();
-
-  const [form, setForm] = useState({
-    name: "",
-    category: "",
-  });
+  const [form, setForm] = useState({ name: "", categories: [] });
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((current) => ({ ...current, [name]: value }));
-  };
-
   useEffect(() => {
-    const getCategories = async () => {
+    const loadFormData = async () => {
       try {
-        const res = await fetch(`${API_URI}/admin/category`, {
-          headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
+        const categoryResponse = await fetch(`${API_URI}/admin/category`, { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } });
+        const categoryData = await categoryResponse.json();
+        if (!categoryResponse.ok || !categoryData.success) throw new Error(categoryData.message || "Categories could not be loaded");
+        setCategories(categoryData.data || []);
+
+        if (!sizes_id) return;
+        const sizeResponse = await fetch(`${API_URI}/admin/size/${sizes_id}`, { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } });
+        const sizeData = await sizeResponse.json();
+        if (!sizeResponse.ok || !sizeData.success) throw new Error(sizeData.message || "Size could not be loaded");
+        setForm({
+          name: sizeData.data.name || "",
+          categories: (sizeData.data.categories || []).map((category) => category._id || category),
         });
-        const data = await res.json();
-        if (res.ok && data.success) setCategories(data.data || []);
-      } catch {
-        setError("Categories could not be loaded.");
+      } catch (loadError) {
+        setError(loadError.message || "Could not connect to the server.");
       }
     };
-    getCategories();
-  }, []);
-
-  useEffect(() => {
-    if (!sizes_id) return;
-
-    const getSizeDetails = async () => {
-      try {
-        const res = await fetch(`${API_URI}/admin/size/${sizes_id}`, {
-          headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
-        });
-        const data = await res.json();
-
-        if (res.ok && data.success) {
-          setForm({
-            name: data.data.name || "",
-            category: data.data.category?._id || data.data.category || "",
-          });
-        } else {
-          setError(data.message || "Size could not be loaded.");
-        }
-      } catch {
-        setError("Could not connect to the server.");
-      }
-    };
-
-    getSizeDetails();
+    loadFormData();
   }, [sizes_id]);
 
-  // Add / Update
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const toggleCategory = (categoryId) => {
+    setForm((current) => ({
+      ...current,
+      categories: current.categories.includes(categoryId)
+        ? current.categories.filter((id) => id !== categoryId)
+        : [...current.categories, categoryId],
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setError("");
+    if (!form.categories.length) {
+      setError("Select at least one category.");
+      return;
+    }
     setSaving(true);
-
     try {
-      const url = sizes_id
-        ? `${API_URI}/admin/size/${sizes_id}`
-        : `${API_URI}/admin/size`;
-
-      const method = sizes_id ? "PUT" : "POST";
-
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${AUTH_TOKEN}`,
+      const response = await fetch(
+        sizes_id ? `${API_URI}/admin/size/${sizes_id}` : `${API_URI}/admin/size`,
+        {
+          method: sizes_id ? "PUT" : "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${AUTH_TOKEN}` },
+          body: JSON.stringify({ name: form.name.trim(), categories: form.categories }),
         },
-        body: JSON.stringify(form),
-      });
-
-      const data = await res.json();
-
-      if (res.ok && data.success) {
-        navigate("/admin/sizes");
-        return;
-      }
-      setError(data.message || "Size could not be saved.");
-    } catch {
-      setError("Could not connect to the server.");
+      );
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Size could not be saved");
+      navigate("/admin/sizes");
+    } catch (saveError) {
+      setError(saveError.message || "Could not connect to the server.");
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto bg-white rounded-xl shadow p-6">
-      <h1 className="text-3xl font-bold mb-6">
-        {sizes_id ? "Edit Size" : "Add Size"}
-      </h1>
-
+    <div className="mx-auto max-w-xl rounded-xl bg-white p-6 shadow">
+      <h1 className="mb-2 text-3xl font-bold">{sizes_id ? "Edit Size" : "Add Size"}</h1>
+      <p className="mb-6 text-sm text-gray-500">One size can be used in multiple categories.</p>
+      {error && <div className="mb-5 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-5">
-        {error && (
-          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-            {error}
+        <div>
+          <label className="mb-2 block font-medium">Size Name</label>
+          <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. M or 8" className="w-full rounded-lg border px-4 py-3" />
+        </div>
+        <fieldset>
+          <legend className="mb-2 block font-medium">Categories</legend>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {categories.map((category) => (
+              <label key={category._id} className="flex cursor-pointer items-center gap-3 rounded-lg border p-3 hover:bg-slate-50">
+                <input type="checkbox" checked={form.categories.includes(category._id)} onChange={() => toggleCategory(category._id)} />
+                <span>{category.title}</span>
+              </label>
+            ))}
           </div>
-        )}
-        <select
-          name="category"
-          value={form.category}
-          onChange={handleChange}
-          className="w-full border rounded-lg px-4 py-3"
-          required
-        >
-          <option value="">Select Category</option>
-
-          {categories.map((category) => (
-            <option key={category._id} value={category._id}>
-              {category.title}
-            </option>
-          ))}
-        </select>
-        <input
-          required
-          type="text"
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          placeholder="e.g. S, M, L or 6, 7, 8"
-          className="w-full border rounded-lg px-4 py-3"
-        />
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"
-        >
-          <Save size={18} />
-          {saving ? "Saving..." : sizes_id ? "Update Size" : "Save Size"}
-        </button>
+        </fieldset>
+        <div className="flex gap-3">
+          <button type="button" onClick={() => navigate("/admin/sizes")} className="rounded-lg border px-6 py-3 font-semibold">Cancel</button>
+          <button type="submit" disabled={saving} className="flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-white disabled:opacity-60"><Save size={18} />{saving ? "Saving..." : sizes_id ? "Update Size" : "Save Size"}</button>
+        </div>
       </form>
     </div>
   );

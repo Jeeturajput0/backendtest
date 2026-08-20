@@ -17,8 +17,8 @@ const create = async (req, res) => {
       isActive,
     } = req.body;
     const [brandExists, sizeExists] = await Promise.all([
-      Brand.exists({ _id: brand, category }),
-      Size.exists({ _id: size, category }),
+      Brand.exists({ _id: brand, categories: category }),
+      Size.exists({ _id: size, categories: category }),
     ]);
 
     if (!brandExists || !sizeExists) {
@@ -102,15 +102,30 @@ const details = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const filter = { _id: req.params.product_id };
-    const Products = await Product.findOneAndUpdate(filter, req.body, {
+    const existingProduct = await Product.findById(req.params.product_id);
+    if (!existingProduct) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    const category = req.body.category || existingProduct.category;
+    const brand = req.body.brand || existingProduct.brand;
+    const size = req.body.size || existingProduct.size;
+    const [brandExists, sizeExists] = await Promise.all([
+      Brand.exists({ _id: brand, categories: category }),
+      Size.exists({ _id: size, categories: category }),
+    ]);
+
+    if (!brandExists || !sizeExists) {
+      return res.status(400).json({
+        success: false,
+        message: "Select a brand and size that belong to the selected category",
+      });
+    }
+
+    const Products = await Product.findByIdAndUpdate(req.params.product_id, req.body, {
       new: true,
       runValidators: true,
     });
-
-    if (!Products) {
-      return res.status(404).json({ success: false, message: "Product not found" });
-    }
     res.status(200).json({
       success: true,
       message: "product update successfull",

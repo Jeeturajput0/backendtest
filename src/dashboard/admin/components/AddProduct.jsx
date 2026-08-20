@@ -1,4 +1,4 @@
-import { Save, Upload } from "lucide-react";
+import { Save } from "lucide-react";
 import {
   API_URI,
   AUTH_TOKEN,
@@ -6,7 +6,7 @@ import {
   uploadImage,
 } from "../../../config";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const AddProduct = () => {
@@ -21,6 +21,9 @@ const AddProduct = () => {
 
   const [loadingBrands, setLoadingBrands] = useState(false);
   const [loadingSizes, setLoadingSizes] = useState(false);
+  const [brandError, setBrandError] = useState("");
+  const [sizeError, setSizeError] = useState("");
+  const categoryRequestId = useRef(0);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -105,14 +108,15 @@ const AddProduct = () => {
   // Brands According To Category
   // =========================
 
-  const getBrand = async (categoryId) => {
+  const getBrand = async (categoryId, requestId) => {
     if (!categoryId) {
-      setBrand([]);
+      if (requestId === categoryRequestId.current) setBrand([]);
       return;
     }
 
     try {
       setLoadingBrands(true);
+      setBrandError("");
 
       const res = await fetch(
         `${API_URI}/admin/brand?category=${categoryId}`,
@@ -125,16 +129,19 @@ const AddProduct = () => {
 
       const resData = await res.json();
 
-      if (resData.success) {
+      if (!res.ok || !resData.success) {
+        throw new Error(resData.message || "Brands could not be loaded");
+      }
+      if (requestId === categoryRequestId.current) {
         setBrand(resData.data || []);
-      } else {
-        setBrand([]);
       }
     } catch (error) {
-      console.log("BRAND ERROR:", error);
-      setBrand([]);
+      if (requestId === categoryRequestId.current) {
+        setBrand([]);
+        setBrandError(error.message || "Brands could not be loaded");
+      }
     } finally {
-      setLoadingBrands(false);
+      if (requestId === categoryRequestId.current) setLoadingBrands(false);
     }
   };
 
@@ -142,14 +149,15 @@ const AddProduct = () => {
   // Sizes According To Category
   // =========================
 
-  const getSize = async (categoryId) => {
+  const getSize = async (categoryId, requestId) => {
     if (!categoryId) {
-      setSize([]);
+      if (requestId === categoryRequestId.current) setSize([]);
       return;
     }
 
     try {
       setLoadingSizes(true);
+      setSizeError("");
 
       const res = await fetch(
         `${API_URI}/admin/size?category=${categoryId}`,
@@ -162,16 +170,19 @@ const AddProduct = () => {
 
       const resData = await res.json();
 
-      if (resData.success) {
+      if (!res.ok || !resData.success) {
+        throw new Error(resData.message || "Sizes could not be loaded");
+      }
+      if (requestId === categoryRequestId.current) {
         setSize(resData.data || []);
-      } else {
-        setSize([]);
       }
     } catch (error) {
-      console.log("SIZE ERROR:", error);
-      setSize([]);
+      if (requestId === categoryRequestId.current) {
+        setSize([]);
+        setSizeError(error.message || "Sizes could not be loaded");
+      }
     } finally {
-      setLoadingSizes(false);
+      if (requestId === categoryRequestId.current) setLoadingSizes(false);
     }
   };
 
@@ -194,12 +205,17 @@ const AddProduct = () => {
   // =========================
 
   useEffect(() => {
+    const requestId = ++categoryRequestId.current;
     if (formData.category) {
-      getBrand(formData.category);
-      getSize(formData.category);
+      setBrand([]);
+      setSize([]);
+      getBrand(formData.category, requestId);
+      getSize(formData.category, requestId);
     } else {
       setBrand([]);
       setSize([]);
+      setBrandError("");
+      setSizeError("");
     }
   }, [formData.category]);
 
@@ -456,7 +472,7 @@ const AddProduct = () => {
 
             {formData.category && !loadingBrands && brand.length === 0 && (
               <p className="mt-2 text-sm text-red-500">
-                No brand found for this category.
+                {brandError || "No brand found for this category."}
               </p>
             )}
           </div>
@@ -500,7 +516,7 @@ const AddProduct = () => {
 
             {formData.category && !loadingSizes && size.length === 0 && (
               <p className="mt-2 text-sm text-red-500">
-                No size found for this category.
+                {sizeError || "No size found for this category."}
               </p>
             )}
           </div>
