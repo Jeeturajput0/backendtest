@@ -9,16 +9,31 @@ const AddSize = () => {
 
   const [form, setForm] = useState({
     name: "",
+    category: "",
   });
+  const [categories, setCategories] = useState([]);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
-      name: e.target.value,
-    });
+    const { name, value } = e.target;
+    setForm((current) => ({ ...current, [name]: value }));
   };
+
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const res = await fetch(`${API_URI}/admin/category`, {
+          headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
+        });
+        const data = await res.json();
+        if (res.ok && data.success) setCategories(data.data || []);
+      } catch {
+        setError("Categories could not be loaded.");
+      }
+    };
+    getCategories();
+  }, []);
 
   useEffect(() => {
     if (!sizes_id) return;
@@ -31,7 +46,10 @@ const AddSize = () => {
         const data = await res.json();
 
         if (res.ok && data.success) {
-          setForm({ name: data.data.name });
+          setForm({
+            name: data.data.name || "",
+            category: data.data.category?._id || data.data.category || "",
+          });
         } else {
           setError(data.message || "Size could not be loaded.");
         }
@@ -92,14 +110,11 @@ const AddSize = () => {
           </div>
         )}
         <select
-          value={formData.category}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              category: e.target.value,
-            })
-          }
+          name="category"
+          value={form.category}
+          onChange={handleChange}
           className="w-full border rounded-lg px-4 py-3"
+          required
         >
           <option value="">Select Category</option>
 
@@ -109,6 +124,15 @@ const AddSize = () => {
             </option>
           ))}
         </select>
+        <input
+          required
+          type="text"
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+          placeholder="e.g. S, M, L or 6, 7, 8"
+          className="w-full border rounded-lg px-4 py-3"
+        />
         <button
           type="submit"
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2"

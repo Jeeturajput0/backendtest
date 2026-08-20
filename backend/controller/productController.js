@@ -1,4 +1,6 @@
 const Product = require("../model/productmodel");
+const Brand = require("../model/brandmodel");
+const Size = require("../model/sizemodel");
 const create = async (req, res) => {
   try {
     const {
@@ -14,6 +16,18 @@ const create = async (req, res) => {
       image,
       isActive,
     } = req.body;
+    const [brandExists, sizeExists] = await Promise.all([
+      Brand.exists({ _id: brand, category }),
+      Size.exists({ _id: size, category }),
+    ]);
+
+    if (!brandExists || !sizeExists) {
+      return res.status(400).json({
+        success: false,
+        message: "Select a brand and size that belong to the selected category",
+      });
+    }
+
     const Products = await Product.create({
       name,
       details,
@@ -52,13 +66,7 @@ const list = async (req, res) => {
       query.name = { $regex: req.query.search.trim(), $options: "i" };
     }
 
-    const products = await Product.find(query,{vendor: req.user.userId,}).populate("category");
-    if (!product) {
-  return res.status(404).json({
-    success: false,
-    message: "Product not found or access denied",
-  });
-}
+    const products = await Product.find(query).populate("category");
     res.status(200).json({
       success: true,
       message: "prodcut lists successfull",

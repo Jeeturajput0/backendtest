@@ -3,7 +3,6 @@ const sizeSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
     uppercase: true,
     trim: true,
   },
@@ -13,6 +12,8 @@ const sizeSchema = new mongoose.Schema({
     required: true,
   },
 });
+// The same size label may be valid in separate categories.
+sizeSchema.index({ name: 1, category: 1 }, { unique: true });
 const Size = mongoose.model("Size", sizeSchema);
 module.exports = Size;
 

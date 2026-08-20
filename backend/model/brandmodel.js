@@ -3,7 +3,6 @@ const brandSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
     uppercase: true,
   },
   description: {
@@ -29,5 +28,7 @@ const brandSchema = new mongoose.Schema({
     trim: true,
   },
 });
+// A brand can exist in more than one category (for example Nike in Shoes and T-Shirt).
+brandSchema.index({ name: 1, category: 1 }, { unique: true });
 const Brand = mongoose.model("Brand", brandSchema);
 module.exports = Brand;

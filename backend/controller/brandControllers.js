@@ -2,7 +2,7 @@ const Brand = require("../model/brandmodel");
 
 const create = async (req, res) => {
   try {
-    const { name, category } = req.body;
+    const { name, category, description, isActive } = req.body;
 
     if (!name || !category) {
       return res.status(400).json({
@@ -26,6 +26,8 @@ const create = async (req, res) => {
     const brand = await Brand.create({
       name,
       category,
+      description,
+      isActive: isActive !== undefined ? isActive : true,
     });
 
     res.status(201).json({

@@ -8,6 +8,7 @@ import {
   fetchBrandById,
   saveBrand,
 } from "../../../../store/slices/brand.slice";
+import { API_URI, AUTH_TOKEN } from "../../../../config";
 
 const AddBrand = () => {
   const { brand_id } = useParams();
@@ -26,7 +27,10 @@ const AddBrand = () => {
     name: "",
     description: "",
     isActive: true,
+    category: "",
   });
+
+  const [categories, setCategories] = useState([]);
 
 
   useEffect(() => {
@@ -39,6 +43,21 @@ const AddBrand = () => {
     }
   }, [brand_id, dispatch]);
 
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const response = await fetch(`${API_URI}/admin/category`, {
+          headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
+        });
+        const data = await response.json();
+        if (response.ok && data.success) setCategories(data.data || []);
+      } catch (fetchError) {
+        console.error("Category fetch error:", fetchError);
+      }
+    };
+    getCategories();
+  }, []);
+
 
   useEffect(() => {
     if (selectedBrand) {
@@ -48,6 +67,7 @@ const AddBrand = () => {
         description: selectedBrand.description || "",
 
         isActive: selectedBrand.isActive ?? true,
+        category: selectedBrand.category?._id || selectedBrand.category || "",
       });
     }
   }, [selectedBrand]);
@@ -73,6 +93,7 @@ const AddBrand = () => {
       description: formData.description.trim(),
 
       isActive: formData.isActive,
+      category: formData.category,
     };
 
     try {
@@ -157,10 +178,10 @@ const AddBrand = () => {
             />
           </div>
 
-          {/* STATUS */}
+          {/* CATEGORY */}
 
           <div>
-            <label className="mb-2 block font-medium">Status</label>
+            <label className="mb-2 block font-medium">Category</label>
             <select
               value={formData.category}
               onChange={(e) =>
@@ -170,6 +191,7 @@ const AddBrand = () => {
                 })
               }
               className="w-full border rounded-lg px-4 py-3"
+              required
             >
               <option value="">Select Category</option>
 

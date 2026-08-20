@@ -36,15 +36,7 @@ const AddProduct = () => {
     isActive: true,
   });
 
-  const [variations, setVariations] = useState([
-    {
-      color: "",
-      size: "",
-      price: "",
-      stock: "",
-      sku: "",
-    },
-  ]);
+  const [variations, setVariations] = useState([]);
 
   // =========================
   // Get Product for Edit
