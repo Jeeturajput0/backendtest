@@ -28,7 +28,8 @@ const list = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid category id" });
     }
 
-    const query = category ? { categories: category } : {};
+    // `category` fallback keeps old records working until the migration is run.
+    const query = category ? { $or: [{ categories: category }, { category }] } : {};
     const sizes = await Size.find(query).populate("categories", "title").sort({ name: 1 });
     res.status(200).json({ success: true, data: sizes });
   } catch (error) {

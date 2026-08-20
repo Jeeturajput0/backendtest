@@ -9,8 +9,8 @@ const adminPopulate = (query) => query.populate("category").populate("vendor", "
 const validSelection = async ({ brand, size, category }) => {
   if (!mongoose.isValidObjectId(brand) || !mongoose.isValidObjectId(size) || !mongoose.isValidObjectId(category)) return false;
   const [brandExists, sizeExists] = await Promise.all([
-    Brand.exists({ _id: brand, categories: category }),
-    Size.exists({ _id: size, categories: category }),
+    Brand.exists({ _id: brand, $or: [{ categories: category }, { category }] }),
+    Size.exists({ _id: size, $or: [{ categories: category }, { category }] }),
   ]);
   return Boolean(brandExists && sizeExists);
 };

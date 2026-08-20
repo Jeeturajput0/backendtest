@@ -1,4 +1,4 @@
-import { Search, Plus } from "lucide-react";
+import { Check, Search, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -212,8 +212,8 @@ const Products = () => {
                     Delete
                   </button>
                   {item.approvalStatus === "pending" && <>
-                    <button onClick={() => updateApproval(item._id, "approve")} className="inline-flex rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">Approve</button>
-                    <button onClick={() => { setRejectingProduct(item); setReason(""); }} className="inline-flex rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700">Reject</button>
+                    <button onClick={() => updateApproval(item._id, "approve")} title="Approve product" className="inline-flex rounded-lg bg-emerald-50 p-2 text-emerald-700"><Check size={16} /></button>
+                    <button onClick={() => { setRejectingProduct(item); setReason(""); }} title="Reject product" className="inline-flex rounded-lg bg-rose-50 p-2 text-rose-700"><X size={16} /></button>
                   </>}
                 </td>
               </tr>
