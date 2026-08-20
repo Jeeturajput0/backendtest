@@ -11,7 +11,7 @@ const list = async (req, res) => {
       await Promise.all([
         Banner.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 }),
         Category.find({ isActive: true }),
-        Product.find({ isActive: true }).populate("category"),
+        Product.find({ isActive: true, approvalStatus: "approved" }).populate("category"),
         Offer.find({ status: true }).sort({ createdAt: -1 }),
         Review.find({ status: "Approved" }).sort({ createdAt: -1 }),
       ]);

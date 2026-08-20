@@ -7,6 +7,7 @@ const VendorProductAdd = () => {
     <AddProduct
       productApi={`${API_URI}/vendor/products`}
       basePath="/vendor/products"
+      catalogApi={`${API_URI}/vendor/catalog`}
     />
   );
 };

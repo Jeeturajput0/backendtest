@@ -159,7 +159,7 @@ const VendorProducts = () => {
                   </th>
 
                   <th className="px-5 py-4 text-left text-sm font-bold text-slate-600">
-                    Brand
+                    Approval status
                   </th>
 
                   <th className="px-5 py-4 text-right text-sm font-bold text-slate-600">
@@ -210,8 +210,13 @@ const VendorProducts = () => {
                       )}
                     </td>
 
-                    <td className="px-5 py-4 text-sm text-slate-600">
-                      {product.brand}
+                    <td className="px-5 py-4 text-sm">
+                      <p className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold capitalize ${product.approvalStatus === "approved" ? "bg-emerald-100 text-emerald-700" : product.approvalStatus === "rejected" ? "bg-rose-100 text-rose-700" : "bg-amber-100 text-amber-700"}`}>
+                        {product.approvalStatus || "pending"}
+                      </p>
+                      <p className="mt-2 text-xs text-slate-500">
+                        {product.approvalStatus === "approved" ? "Approved and visible on website" : product.approvalStatus === "rejected" ? `Reason: ${product.rejectionReason || "Not provided"}` : "Waiting for admin approval"}
+                      </p>
                     </td>
 
                     <td className="px-5 py-4">

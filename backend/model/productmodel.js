@@ -68,11 +68,18 @@ const ProductSchema = new mongoose.Schema({
     default: true,
     // required: true,
   },vendor: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "User",
-  required: true,
-},
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  approvalStatus: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+  },
+  rejectionReason: { type: String, default: "" },
+  approvedAt: { type: Date, default: null },
   variations: [variationSchema],
-});
+}, { timestamps: true });
 const Product = mongoose.model("Product", ProductSchema);
 module.exports = Product;

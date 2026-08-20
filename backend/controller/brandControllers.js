@@ -21,7 +21,12 @@ const create = async (req, res) => {
     });
     res.status(201).json({ success: true, message: "Brand created successfully", data: brand });
   } catch (error) {
-    const message = error.code === 11000 ? "A brand with this name already exists" : error.message;
+    const duplicateField = Object.keys(error.keyPattern || {})[0];
+    const message = error.code === 11000
+      ? duplicateField === "name"
+        ? "A brand with this name already exists. Edit that brand to add more categories."
+        : "Brand database indexes are outdated. Run: node scripts/migrateCategoryIndexes.js"
+      : error.message;
     res.status(400).json({ success: false, message });
   }
 };
@@ -66,7 +71,12 @@ const update = async (req, res) => {
     if (!brand) return res.status(404).json({ success: false, message: "Brand not found" });
     res.json({ success: true, message: "Brand updated successfully", data: brand });
   } catch (error) {
-    const message = error.code === 11000 ? "A brand with this name already exists" : error.message;
+    const duplicateField = Object.keys(error.keyPattern || {})[0];
+    const message = error.code === 11000
+      ? duplicateField === "name"
+        ? "A brand with this name already exists. Edit that brand to add more categories."
+        : "Brand database indexes are outdated. Run: node scripts/migrateCategoryIndexes.js"
+      : error.message;
     res.status(400).json({ success: false, message });
   }
 };

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { setImageURL } from "../../../../config";
+import { API_URI, setImageURL } from "../../../../config";
 import services from "../../../../services/products.service";
 import { fetchproducts } from "../../../../store/slices/products.slice";
 
@@ -16,6 +16,9 @@ const Products = () => {
     isActive: "",
     search: "",
   });
+  const [rejectingProduct, setRejectingProduct] = useState(null);
+  const [reason, setReason] = useState("");
+  const [actionError, setActionError] = useState("");
 
   const getProducts = (filters = formData) => {
     dispatch(
@@ -41,6 +44,30 @@ const Products = () => {
       console.log(deleteError);
     }
   };
+
+  const updateApproval = async (productId, action, rejectionReason = "") => {
+    setActionError("");
+    try {
+      const response = await fetch(`${API_URI}/admin/products/${productId}/${action}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
+        body: action === "reject" ? JSON.stringify({ reason: rejectionReason }) : undefined,
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Product status could not be updated");
+      setRejectingProduct(null);
+      setReason("");
+      getProducts();
+    } catch (approvalError) {
+      setActionError(approvalError.message);
+    }
+  };
+
+  const statusClass = (status) => ({
+    approved: "bg-emerald-100 text-emerald-700",
+    rejected: "bg-rose-100 text-rose-700",
+    pending: "bg-amber-100 text-amber-700",
+  }[status] || "bg-slate-100 text-slate-700");
 
   return (
     <div className="mx-auto max-w-7xl space-y-7">
@@ -125,15 +152,18 @@ const Products = () => {
         </button>
       </div>
 
+      {actionError && <p className="rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{actionError}</p>}
+
       <div className="ui-table-wrap">
         <table className="ui-table">
           <thead>
             <tr>
               <th>Product</th>
               <th>Category</th>
+              <th>Vendor</th>
               <th>Price</th>
               <th>MRP</th>
-              <th>Status</th>
+              <th>Approval</th>
               <th className="text-center">Action</th>
             </tr>
           </thead>
@@ -156,17 +186,15 @@ const Products = () => {
                   </div>
                 </td>
                 <td>{item?.category?.title}</td>
+                <td>{item.vendor?.name || item.vendor?.email || "Admin"}</td>
                 <td className="font-medium text-slate-800">₹ {item.saleprice}</td>
                 <td>₹ {item.mrp}</td>
 
                 <td className="p-4">
-                  <span
-                    className={
-                      item.isActive ? "status-active" : "status-inactive"
-                    }
-                  >
-                    {item.isActive ? "Active" : "Inactive"}
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${statusClass(item.approvalStatus)}`}>
+                    {item.approvalStatus || "approved"}
                   </span>
+                  {item.approvalStatus === "rejected" && item.rejectionReason && <p className="mt-1 max-w-40 text-xs text-rose-600">{item.rejectionReason}</p>}
                 </td>
 
                 <td className="space-x-2 text-center">
@@ -183,12 +211,16 @@ const Products = () => {
                   >
                     Delete
                   </button>
+                  {item.approvalStatus === "pending" && <>
+                    <button onClick={() => updateApproval(item._id, "approve")} className="inline-flex rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">Approve</button>
+                    <button onClick={() => { setRejectingProduct(item); setReason(""); }} className="inline-flex rounded-lg bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700">Reject</button>
+                  </>}
                 </td>
               </tr>
             ))}
             {!products.length && (
               <tr>
-                <td colSpan="6" className="p-10 text-center text-slate-500">
+                <td colSpan="7" className="p-10 text-center text-slate-500">
                   {loading ? "Loading products..." : error || "No products found."}
                 </td>
               </tr>
@@ -196,6 +228,7 @@ const Products = () => {
           </tbody>
         </table>
       </div>
+      {rejectingProduct && <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/40 p-4"><form onSubmit={(event) => { event.preventDefault(); updateApproval(rejectingProduct._id, "reject", reason); }} className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"><h2 className="text-xl font-bold">Reject {rejectingProduct.name}</h2><p className="mt-2 text-sm text-slate-500">Why are you rejecting this product?</p><textarea required value={reason} onChange={(event) => setReason(event.target.value)} className="mt-4 w-full rounded-lg border p-3" rows="4" placeholder="Product image is not clear" /><div className="mt-5 flex justify-end gap-3"><button type="button" onClick={() => setRejectingProduct(null)} className="rounded-lg border px-4 py-2">Cancel</button><button className="rounded-lg bg-rose-600 px-4 py-2 font-semibold text-white">Reject Product</button></div></form></div>}
     </div>
   );
 };

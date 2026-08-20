@@ -9,9 +9,12 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const AddProduct = () => {
+const AddProduct = ({
+  productApi = `${API_URI}/admin/product`,
+  basePath = "/admin/products",
+  catalogApi = `${API_URI}/admin`,
+}) => {
   const navigate = useNavigate();
-  const productApi = `${API_URI}/admin/product`;
 
   const { product_id } = useParams();
 
@@ -88,7 +91,7 @@ const AddProduct = () => {
 
   const getCategories = async () => {
     try {
-      const res = await fetch(`${API_URI}/admin/category`, {
+      const res = await fetch(`${catalogApi}/category`, {
         headers: {
           Authorization: `Bearer ${AUTH_TOKEN}`,
         },
@@ -119,7 +122,7 @@ const AddProduct = () => {
       setBrandError("");
 
       const res = await fetch(
-        `${API_URI}/admin/brand?category=${categoryId}`,
+        `${catalogApi}/brand?category=${categoryId}`,
         {
           headers: {
             Authorization: `Bearer ${AUTH_TOKEN}`,
@@ -160,7 +163,7 @@ const AddProduct = () => {
       setSizeError("");
 
       const res = await fetch(
-        `${API_URI}/admin/size?category=${categoryId}`,
+        `${catalogApi}/size?category=${categoryId}`,
         {
           headers: {
             Authorization: `Bearer ${AUTH_TOKEN}`,
@@ -293,7 +296,7 @@ const AddProduct = () => {
           : "Product added successfully"
       );
 
-      navigate("/admin/products");
+      navigate(basePath);
     } catch (error) {
       console.log("PRODUCT SAVE ERROR:", error);
       alert("Something went wrong");
@@ -733,7 +736,7 @@ const AddProduct = () => {
           <button
             type="button"
             onClick={() =>
-              navigate("/admin/products")
+              navigate(basePath)
             }
             className="px-6 py-3 rounded-lg border"
           >

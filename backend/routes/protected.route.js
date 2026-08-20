@@ -33,7 +33,10 @@ router.route("/category").post(categoryController.create).get(categoryController
 router.route("/category/:category_id").put(categoryController.update).delete(categoryController.destroy);
 
 router.route("/product").post(productController.create).get(productController.list);
-router.route("/product/:product_id").get(productController.details).put(productController.update).delete(productController.destroy);
+router.route("/product/:product_id").get(productController.adminDetails).put(productController.update).delete(productController.destroy);
+router.get("/products", productController.list);
+router.put("/products/:product_id/approve", productController.approve);
+router.put("/products/:product_id/reject", productController.reject);
 
 router.route("/size").post(sizeController.create).get(sizeController.list);
 router.route("/size/:size_id").get(sizeController.details).put(sizeController.update).delete(sizeController.destroy);

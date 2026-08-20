@@ -62,6 +62,7 @@ export default function App() {
         <Route index element={<VendorDashboard />} />
         <Route path="products" element={<VendorProducts />} />
         <Route path="products/add" element={<VendorProductAdd />} />
+        <Route path="products/edit/:product_id" element={<VendorProductAdd />} />
       </Route>
 
       {/* home page */}
