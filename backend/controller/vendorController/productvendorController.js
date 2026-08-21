@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const Product = require("../../model/productmodel");
 const { validSelection } = require("../productController");
 
-
-
 const products = async (req, res) => {
   try {
     const data = await Product.find({ vendor: req.user.userId })
@@ -15,13 +13,11 @@ const products = async (req, res) => {
       data,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Vendor products failed",
-        error: error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Vendor products failed",
+      error: error.message,
+    });
   }
 };
 
@@ -36,21 +32,17 @@ const productDetails = async (req, res) => {
       vendor: req.user.userId,
     }).populate("category");
     if (!data)
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "Product not found or access denied",
-        });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found or access denied",
+      });
     res.json({ success: true, data });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        message: "Product details failed",
-        error: error.message,
-      });
+    res.status(400).json({
+      success: false,
+      message: "Product details failed",
+      error: error.message,
+    });
   }
 };
 
@@ -71,12 +63,10 @@ const createProduct = async (req, res) => {
       isActive,
     } = req.body;
     if (!(await validSelection({ brand, size, category })))
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Select a brand and size belonging to the selected category",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Select a brand and size belonging to the selected category",
+      });
     const product = await Product.create({
       name,
       details,
@@ -95,21 +85,17 @@ const createProduct = async (req, res) => {
       approvedAt: null,
       rejectionReason: "",
     });
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Product submitted for admin approval",
-        data: product,
-      });
+    res.status(201).json({
+      success: true,
+      message: "Product submitted for admin approval",
+      data: product,
+    });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        message: "Product creation failed",
-        error: error.message,
-      });
+    res.status(400).json({
+      success: false,
+      message: "Product creation failed",
+      error: error.message,
+    });
   }
 };
 
@@ -120,24 +106,20 @@ const updateProduct = async (req, res) => {
       vendor: req.user.userId,
     });
     if (!product)
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "Product not found or access denied",
-        });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found or access denied",
+      });
     const selection = {
       brand: req.body.brand || product.brand,
       size: req.body.size || product.size,
       category: req.body.category || product.category,
     };
     if (!(await validSelection(selection)))
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Select a brand and size belonging to the selected category",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Select a brand and size belonging to the selected category",
+      });
     const allowed = [
       "name",
       "details",
@@ -168,13 +150,11 @@ const updateProduct = async (req, res) => {
       data: product,
     });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        message: "Product update failed",
-        error: error.message,
-      });
+    res.status(400).json({
+      success: false,
+      message: "Product update failed",
+      error: error.message,
+    });
   }
 };
 
@@ -185,26 +165,21 @@ const deleteProduct = async (req, res) => {
       vendor: req.user.userId,
     });
     if (!product)
-      return res
-        .status(404)
-        .json({
-          success: false,
-          message: "Product not found or access denied",
-        });
+      return res.status(404).json({
+        success: false,
+        message: "Product not found or access denied",
+      });
     res.json({ success: true, message: "Product deleted successfully" });
   } catch (error) {
-    res
-      .status(400)
-      .json({
-        success: false,
-        message: "Product delete failed",
-        error: error.message,
-      });
+    res.status(400).json({
+      success: false,
+      message: "Product delete failed",
+      error: error.message,
+    });
   }
 };
 
 module.exports = {
-
   products,
   productDetails,
   createProduct,

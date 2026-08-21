@@ -1,10 +1,5 @@
 import { Save } from "lucide-react";
-import {
-  API_URI,
-  AUTH_TOKEN,
-  setImageURL,
-  uploadImage,
-} from "../../../config";
+import { API_URI, AUTH_TOKEN, setImageURL, uploadImage } from "../../../config";
 
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -121,14 +116,11 @@ const AddProduct = ({
       setLoadingBrands(true);
       setBrandError("");
 
-      const res = await fetch(
-        `${catalogApi}/brand?category=${categoryId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${AUTH_TOKEN}`,
-          },
-        }
-      );
+      const res = await fetch(`${catalogApi}/brand?category=${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${AUTH_TOKEN}`,
+        },
+      });
 
       const resData = await res.json();
 
@@ -162,14 +154,11 @@ const AddProduct = ({
       setLoadingSizes(true);
       setSizeError("");
 
-      const res = await fetch(
-        `${catalogApi}/size?category=${categoryId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${AUTH_TOKEN}`,
-          },
-        }
-      );
+      const res = await fetch(`${catalogApi}/size?category=${categoryId}`, {
+        headers: {
+          Authorization: `Bearer ${AUTH_TOKEN}`,
+        },
+      });
 
       const resData = await res.json();
 
@@ -268,9 +257,7 @@ const AddProduct = ({
     };
 
     try {
-      const api = product_id
-        ? `${productApi}/${product_id}`
-        : productApi;
+      const api = product_id ? `${productApi}/${product_id}` : productApi;
 
       const method = product_id ? "PUT" : "POST";
 
@@ -293,7 +280,7 @@ const AddProduct = ({
       alert(
         product_id
           ? "Product updated successfully"
-          : "Product added successfully"
+          : "Product added successfully",
       );
 
       navigate(basePath);
@@ -361,7 +348,6 @@ const AddProduct = ({
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 bg-white rounded-2xl shadow-md p-8">
-
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-800">
           {product_id ? "Update" : "Add New"} Product
@@ -372,15 +358,10 @@ const AddProduct = ({
         </p>
       </div>
 
-      <form
-        className="space-y-6"
-        onSubmit={handleSubmit}
-      >
-
+      <form className="space-y-6" onSubmit={handleSubmit}>
         {/* Product Name + Category */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
           <div>
             <label className="block mb-2 font-medium text-gray-700">
               Product Name
@@ -414,27 +395,20 @@ const AddProduct = ({
               className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
               required
             >
-              <option value="">
-                Select Category
-              </option>
+              <option value="">Select Category</option>
 
               {categories.map((item) => (
-                <option
-                  key={item._id}
-                  value={item._id}
-                >
+                <option key={item._id} value={item._id}>
                   {item.title}
                 </option>
               ))}
             </select>
           </div>
-
         </div>
 
         {/* BRAND + SIZE */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
           {/* BRAND */}
 
           <div>
@@ -459,15 +433,12 @@ const AddProduct = ({
                 {!formData.category
                   ? "First Select Category"
                   : loadingBrands
-                  ? "Loading Brands..."
-                  : "Select Brand"}
+                    ? "Loading Brands..."
+                    : "Select Brand"}
               </option>
 
               {brand.map((item) => (
-                <option
-                  key={item._id}
-                  value={item._id}
-                >
+                <option key={item._id} value={item._id}>
                   {item.name}
                 </option>
               ))}
@@ -483,9 +454,7 @@ const AddProduct = ({
           {/* SIZE */}
 
           <div>
-            <label className="block mb-2 font-medium text-gray-700">
-              Size
-            </label>
+            <label className="block mb-2 font-medium text-gray-700">Size</label>
 
             <select
               value={formData.size}
@@ -503,15 +472,12 @@ const AddProduct = ({
                 {!formData.category
                   ? "First Select Category"
                   : loadingSizes
-                  ? "Loading Sizes..."
-                  : "Select Size"}
+                    ? "Loading Sizes..."
+                    : "Select Size"}
               </option>
 
               {size.map((item) => (
-                <option
-                  key={item._id}
-                  value={item._id}
-                >
+                <option key={item._id} value={item._id}>
                   {item.name}
                 </option>
               ))}
@@ -523,13 +489,11 @@ const AddProduct = ({
               </p>
             )}
           </div>
-
         </div>
 
         {/* PRICE + STOCK */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
           <div>
             <label className="block mb-2 font-medium text-gray-700">
               Sale Price
@@ -566,7 +530,6 @@ const AddProduct = ({
               className="w-full border rounded-lg px-4 py-3"
             />
           </div>
-
         </div>
 
         {/* DESCRIPTION */}
@@ -593,9 +556,7 @@ const AddProduct = ({
         {/* IMAGE */}
 
         <div>
-          <label className="block mb-2 font-medium">
-            Image
-          </label>
+          <label className="block mb-2 font-medium">Image</label>
 
           <input
             type="file"
@@ -617,9 +578,7 @@ const AddProduct = ({
         {/* STATUS */}
 
         <div>
-          <label className="block mb-2 font-medium">
-            Status
-          </label>
+          <label className="block mb-2 font-medium">Status</label>
 
           <select
             value={formData.isActive}
@@ -631,22 +590,16 @@ const AddProduct = ({
             }
             className="w-full md:w-60 border rounded-lg px-4 py-3"
           >
-            <option value="true">
-              Active
-            </option>
+            <option value="true">Active</option>
 
-            <option value="false">
-              Inactive
-            </option>
+            <option value="false">Inactive</option>
           </select>
         </div>
 
         {/* VARIATIONS */}
 
         <div>
-          <h4 className="font-bold text-lg mb-4">
-            Product Variation
-          </h4>
+          <h4 className="font-bold text-lg mb-4">Product Variation</h4>
 
           {variations.map((item, index) => (
             <div
@@ -658,9 +611,7 @@ const AddProduct = ({
                 name="color"
                 placeholder="Color"
                 value={item.color}
-                onChange={(e) =>
-                  handleVariationChange(index, e)
-                }
+                onChange={(e) => handleVariationChange(index, e)}
                 className="border p-2 rounded"
               />
 
@@ -669,9 +620,7 @@ const AddProduct = ({
                 name="size"
                 placeholder="Size"
                 value={item.size}
-                onChange={(e) =>
-                  handleVariationChange(index, e)
-                }
+                onChange={(e) => handleVariationChange(index, e)}
                 className="border p-2 rounded"
               />
 
@@ -680,9 +629,7 @@ const AddProduct = ({
                 name="price"
                 placeholder="Price"
                 value={item.price}
-                onChange={(e) =>
-                  handleVariationChange(index, e)
-                }
+                onChange={(e) => handleVariationChange(index, e)}
                 className="border p-2 rounded"
               />
 
@@ -691,9 +638,7 @@ const AddProduct = ({
                 name="stock"
                 placeholder="Stock"
                 value={item.stock}
-                onChange={(e) =>
-                  handleVariationChange(index, e)
-                }
+                onChange={(e) => handleVariationChange(index, e)}
                 className="border p-2 rounded"
               />
 
@@ -702,17 +647,13 @@ const AddProduct = ({
                 name="sku"
                 placeholder="SKU"
                 value={item.sku}
-                onChange={(e) =>
-                  handleVariationChange(index, e)
-                }
+                onChange={(e) => handleVariationChange(index, e)}
                 className="border p-2 rounded"
               />
 
               <button
                 type="button"
-                onClick={() =>
-                  removeVariation(index)
-                }
+                onClick={() => removeVariation(index)}
                 className="bg-red-500 text-white rounded px-3"
               >
                 Remove
@@ -732,12 +673,9 @@ const AddProduct = ({
         {/* BUTTONS */}
 
         <div className="flex justify-end gap-4 pt-6">
-
           <button
             type="button"
-            onClick={() =>
-              navigate(basePath)
-            }
+            onClick={() => navigate(basePath)}
             className="px-6 py-3 rounded-lg border"
           >
             Cancel
@@ -749,13 +687,9 @@ const AddProduct = ({
           >
             <Save size={18} />
 
-            {product_id
-              ? "Update Product"
-              : "Save Product"}
+            {product_id ? "Update Product" : "Save Product"}
           </button>
-
         </div>
-
       </form>
     </div>
   );
