@@ -30,9 +30,9 @@ const AddProduct = ({
     size: "",
     color: "red",
     category: "",
-    mrp: 0,
-    saleprice: 0,
-    quantity: 0,
+    mrp: "",
+    saleprice: "",
+    quantity: "",
     image: null,
     isActive: true,
   });
@@ -67,9 +67,9 @@ const AddProduct = ({
         size: data.size?._id || data.size || "",
         category: data.category?._id || data.category || "",
         color: data.color || "red",
-        mrp: data.mrp || 0,
-        saleprice: data.saleprice || 0,
-        quantity: data.quantity || 0,
+        mrp: data.mrp ?? "",
+        saleprice: data.saleprice ?? "",
+        quantity: data.quantity ?? "",
         isActive: data.isActive ?? true,
         image: data.image || null,
       });
@@ -253,6 +253,9 @@ const AddProduct = ({
 
     const payload = {
       ...formData,
+      mrp: Number(formData.mrp),
+      saleprice: Number(formData.saleprice),
+      quantity: Number(formData.quantity || 0),
       variations,
     };
 
@@ -347,23 +350,24 @@ const AddProduct = ({
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 bg-white rounded-2xl shadow-md p-8">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">
+    <div className="mx-auto max-w-6xl space-y-6 rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-blue-50 p-5 shadow-xl shadow-slate-200/60 sm:p-8">
+      <div className="rounded-2xl bg-slate-900 px-6 py-6 text-white shadow-lg sm:px-8">
+        <p className="text-xs font-bold uppercase tracking-[.2em] text-blue-300">Product catalogue</p>
+        <h2 className="mt-2 text-3xl font-extrabold tracking-tight">
           {product_id ? "Update" : "Add New"} Product
         </h2>
 
-        <p className="text-gray-500 mt-1">
-          Fill in the details to create a new product.
+        <p className="mt-2 text-slate-300">
+          Add complete details, pricing and inventory for your product.
         </p>
       </div>
 
-      <form className="space-y-6" onSubmit={handleSubmit}>
+      <form className="space-y-6 rounded-2xl bg-white p-5 shadow-sm sm:p-7" onSubmit={handleSubmit}>
         {/* Product Name + Category */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <div>
-            <label className="block mb-2 font-medium text-gray-700">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               Product Name
             </label>
 
@@ -377,7 +381,7 @@ const AddProduct = ({
                   name: e.target.value,
                 })
               }
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
               required
             />
           </div>
@@ -385,14 +389,14 @@ const AddProduct = ({
           {/* CATEGORY */}
 
           <div>
-            <label className="block mb-2 font-medium text-gray-700">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               Category
             </label>
 
             <select
               value={formData.category}
               onChange={handleCategoryChange}
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
               required
             >
               <option value="">Select Category</option>
@@ -408,11 +412,11 @@ const AddProduct = ({
 
         {/* BRAND + SIZE */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           {/* BRAND */}
 
           <div>
-            <label className="mb-2 block font-medium text-gray-700">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               Brand
             </label>
 
@@ -426,7 +430,7 @@ const AddProduct = ({
                   brand: e.target.value,
                 })
               }
-              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none disabled:bg-gray-100"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-100"
               required
             >
               <option value="">
@@ -454,7 +458,7 @@ const AddProduct = ({
           {/* SIZE */}
 
           <div>
-            <label className="block mb-2 font-medium text-gray-700">Size</label>
+            <label className="mb-2 block text-sm font-semibold text-slate-700">Size</label>
 
             <select
               value={formData.size}
@@ -465,7 +469,7 @@ const AddProduct = ({
                   size: e.target.value,
                 })
               }
-              className="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-100"
               required
             >
               <option value="">
@@ -493,14 +497,37 @@ const AddProduct = ({
 
         {/* PRICE + STOCK */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           <div>
-            <label className="block mb-2 font-medium text-gray-700">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
+              MRP
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={formData.mrp}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  mrp: e.target.value,
+                })
+              }
+              placeholder="Enter MRP"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+              required
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               Sale Price
             </label>
 
             <input
               type="number"
+              min="0"
+              step="0.01"
               value={formData.saleprice}
               onChange={(e) =>
                 setFormData({
@@ -508,18 +535,19 @@ const AddProduct = ({
                   saleprice: e.target.value,
                 })
               }
-              className="w-full border rounded-lg px-4 py-3"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
               required
             />
           </div>
 
           <div>
-            <label className="block mb-2 font-medium text-gray-700">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               Stock
             </label>
 
             <input
               type="number"
+              min="0"
               value={formData.quantity}
               onChange={(e) =>
                 setFormData({
@@ -527,7 +555,7 @@ const AddProduct = ({
                   quantity: e.target.value,
                 })
               }
-              className="w-full border rounded-lg px-4 py-3"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
             />
           </div>
         </div>

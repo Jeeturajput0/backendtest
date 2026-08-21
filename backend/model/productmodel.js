@@ -40,11 +40,13 @@ const ProductSchema = new mongoose.Schema({
     required: true,
   },
   brand: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Brand",
     required: true,
   },
   size: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Size",
     required: true,
   },
   color: {
@@ -62,6 +64,12 @@ const ProductSchema = new mongoose.Schema({
   saleprice: {
     type: Number,
     required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+    default: 0,
+    min: 0,
   },
   isActive: {
     type: Boolean,

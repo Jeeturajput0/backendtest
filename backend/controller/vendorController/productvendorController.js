@@ -6,6 +6,8 @@ const products = async (req, res) => {
   try {
     const data = await Product.find({ vendor: req.user.userId })
       .populate("category")
+      .populate("brand", "name")
+      .populate("size", "name")
       .sort({ createdAt: -1 });
     res.json({
       success: true,
@@ -30,7 +32,10 @@ const productDetails = async (req, res) => {
     const data = await Product.findOne({
       _id: req.params.product_id,
       vendor: req.user.userId,
-    }).populate("category");
+    })
+      .populate("category")
+      .populate("brand", "name")
+      .populate("size", "name");
     if (!data)
       return res.status(404).json({
         success: false,

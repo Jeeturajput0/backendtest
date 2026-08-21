@@ -3,9 +3,14 @@ const Product = require("../model/productmodel");
 const Brand = require("../model/brandmodel");
 const Size = require("../model/sizemodel");
 
-const publicPopulate = (query) => query.populate("category");
+const publicPopulate = (query) =>
+  query.populate("category").populate("brand", "name").populate("size", "name");
 const adminPopulate = (query) =>
-  query.populate("category").populate("vendor", "name email");
+  query
+    .populate("category")
+    .populate("brand", "name")
+    .populate("size", "name")
+    .populate("vendor", "name email");
 
 const validSelection = async ({ brand, size, category }) => {
   if (

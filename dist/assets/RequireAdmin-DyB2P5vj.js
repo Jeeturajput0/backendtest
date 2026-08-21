@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-CB_p5Kcx.js";import{S as t,w as n}from"./index-NItOfgnd.js";var r=e();function i({children:e}){let i=n(),a=JSON.parse(localStorage.getItem(`user`)||localStorage.getItem(`userdetails`)||`null`);return localStorage.getItem(`token`)&&a?.role===`admin`?e:(0,r.jsx)(t,{to:`/admin/login`,replace:!0,state:{from:i}})}export{i as default};

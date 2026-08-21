@@ -5,8 +5,9 @@ const role = require("../middleware/role.middleware");
 const dashboardvendorController = require("../controller/vendorController/dashboardvendorController");
 const productvendorController = require("../controller/vendorController/productvendorController");
 const orderController = require("../controller/vendorController/ordervendorController");
-// const brandController = require("../controller/vendorController/brandControllers");
-// const sizeController = require("../controller/vendorController/sizeController");
+const categoryController = require("../controller/categoryController");
+const brandController = require("../controller/brandControllers");
+const sizeController = require("../controller/sizeController");
 
 router.get("/dashboard", protect, role("vendor"), dashboardvendorController.dashboard);
 
@@ -16,9 +17,10 @@ router.get("/products/:product_id", protect, role("vendor"), productvendorContro
 router.put("/products/:product_id", protect, role("vendor"), productvendorController.updateProduct);
 router.delete("/products/:product_id", protect, role("vendor"), productvendorController.deleteProduct);
 
-router.get("/orders", protect, role("vendor"), orderController.list);
-// router.get("/catalog/brand", protect, role("vendor"), brandController.list);
-// router.get("/catalog/size", protect, role("vendor"), sizeController.list);
+// Vendors can read the master catalogue in order to create valid products.
+router.get("/catalog/category", protect, role("vendor"), categoryController.list);
+router.get("/catalog/brand", protect, role("vendor"), brandController.list);
+router.get("/catalog/size", protect, role("vendor"), sizeController.list);
 
-router.get("/orders",protect,role("vendor"),)
+router.get("/orders", protect, role("vendor"), orderController.list);
 module.exports = router;
