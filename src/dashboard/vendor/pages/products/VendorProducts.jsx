@@ -149,7 +149,7 @@ const VendorProducts = () => {
                             {product.name}
                           </p>
                           <p className="mt-1 text-xs text-slate-400">
-                            {product.color} · {product.size}
+                            {product.color} · {product.size?.name}
                           </p>
                         </div>
                       </div>
