@@ -19,7 +19,7 @@ function Header() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const navClass = ({ isActive }) =>
-    `rounded-xl px-3.5 py-2 text-sm font-semibold transition ${isActive ? "bg-slate-900 text-white shadow-lg shadow-slate-900/10" : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"}`;
+    `rounded-xl px-3.5 py-2 text-sm font-semibold transition ${isActive ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" : "text-slate-600 hover:bg-blue-50 hover:text-blue-700"}`;
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
       <div className="page-shell flex h-[72px] items-center justify-between gap-4">
@@ -28,7 +28,7 @@ function Header() {
           className="flex items-center gap-2.5"
           aria-label="ShopEase home"
         >
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg shadow-orange-500/25">
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-lg shadow-blue-500/25">
             <Sparkles size={18} />
           </span>
           <span className="text-lg font-extrabold tracking-tight">
@@ -55,11 +55,11 @@ function Header() {
         <div className="flex items-center gap-1.5">
           <Link
             to="/cart"
-            className="relative rounded-xl p-2.5 text-slate-700 transition hover:bg-orange-50 hover:text-orange-600"
+            className="relative rounded-xl p-2.5 text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
             aria-label="Shopping cart"
           >
             <ShoppingBag size={20} />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-orange-500 ring-2 ring-white" />
+            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-blue-600 ring-2 ring-white" />
           </Link>
           <button
             onClick={() => navigate("/login")}

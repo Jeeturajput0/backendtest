@@ -6,7 +6,7 @@
 @layer base {
   * { @apply border-slate-200; }
   html { @apply scroll-smooth; }
-  body { @apply min-w-[320px] bg-[#f8fafc] font-sans text-slate-900 antialiased selection:bg-orange-200 selection:text-slate-950; }
+  body { @apply min-w-[320px] bg-[#f5f7fb] font-sans text-slate-900 antialiased selection:bg-blue-200 selection:text-slate-950; }
   button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
   button { @apply cursor-pointer; }
   button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { @apply outline-none ring-4 ring-orange-100; }

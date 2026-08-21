@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-CB_p5Kcx.js";import{t}from"./config-DNO8G0Lh.js";import n from"./AddProduct-BCHtMUpP.js";var r=e(),i=()=>(0,r.jsx)(n,{productApi:`${t}/vendor/products`,basePath:`/vendor/products`,catalogApi:`${t}/vendor/catalog`});export{i as default};

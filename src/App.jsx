@@ -1,6 +1,7 @@
 import "./App.css";
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import VendorOrders from "./dashboard/vendor/pages/order/Vendororder";
 
 const Layout = lazy(() => import("./components/layout/Layout"));
 const Login = lazy(() => import("./auth/Login"));
@@ -63,6 +64,10 @@ export default function App() {
         <Route path="products" element={<VendorProducts />} />
         <Route path="products/add" element={<VendorProductAdd />} />
         <Route path="products/edit/:product_id" element={<VendorProductAdd />} />
+          <Route
+    path="orders"
+    element={<VendorOrders />}
+  />
       </Route>
 
       {/* home page */}
