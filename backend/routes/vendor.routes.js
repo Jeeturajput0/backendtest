@@ -8,6 +8,7 @@ const orderController = require("../controller/vendorController/ordervendorContr
 const categoryController = require("../controller/categoryController");
 const brandController = require("../controller/brandControllers");
 const sizeController = require("../controller/sizeController");
+const colorController = require("../controller/colorsControllers");
 
 router.get("/dashboard", protect, role("vendor"), dashboardvendorController.dashboard);
 
@@ -21,6 +22,7 @@ router.delete("/products/:product_id", protect, role("vendor"), productvendorCon
 router.get("/catalog/category", protect, role("vendor"), categoryController.list);
 router.get("/catalog/brand", protect, role("vendor"), brandController.list);
 router.get("/catalog/size", protect, role("vendor"), sizeController.list);
+router.get("/catalog/color", protect, role("vendor"), colorController.list);
 
 router.get("/orders", protect, role("vendor"), orderController.list);
 module.exports = router;

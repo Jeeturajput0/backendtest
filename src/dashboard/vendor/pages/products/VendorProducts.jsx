@@ -3,6 +3,7 @@ import { Edit3, Eye, Package, Plus, Search, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URI, setImageURL } from "../../../../config";
+import ProductDetailsModal from "../../../../components/products/ProductDetailsModal";
 
 const statusStyle = {
   approved: "bg-emerald-50 text-emerald-700 ring-emerald-100",
@@ -16,6 +17,7 @@ const VendorProducts = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -199,6 +201,7 @@ const VendorProducts = () => {
                     <td className="px-6">
                       <div className="flex justify-end gap-2">
                         <button
+                          onClick={() => setSelectedProduct(product)}
                           title="View product"
                           className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
                         >
@@ -229,6 +232,10 @@ const VendorProducts = () => {
           </table>
         </div>
       )}
+      <ProductDetailsModal
+        product={selectedProduct && { ...selectedProduct, image: setImageURL(selectedProduct.image) }}
+        onClose={() => setSelectedProduct(null)}
+      />
     </div>
   );
 };

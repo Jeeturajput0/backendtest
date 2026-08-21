@@ -1,4 +1,4 @@
-import { Check, Search, Plus, X } from "lucide-react";
+import { Check, Eye, Search, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { API_URI, setImageURL } from "../../../../config";
 import services from "../../../../services/products.service";
 import { fetchproducts } from "../../../../store/slices/products.slice";
+import ProductDetailsModal from "../../../../components/products/ProductDetailsModal";
 
 const Products = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Products = () => {
   const [rejectingProduct, setRejectingProduct] = useState(null);
   const [reason, setReason] = useState("");
   const [actionError, setActionError] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const getProducts = (filters = formData) => {
     dispatch(
@@ -198,6 +200,13 @@ const Products = () => {
                 </td>
 
                 <td className="space-x-2 text-center">
+                  <button
+                    onClick={() => setSelectedProduct(item)}
+                    title="View product details"
+                    className="inline-flex rounded-lg bg-sky-50 p-2 text-sky-700 transition hover:bg-sky-100"
+                  >
+                    <Eye size={16} />
+                  </button>
                   <Link
                     to={`${basePath}/edit/${item._id}`}
                     className="inline-flex rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
@@ -229,6 +238,11 @@ const Products = () => {
         </table>
       </div>
       {rejectingProduct && <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/40 p-4"><form onSubmit={(event) => { event.preventDefault(); updateApproval(rejectingProduct._id, "reject", reason); }} className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"><h2 className="text-xl font-bold">Reject {rejectingProduct.name}</h2><p className="mt-2 text-sm text-slate-500">Why are you rejecting this product?</p><textarea required value={reason} onChange={(event) => setReason(event.target.value)} className="mt-4 w-full rounded-lg border p-3" rows="4" placeholder="Product image is not clear" /><div className="mt-5 flex justify-end gap-3"><button type="button" onClick={() => setRejectingProduct(null)} className="rounded-lg border px-4 py-2">Cancel</button><button className="rounded-lg bg-rose-600 px-4 py-2 font-semibold text-white">Reject Product</button></div></form></div>}
+      <ProductDetailsModal
+        product={selectedProduct && { ...selectedProduct, image: setImageURL(selectedProduct.image) }}
+        onClose={() => setSelectedProduct(null)}
+        showVendor
+      />
     </div>
   );
 };

@@ -16,6 +16,7 @@ const AddProduct = ({
   const [categories, setCategories] = useState([]);
   const [brand, setBrand] = useState([]);
   const [size, setSize] = useState([]);
+  const [colors, setColors] = useState([]);
 
   const [loadingBrands, setLoadingBrands] = useState(false);
   const [loadingSizes, setLoadingSizes] = useState(false);
@@ -28,7 +29,7 @@ const AddProduct = ({
     details: "",
     brand: "",
     size: "",
-    color: "red",
+    color: "",
     category: "",
     mrp: "",
     saleprice: "",
@@ -66,7 +67,7 @@ const AddProduct = ({
         brand: data.brand?._id || data.brand || "",
         size: data.size?._id || data.size || "",
         category: data.category?._id || data.category || "",
-        color: data.color || "red",
+        color: data.color || "",
         mrp: data.mrp ?? "",
         saleprice: data.saleprice ?? "",
         quantity: data.quantity ?? "",
@@ -99,6 +100,18 @@ const AddProduct = ({
       }
     } catch (error) {
       console.log("CATEGORY ERROR:", error);
+    }
+  };
+
+  const getColors = async () => {
+    try {
+      const res = await fetch(`${catalogApi}/color`, {
+        headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
+      });
+      const resData = await res.json();
+      if (resData.success) setColors((resData.data || []).filter((item) => item.isActive !== false));
+    } catch (error) {
+      console.log("COLOR ERROR:", error);
     }
   };
 
@@ -184,6 +197,7 @@ const AddProduct = ({
 
   useEffect(() => {
     getCategories();
+    getColors();
 
     if (product_id) {
       getProductDetail();
@@ -316,6 +330,7 @@ const AddProduct = ({
         price: "",
         stock: "",
         sku: "",
+        image: "",
       },
     ]);
   };
@@ -324,6 +339,19 @@ const AddProduct = ({
     const updated = variations.filter((_, i) => i !== index);
 
     setVariations(updated);
+  };
+
+  const handleVariationImageChange = async (index, file) => {
+    if (!file) return;
+    try {
+      const imagePath = await uploadImage(file);
+      if (!imagePath) return;
+      setVariations((current) => current.map((item, itemIndex) => (
+        itemIndex === index ? { ...item, image: imagePath } : item
+      )));
+    } catch (error) {
+      console.log("VARIATION IMAGE ERROR:", error);
+    }
   };
 
   // =========================
@@ -408,6 +436,19 @@ const AddProduct = ({
               ))}
             </select>
           </div>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-slate-700">Color</label>
+          <select
+            value={formData.color}
+            onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
+            required
+          >
+            <option value="">Select Color</option>
+            {colors.map((item) => <option key={item._id} value={item.name}>{item.name}</option>)}
+          </select>
         </div>
 
         {/* BRAND + SIZE */}
@@ -626,22 +667,23 @@ const AddProduct = ({
 
         {/* VARIATIONS */}
 
-        <div>
-          <h4 className="font-bold text-lg mb-4">Product Variation</h4>
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div><h4 className="text-lg font-extrabold text-slate-900">Product Variants</h4><p className="mt-1 text-sm text-slate-500">Add colour, size, stock, price and an image for each option.</p></div>
+            <button type="button" onClick={addVariation} className="rounded-xl bg-blue-600 px-4 py-2.5 font-bold text-white shadow-lg shadow-blue-500/25 transition hover:bg-blue-700">+ Add Variant</button>
+          </div>
 
           {variations.map((item, index) => (
             <div
               key={index}
-              className="grid grid-cols-1 md:grid-cols-6 gap-3 mb-3"
+              className="mb-4 grid grid-cols-1 gap-3 rounded-2xl border border-slate-200 bg-white p-4 md:grid-cols-2 xl:grid-cols-6"
             >
-              <input
-                type="text"
+              <select
                 name="color"
-                placeholder="Color"
                 value={item.color}
                 onChange={(e) => handleVariationChange(index, e)}
-                className="border p-2 rounded"
-              />
+                className="rounded-xl border border-slate-200 px-3 py-2.5"
+              ><option value="">Color</option>{colors.map((color) => <option key={color._id} value={color.name}>{color.name}</option>)}</select>
 
               <input
                 type="text"
@@ -649,7 +691,7 @@ const AddProduct = ({
                 placeholder="Size"
                 value={item.size}
                 onChange={(e) => handleVariationChange(index, e)}
-                className="border p-2 rounded"
+                className="rounded-xl border border-slate-200 px-3 py-2.5"
               />
 
               <input
@@ -658,7 +700,7 @@ const AddProduct = ({
                 placeholder="Price"
                 value={item.price}
                 onChange={(e) => handleVariationChange(index, e)}
-                className="border p-2 rounded"
+                className="rounded-xl border border-slate-200 px-3 py-2.5"
               />
 
               <input
@@ -667,7 +709,7 @@ const AddProduct = ({
                 placeholder="Stock"
                 value={item.stock}
                 onChange={(e) => handleVariationChange(index, e)}
-                className="border p-2 rounded"
+                className="rounded-xl border border-slate-200 px-3 py-2.5"
               />
 
               <input
@@ -676,26 +718,26 @@ const AddProduct = ({
                 placeholder="SKU"
                 value={item.sku}
                 onChange={(e) => handleVariationChange(index, e)}
-                className="border p-2 rounded"
+                className="rounded-xl border border-slate-200 px-3 py-2.5"
               />
+
+              <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-blue-300 bg-blue-50 px-3 py-2 text-sm font-bold text-blue-700">
+                {item.image ? "Change image" : "Variant image"}
+                <input type="file" accept="image/*" className="hidden" onChange={(e) => handleVariationImageChange(index, e.target.files[0])} />
+              </label>
+
+              {item.image && <img src={setImageURL(item.image)} alt={`Variant ${index + 1}`} className="h-11 w-11 rounded-lg border object-cover" />}
 
               <button
                 type="button"
                 onClick={() => removeVariation(index)}
-                className="bg-red-500 text-white rounded px-3"
+                className="rounded-xl bg-rose-50 px-3 py-2 font-bold text-rose-700 transition hover:bg-rose-100"
               >
                 Remove
               </button>
             </div>
           ))}
 
-          <button
-            type="button"
-            onClick={addVariation}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            + Add Variation
-          </button>
         </div>
 
         {/* BUTTONS */}

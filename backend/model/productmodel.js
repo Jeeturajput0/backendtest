@@ -22,6 +22,10 @@ const variationSchema = new mongoose.Schema(
     sku: {
       type: String,
     },
+    image: {
+      type: String,
+      default: "",
+    },
   },
   { _id: false },
 );
