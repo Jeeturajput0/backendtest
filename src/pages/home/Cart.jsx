@@ -13,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { API_URI, setImageURL } from "../../config";
 
 const Cart = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const getCart = async () => {
     try {
@@ -129,7 +129,7 @@ const Cart = () => {
                         {item.color} · {item.size}
                       </p>
                       <h3 className="mt-3 text-xl font-extrabold">
-                        ₹{item.product?.saleprice}
+                        ₹{(item.product?.saleprice || 0) * item.quantity}
                       </h3>
                     </div>
                     <div className="mt-5 flex items-center justify-between">
@@ -202,9 +202,10 @@ const Cart = () => {
               <input className="ui-input py-2.5" placeholder="Promo code" />
               <button className="ui-button-secondary px-3">Apply</button>
             </div>
-            <button 
+            <button
               onClick={() => navigate("/checkout")}
-            className="ui-button-accent mt-5 w-full py-3.5">
+              className="ui-button-accent mt-5 w-full py-3.5"
+            >
               Proceed to checkout <ArrowRight size={17} />
             </button>
             <p className="mt-4 text-center text-xs text-slate-500">
