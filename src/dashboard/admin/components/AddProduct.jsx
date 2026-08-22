@@ -265,12 +265,24 @@ const AddProduct = ({
       return;
     }
 
+    const incompleteVariant = variations.find(
+      (item) => !item.color || !item.size || item.price === "" || item.stock === "",
+    );
+    if (incompleteVariant) {
+      alert("Please complete color, size, price and stock for every variant.");
+      return;
+    }
+
     const payload = {
       ...formData,
       mrp: Number(formData.mrp),
       saleprice: Number(formData.saleprice),
       quantity: Number(formData.quantity || 0),
-      variations,
+      variations: variations.map((item) => ({
+        ...item,
+        price: Number(item.price),
+        stock: Number(item.stock),
+      })),
     };
 
     try {
@@ -685,14 +697,15 @@ const AddProduct = ({
                 className="rounded-xl border border-slate-200 px-3 py-2.5"
               ><option value="">Color</option>{colors.map((color) => <option key={color._id} value={color.name}>{color.name}</option>)}</select>
 
-              <input
-                type="text"
+              <select
                 name="size"
-                placeholder="Size"
                 value={item.size}
                 onChange={(e) => handleVariationChange(index, e)}
                 className="rounded-xl border border-slate-200 px-3 py-2.5"
-              />
+              >
+                <option value="">Size</option>
+                {size.map((sizeItem) => <option key={sizeItem._id} value={sizeItem.name}>{sizeItem.name}</option>)}
+              </select>
 
               <input
                 type="number"
