@@ -89,9 +89,9 @@ export default function Mainhome() {
       />
 
       {/* Featured Categories */}
-      <FeaturedCategories
+      {/* <FeaturedCategories
         categories={home.featuredCategories || []}
-      />
+      /> */}
 
       {/* Featured Products */}
       <FeaturedProducts

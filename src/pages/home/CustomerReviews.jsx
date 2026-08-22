@@ -3,7 +3,7 @@ import SectionTitle from "./SectionTitle";
 
 export default function CustomerReviews({ reviews = [] }) {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+    <section className="mx-auto max-w-7xl px-6 py-6 lg:px-8">
       <SectionTitle
         eyebrow="Loved by shoppers"
         title="Customer Reviews"
