@@ -8,6 +8,7 @@ export default function FeaturedProducts({ products = [] }) {
 
         <SectionTitle
           eyebrow="Chosen for you"
+          title=" Products"
         />
 
         <ProductGrid products={products} limit={8} />
